@@ -1,0 +1,61 @@
+﻿@model PagedList.IPagedList<ShopGiay.Models.SANPHAM>
+    @using PagedList.Mvc
+<div class="col-md-9 order-2">
+    <div class="row">
+        <div class="col-md-12 mb-5">
+            <div class="float-md-left mb-4">
+
+                <div class="btn-group">
+                    <label style="font-size: 20px; margin-top: 10px; font-weight: 300; color: black;">Show &nbsp;</label>
+                    @using (Html.BeginForm("Shop", "Store", FormMethod.Get))
+                    {
+                        @Html.DropDownList("size", (List<SelectListItem>)ViewBag.Size, new { @class = "btn btn-secondary btn-sm dropdown-toggle", @onchange = "this.form.submit();", @style = "font-size: 50px" });
+                    }
+                    <label style="font-size: 20px; margin-top: 10px; font-weight: 300; color: black;">&nbsp;per page</label>
+                </div>
+                
+            </div>
+            <div class="d-flex">
+                <div class="dropdown mr-1 ml-md-auto">
+                    <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuOffset" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        SORT
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuOffset" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(-6px, 42px, 0px);">
+                        <a class="dropdown-item" href="#">Relevance</a>
+                        <a class="dropdown-item" href="#">Name, A to Z</a>
+                        <a class="dropdown-item" href="#">Name, Z to A</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Price, low to high</a>
+                        <a class="dropdown-item" href="#">Price, high to low</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-5">
+        @foreach (var item in Model)
+        {
+            <div class="col-sm-6 col-lg-4 mb-4 aos-init aos-animate" data-aos="fade-up">
+                <div class="block-4 text-center border">
+                    <figure class="block-4-image" style="width: 210px; margin: 20px">
+                        <a  href="@Url.Action("XemChiTiet", "SanPham", new { @masp = item.MaSP, @nhanhieu = item.MaNhanHieu, @loai = item.MaLoai })"><img src="~/HinhAnh/HinhAnhSP/@item.Anh" alt="Image placeholder" class="img-fluid"></a>
+                    </figure>
+                    <div class="block-4-text p-4">
+                        <div style="width: 205px; height: 72px"><h3><a href="@Url.Action("XemChiTiet", "SanPham", new { @masp = item.MaSP, @nhanhieu = item.MaNhanHieu, @loai = item.MaLoai })" style="color: black;">@item.TenSP</a></h3></div>
+                        <p class="mb-0" style="color: black;  font-weight: 600">@item.NHANHIEU.TenNhanHieu</p>
+                        <p class="text-primary font-weight-bold">@string.Format("{0:0,0}", @item.DonGia) VNĐ</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="row aos-init aos-animate" data-aos="fade-up">
+        <div class="col-md-12 text-center">
+            <div class="site-block-27">
+                <ul>
+                    @Html.PagedListPager(Model, page => Url.Action("Shop", "Store", new { page, size = ViewBag.CurrentSize }))
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

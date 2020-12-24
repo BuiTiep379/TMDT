@@ -1,0 +1,34 @@
+﻿@model dynamic
+@{
+    ViewBag.Title = "Shop";
+    Layout = "~/Views/Shared/_ShopLayouts.cshtml";
+}
+
+@section SiteNavBar{
+    @{ Html.RenderAction("SiteNavBar", "Store");}
+}
+
+
+<div class="site-section">
+    <div class="container">
+        <div class="row mb-5">
+            @{ Html.RenderAction("DanhSachSanPham", "SanPham");}
+            <div class="col-md-3 order-1 mb-5 mb-md-0">
+                @{ Html.RenderAction("DanhSachLoai", "Loai");}
+                <div class="border p-4 rounded mb-4">
+                    @{ Html.RenderAction("DanhSachSize", "Size");}
+
+                    @{ Html.RenderAction("DanhSachMau", "MauSac");}
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+@section SiteBlocks3{
+    @{ Html.RenderAction("SanPhamNoiBat", "SanPham");}
+}
+@section SiteFooter{
+    @Html.Action("SiteFooter", "Store")
+}

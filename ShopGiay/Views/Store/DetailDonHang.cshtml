@@ -1,0 +1,75 @@
+﻿@model List<ShopGiay.Models.CHITIETDONHANG>
+@{
+    ViewBag.Title = "DetailDonHang";
+    Layout = "~/Views/Shared/_ClientLayouts.cshtml";
+}
+
+
+@section SiteNavBar {
+    @{ Html.RenderAction("SiteNavBar", "Store");}
+}
+<div class="site-section" style="padding-top: 20px; padding-bottom: 30px">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="p-3 p-lg-5 ">
+                    <h3 class="h3 mb-3 text-black">Địa chỉ</h3>
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <label for="c_lname" class="text-black">@ViewBag.TenKH</label><br />
+                            <label for="c_lname" class="text-black">@ViewBag.Sdt</label><br />
+                            <label for="c_lname" class="text-black">@ViewBag.DiaChi</label>
+                        </div>
+                    </div>
+                </div>
+            <div class="col-md-12">
+                <div class="row mb-5">
+                    <div class="col-md-12">
+                        <h2 class="h3 mb-3 text-black">Chi tiết đơn hàng</h2>
+                        <div class="p-3 p-lg-5 border">
+                            <table class="table site-block-order-table mb-5">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Color</th>
+                                        <th>Size</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.SANPHAM.TenSP</td>
+                                            <td>
+                                                @item.MAUSAC.MaMau
+                                            </td>
+                                            <td>@item.SIZE.Size</td>
+                                            <td>@item.SoLuong</td>
+                                            <td><strong class="mx-2">@string.Format("{0:0,0}", @item.DonGia) VNĐ </strong></td>
+                                            <td>@string.Format("{0:0,0}", @item.SoLuong * item.DonGia) VNĐ</td>
+                                        </tr>
+                                    }
+                                    <tr>
+                                        <td class="text-black font-weight-bold" colspan="5"><strong>Order Total</strong></td>
+                                        <td class="text-black font-weight-bold"><strong>@string.Format("{0:0,0}", ViewBag.TongTien) VNĐ</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- </form> -->
+    </div>
+</div>
+    </div>
+@section SiteFooter{
+    @Html.Action("SiteFooter", "Store")
+}
+
+

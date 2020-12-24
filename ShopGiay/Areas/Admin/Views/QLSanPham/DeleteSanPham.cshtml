@@ -1,0 +1,116 @@
+﻿@model ShopGiay.Models.SANPHAM
+@{
+    ViewBag.Title = "DeleteSanPham";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayouts.cshtml";
+}
+@section sidebarMenu
+{
+    @Html.Action("SidebarMenu", "AdminHome")
+
+}
+
+@section headerStarts
+{
+    @Html.Action("HeaderStarts", "AdminHome")
+
+}
+<h2>DeleteSanPham</h2>
+<br />
+<h2>XÓA</h2>
+
+<h3>Bạn có thực sự muốn xóa sản phẩm này?</h3>
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.MaSP)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MaSP)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TenSP)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TenSP)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Anh)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Anh)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NHANHIEU.TenNhanHieu)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NHANHIEU.TenNhanHieu)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.LOAISP.TenLoai)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LOAISP.TenLoai)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DonGia)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DonGia)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Anh2)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Anh2)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Anh3)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Anh3)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MoTa)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MoTa)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NgayCapNhat)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NgayCapNhat)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <button type="submit" value="Delete" class="btn btn-danger">Xóa</button>
+            <button class="btn btn-info">@Html.ActionLink("Trở về", "DanhSachSanPham", "QLSanPham")</button>
+        </div>
+    }
+</div>
+

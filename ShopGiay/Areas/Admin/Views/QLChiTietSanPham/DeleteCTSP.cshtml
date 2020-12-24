@@ -1,0 +1,64 @@
+﻿@model ShopGiay.Models.CHITIETSP
+@{
+    ViewBag.Title = "DeleteCTSP";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayouts.cshtml";
+}
+@section sidebarMenu
+{
+    @Html.Action("SidebarMenu", "AdminHome")
+}
+
+@section headerStarts
+{
+    @Html.Action("HeaderStarts", "AdminHome")
+}
+<br />
+<h2>XÓA</h2>
+
+<h3>Bạn có thực sự muốn xóa?</h3>
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ID)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SANPHAM.TenSP)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SANPHAM.TenSP)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.MAUSAC.MauSac)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MAUSAC.MauSac)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SIZE.Size)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SIZE.Size)
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <button type="submit" value="Delete" class="btn btn-danger">Xóa</button>
+            <button class="btn btn-info">@Html.ActionLink("Trở về", "DanhSachChiTietSP", "QLChiTietSanPham")</button>
+        </div>
+    }
+</div>
+
+

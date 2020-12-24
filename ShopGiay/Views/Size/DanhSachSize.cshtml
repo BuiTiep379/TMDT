@@ -1,0 +1,16 @@
+﻿@model dynamic
+<div class="mb-4">
+    <h3 class="mb-3 h6 text-uppercase text-black d-block" style="color: black;font-weight: 600;
+        font-size: 20px">
+        Size
+    </h3>
+
+        @foreach (var item in Model)
+        { 
+            <label for="s_sm" class="d-flex">
+                <input type="checkbox" id="s_sm" class="mr-2 mt-1"> <span class="text-black">@item.Size</span>
+            </label>
+        }
+</div>
+
+

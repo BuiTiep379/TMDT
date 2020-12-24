@@ -1,0 +1,102 @@
+﻿@using PagedList.Mvc;
+@model PagedList.PagedList<ShopGiay.Models.PROMOCODE>
+@{
+    ViewBag.Title = "DanhSachPromoCode";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayouts.cshtml";
+}
+
+@section sidebarMenu
+{
+    @Html.Action("SidebarMenu", "AdminHome")
+
+}
+
+@section headerStarts
+{
+    @Html.Action("HeaderStarts", "AdminHome")
+
+}
+
+@using (Html.BeginForm("DanhSachPromoCode", "QLPromoCode", FormMethod.Get))
+{
+    <h3>Danh sách mã giảm giá</h3>
+    <div class="col-lg-8">
+        <div class="input-group custom-search-form">
+            @Html.TextBox("Search", null, new { @class = "form-control", @placeholder = "Search name code" })
+            <span class="input-group-btn">
+                <button class="btn btn-success" type="submit">
+                    <i class="fa fa-search"></i>
+                </button>
+            </span>
+            <div class="col-lg-4">
+                @Html.ActionLink("Thêm mới code", "AddPromoCode", "QLPromoCode", new { @class = "btn btn-primary" })
+            </div>
+        </div>
+    </div>
+}
+<br />
+<hr />
+<table width="100%" class="table table-striped table-bordered table-hover" id="Table-LoaiSP">
+    <thead>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.First().Id)</td>
+            <td>@Html.DisplayNameFor(model => model.First().Name)</td>
+            <td>@Html.DisplayNameFor(model => model.First().Value)</td>
+            <td>@Html.DisplayNameFor(model => model.First().Code)</td>
+            <td>@Html.DisplayNameFor(model => model.First().Status)</td>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>@Html.DisplayFor(modelItem => item.Id)</td>
+            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+            <td>@Html.DisplayFor(modelItem => item.Value)</td>
+            <td>@Html.DisplayFor(modelItem => item.Code)</td>
+            <td>@Html.DisplayFor(modelItem => item.Status)</td>
+            <td>
+                <button class="btn btn-success">@Html.ActionLink("Chỉnh sửa", "EditPromoCode", "QLPromoCode", new { @id = item.Id }, new { @style = "color: white", })</button>
+
+                @{
+                    if (item.Status == true)
+                    {
+                        <button class="btn btn-info">@Html.ActionLink("Hủy", "HuyCode", "QLPromoCode", new { @id = item.Id }, new { @style = "color: white", })</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-info">@Html.ActionLink("Kích hoạt", "KichHoatCode", "QLPromoCode", new { @id = item.Id }, new { @style = "color: white", })</button>
+                    }
+                }
+                <button class="btn btn-danger">  @Html.ActionLink("Xóa", "DeletePromoCode", "QLPromoCode", new { @id = item.Id }, new { @style = "color: white", })</button>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+@*Tạo link liên kết các trang*@
+<br />
+<div class="row">
+    <div class="col-md-6 col-lg-6 col-xs-6 col-sm-6">
+        @using (Html.BeginForm("DanhSachPromoCode", "QLPromoCode", FormMethod.Get))
+        {
+            <p>
+                Kích thước trang: @Html.DropDownList("size", (List<SelectListItem>)ViewBag.Size, new { @onchange = "this.form.submit();" })
+            </p>
+        }
+    </div>
+    <div class="col-md-6 col-lg-6 col-xs-6 col-sm-6 text-right">
+        Trang: @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
+    </div>
+</div>
+
+@Html.PagedListPager(Model, page => Url.Action("DanhSachPromoCode", "QLPromoCode", new { page, size = ViewBag.CurrentSize }))
+<script>
+    $(document).ready(function () {
+        $('#Table-LoaiSP').DataTable({
+            responsive: true
+        });
+    });
+</script>
+

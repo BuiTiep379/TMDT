@@ -1,0 +1,37 @@
+﻿
+@{
+    ViewBag.Title = "ApplyPromoCode";
+    Layout = "~/Views/Shared/_ClientLayouts.cshtml";
+}
+
+<div class="site-section">
+    <div class="container-fluid">
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="container">
+                <div class="col-6">
+                    <div class="alert alert-info alert-dismissible" role="alert" style="height: 60px">
+                        <strong style="margin-left: 180px">@ViewBag.Error</strong>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="margin-top: 4px">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        }
+        <div class="col-12">
+            <form action="/GioHang/ApplyPromoCode" method="post">
+                <div class="form-group">
+                    <input type="text" id="txtcode" name="txtcode" placeholder="Enter promocode" />
+                </div>
+                <div class="form-group">
+                    <button class="btn-success" type="submit">SAVE</button>
+                    <button>@Html.ActionLink("Trở về", "ThanhToan", new { @maKH = Session["UserID"] })</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>

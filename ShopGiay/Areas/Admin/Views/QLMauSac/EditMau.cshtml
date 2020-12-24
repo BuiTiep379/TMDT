@@ -1,0 +1,51 @@
+﻿@model ShopGiay.Models.MAUSAC
+@{
+    ViewBag.Title = "EditMau";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayouts.cshtml";
+}
+@section sidebarMenu
+{
+    @Html.Action("SidebarMenu", "AdminHome")
+
+}
+
+@section headerStarts
+{
+    @Html.Action("HeaderStarts", "AdminHome")
+
+}
+<h2>CHỈNH SỬA MÀU</h2>
+<hr />
+<div @*style="padding-left: 300px"*@>
+
+    @using (Html.BeginForm())
+    {
+        if (TempData["ThongBao"] != null)
+        {
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <strong>@TempData["ThongBao"]</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        }
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text text-danger" })
+            <div class="form-group" style="padding-top: 10px">
+                @Html.LabelFor(model => model.MauSac, new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.TextBoxFor(model => model.MauSac, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.MauSac, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group" style="padding-top: 10px">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" class="btn btn-success" />
+                    @Html.ActionLink("Trở về", "DanhSachMauSac", null, new { @class = "btn btn-info" })
+                </div>
+            </div>
+        </div>
+    }
+</div>
+

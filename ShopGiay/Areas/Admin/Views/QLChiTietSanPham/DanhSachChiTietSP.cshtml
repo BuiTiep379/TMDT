@@ -1,0 +1,105 @@
+﻿@model PagedList.IPagedList<ShopGiay.Models.CHITIETSP>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "DanhSachChiTietSP";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayouts.cshtml";
+}
+@section sidebarMenu
+{
+    @Html.Action("SidebarMenu","AdminHome")
+}
+
+@section headerStarts
+{
+    @Html.Action("HeaderStarts","AdminHome")
+}
+<br />
+<br />
+@using (Html.BeginForm("DanhSachChiTietSP", "QLChiTietSanPham", FormMethod.Post))
+{
+    <h3>Danh sách chi tiết sản phẩm</h3>
+    <div class="col-lg-8">
+        <div class="input-group custom-search-form">
+            <input style="background-color:white" id="search" name="search" type="text" value="" class="form-control" placeholder="Tìm kiếm theo tên" />
+            <span class="input-group-btn">
+                <button class="btn btn-success" type="submit">
+                    <i class="fa fa-search"></i>
+                </button>
+            </span>
+            <div class="col-lg-4">
+                @Html.ActionLink("Thêm mới chi tiết sản phẩm", "AddChiTietSP", "QLChiTietSanPham", new { @class = "btn btn-primary" })
+            </div>
+        </div>
+    </div>
+}
+<br />
+<hr />
+<table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.First().SANPHAM.TenSP)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().SIZE.Size)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().MAUSAC.MauSac)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().SoLuong)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.SANPHAM.TenSP)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SIZE.Size)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.MAUSAC.MauSac)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SoLuong)
+            </td>
+            <td>
+            <button class="btn btn-success">@Html.ActionLink("Chỉnh sửa", "EditChiTietSP", "QLChiTietSanPham", new { @id = item.ID }, new { @style = "color: white", })</button>
+            <button class="btn btn-danger">  @Html.ActionLink("Xóa", "DeleteCTSP", "QLChiTietSanPham", new { @id = item.ID }, new { @style = "color: white", })</button>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+@*Tạo link liên kết các trang*@
+<br />
+<div class="row">
+    <div class="col-md-6 col-lg-6 col-xs-6 col-sm-6">
+        @using (Html.BeginForm("DanhSachChiTietSP", "QLChiTietSanPham", FormMethod.Get))
+        {
+            <p>
+                Kích thước trang: @Html.DropDownList("size", (List<SelectListItem>)ViewBag.Size, new { @onchange = "this.form.submit();" })
+            </p>
+        }
+    </div>
+    <div class="col-md-6 col-lg-6 col-xs-6 col-sm-6 text-right">
+        Trang: @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
+    </div>
+</div>
+@Html.PagedListPager(Model, page => Url.Action("DanhSachChiTietSP", "QLChiTietSanPham", new { page, size = ViewBag.CurrentSize }))
+<script>
+    $(document).ready(function () {
+        $('#Table-NhanVien').DataTable({
+            responsive: true
+        });
+    });
+</script>
+
+
+

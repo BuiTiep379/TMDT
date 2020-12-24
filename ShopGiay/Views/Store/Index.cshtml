@@ -1,0 +1,29 @@
+﻿@model dynamic
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_ClientLayouts.cshtml";
+}
+
+@section SiteNavBar {
+    @{ Html.RenderAction("SiteNavBar", "Store");}
+}
+@section SiteBlocksCover {
+    @{ Html.RenderAction("SiteBlocksCover", "Store");}
+}
+@section SiteSection{
+    @{ Html.RenderAction("SiteSection", "Store");}
+    @*@Html.Action("SanPhamNoiBat", "SanPham", Model as IDictionary<string, object>)*@
+}
+@section SiteBlocks2{
+    @{ Html.RenderAction("SiteBlocks2", "Store");}
+}
+@section SiteBlocks3{
+    @{ Html.RenderAction("SanPhamNoiBat", "SanPham");}
+}
+@section SiteBlocks8{
+    @{ Html.RenderAction("SiteBlocks8", "Store");}
+}
+@section SiteFooter{
+    @Html.Action("SiteFooter", "Store")
+}
+

@@ -1,0 +1,77 @@
+﻿
+@{
+    ViewBag.Title = "Login";
+    Layout = null;
+}
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Collective Admin Panel a Flat Bootstrap Responsive Website Template | Home :: W3Layouts</title>
+
+    <!-- Template CSS -->
+    <link rel="stylesheet" href="~/Content/Admin/assets/css/style-starter.css">
+    <!-- google fonts -->
+    <link href="//fonts.googleapis.com/css?family=Nunito:300,400,600,700,800,900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <section>
+        <!-- content -->
+        <div class="">
+            <!-- login form -->
+            <section class="login-form py-md-5 py-3">
+                <div class="card card_border p-md-4">
+                    <div class="card-body">
+                        <!-- form -->
+                        <form action="/Admin/Login/Login" method="post">
+                            @Html.AntiForgeryToken()
+                            @if (TempData["ThongBao"] != null)
+                            {
+                                <div class="alert alert-success alert-dismissible" role="alert">
+                                    <strong>@TempData["ThongBao"]</strong>
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            }
+                            <div class="login__header text-center mb-lg-5 mb-4">
+                                <h3 class="login__title mb-2"> Login</h3>
+                                <p>Welcome back, login to continue</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1" class="input__label">Username</label>
+                                <input type="email" class="form-control login_text_field_bg input-style" name="txtemail" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="" required="" autofocus="">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputPassword1" class="input__label">Password</label>
+                                <input type="password" class="form-control login_text_field_bg input-style" name="txtmatkhau" value="" id="exampleInputPassword1" placeholder="" required="">
+                            </div>
+                            <div class="form-check check-remember check-me-out">
+                                <input type="checkbox" class="form-check-input checkbox" id="exampleCheck1">
+                                <label class="form-check-label checkmark" for="exampleCheck1">
+                                    Remember
+                                    me
+                                </label>
+                            </div>
+                            <div class="d-flex align-items-center flex-wrap justify-content-between">
+                                <button type="submit" class="btn btn-primary btn-style mt-4">Login now</button>
+                            </div>
+                        </form>
+                        <!-- //form -->
+                        <p class="backtohome mt-4"><a href="Admin/Login/Index" class="back"><i class="fa fa-chevron-left" aria-hidden="true"></i>Back to Home </a></p>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+        <!-- //content -->
+    </section>
+
+ </body>
+
+</html>
+
+

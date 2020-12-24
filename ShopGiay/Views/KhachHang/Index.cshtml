@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_ClientLayouts.cshtml";
+}
+
+<div class="main-content">
+    <h2>Index</h2>
+</div>
+
+@section headertop {
+    @Html.Action("HeaderTopPartial", "Store")
+}
+@section headerbottom {
+    @Html.Action("HeaderBottomPartial", "Store")
+}
+@section indexbanner{
+    @Html.Action("IndexBannerPartial","Store")
+}
+@section footer{
+    @Html.Action("FooterPartial", "Store")
+}
+

@@ -1,0 +1,16 @@
+﻿
+
+<a href="@Url.Action("GioHang","GioHang")" class="fa fa-shopping-cart">
+    @{
+        if (ViewBag.TongSoLuong == null)
+        {
+            <span class="count">0</span>
+        }
+        else
+        {
+            <span class="count">@ViewBag.TongSoLuong</span>
+        }
+    }
+</a>
+
+

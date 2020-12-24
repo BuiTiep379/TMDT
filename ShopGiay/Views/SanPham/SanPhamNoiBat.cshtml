@@ -1,0 +1,32 @@
+﻿@model dynamic 
+ 
+<div class="site-section block-3 site-blocks-2 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-7 site-section-heading text-center pt-4">
+                <h2>Featured Products</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="nonloop-block-3 owl-carousel">
+                    @foreach (var item in Model)
+                    {
+                        <div class="item">
+                            <div class="block-4 text-center">
+                                <figure class="block-4-image"style="margin-left: 30px; width: 280px">
+                                    <img src="~/HinhAnh/HinhAnhSP/@item.Anh" alt="Image placeholder" class="img-fluid">
+                                </figure>
+                                <div class="block-4-text p-4">
+                                    <h3 ><a href="#" style="color: black;">@item.TenSP</a></h3>
+                                    <p class="mb-0" style="color: black; font-weight: 600">@item.NHANHIEU.TenNhanHieu</p>
+                                    <p class="text-primary font-weight-bold">@string.Format("{0:0,0}", item.DonGia) VNĐ</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

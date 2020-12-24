@@ -1,0 +1,89 @@
+﻿@using PagedList.Mvc
+@model PagedList.IPagedList<ShopGiay.Models.KHACHHANG>
+
+@{
+    ViewBag.Title = "DanhSachKH";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayouts.cshtml";
+}
+@section sidebarMenu
+{
+
+
+    @Html.Action("SidebarMenu", "AdminHome")
+
+}
+
+@section headerStarts
+{
+    @Html.Action("HeaderStarts", "AdminHome")
+}
+
+
+@using (Html.BeginForm("DanhSachKH", "QLKhachHang", FormMethod.Post))
+{
+    <h3>Danh sách khách hàng</h3>
+    <div class="col-lg-8">
+        <div class="input-group custom-search-form">
+            <input style="background-color:white" id="search" name="search" type="text" value="" class="form-control" placeholder="Tìm kiếm theo tên" />
+            <span class="input-group-btn">
+                <button class="btn btn-success" type="submit">
+                    <i class="fa fa-search"></i>
+                </button>
+            </span>
+        </div>
+    </div>
+}
+<br />
+<hr />
+<table width="100%" class="table table-striped table-bordered table-hover" id="Table-KhachHang">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.First().MaKH)</th>
+            <th>@Html.DisplayNameFor(model => model.First().TenKH)</th>
+            <th>@Html.DisplayNameFor(model => model.First().DiaChi)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Email)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Sdt)</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItems => item.MaKH)</td>
+                <td>@Html.DisplayFor(modelItems => item.TenKH)</td>
+                <td>@Html.DisplayFor(modelItems => item.DiaChi)</td>
+                <td>@Html.DisplayFor(modelItems => item.Email)</td>
+                <td>@Html.DisplayFor(modelItems => item.Sdt)</td>
+                <td>
+                    <button class="btn btn-info">@Html.ActionLink("Chi tiết", "DetailKhachHang", "QLKhachHang", new { @makh = item.MaKH }, new { @style = "color: white", })</button>
+                    <button class="btn btn-danger"> @Html.ActionLink("Xóa", "DeleteKhachHang", "QLKhachHang", new { @makh = item.MaKH }, new { @style = "color: white", })</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<br />
+<div class="row">
+    <div class="col-md-6 col-lg-6 col-xs-6 col-sm-6">
+        @using (Html.BeginForm("DanhSachKH", "QLKhachHang", FormMethod.Get))
+        {
+            <p>
+                Kích thước trang: @Html.DropDownList("size", (List<SelectListItem>)ViewBag.Size, new { @onchange = "this.form.submit();" })
+            </p>
+        }
+    </div>
+    <div class="col-md-6 col-lg-6 col-xs-6 col-sm-6 text-right">
+        Trang: @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
+    </div>
+</div>
+
+@Html.PagedListPager(Model, page => Url.Action("DanhSachKH", new { page, size = ViewBag.CurrentSize }))
+<script>
+    $(document).ready(function () {
+        $('#Table-KhachHang').DataTable({
+            responsive: true
+        });
+    });
+</script>
+

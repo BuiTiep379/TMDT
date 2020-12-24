@@ -1,0 +1,85 @@
+﻿
+@model PagedList.IPagedList<ShopGiay.Models.LOAISP>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "DanhSachLoaiSP";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayouts.cshtml";
+}
+
+@section sidebarMenu
+{
+    @Html.Action("SidebarMenu", "AdminHome")
+
+}
+
+@section headerStarts
+{
+    @Html.Action("HeaderStarts", "AdminHome")
+
+}
+
+@using (Html.BeginForm("DanhSachLoaiSP", "QLLoaiSP", FormMethod.Get))
+{
+    <h3>Danh sách loại sản phẩm</h3>
+    <div class="col-lg-8">
+        <div class="input-group custom-search-form">
+            @Html.TextBox("Search", null, new { @class = "form-control", @placeholder = "Search Products" })
+            <span class="input-group-btn">
+                <button class="btn btn-success" type="submit">
+                    <i class="fa fa-search"></i>
+                </button>
+            </span>
+            <div class="col-lg-4">
+                @Html.ActionLink("Thêm mới loại sản phẩm", "AddLoaiSP", "QLLoaiSP", new { @class = "btn btn-primary" })
+            </div>
+        </div>
+    </div>
+}
+<br />
+<hr />
+<table width="100%" class="table table-striped table-bordered table-hover" id="Table-LoaiSP">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.First().MaLoai)</th>
+            <th>@Html.DisplayNameFor(model => model.First().TenLoai)</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.MaLoai)</td>
+                <td>@Html.DisplayFor(modelItem => item.TenLoai)</td>
+                <td>
+                    <button class="btn btn-success">@Html.ActionLink("Chỉnh sửa", "EditLoaiSP", "QLLoaiSP", new { @maLoai = item.MaLoai }, new { @style = "color: white", })</button>
+                    <button class="btn btn-danger">  @Html.ActionLink("Xóa", "DeleteLoaiSP", "QLLoaiSP", new { @maLoai = item.MaLoai }, new { @style = "color: white", })</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@*Tạo link liên kết các trang*@
+<br />
+<div class="row">
+    <div class="col-md-6 col-lg-6 col-xs-6 col-sm-6">
+        @using (Html.BeginForm("DanhSachLoaiSP", "QLLoaiSP", FormMethod.Get))
+        {
+            <p>
+                Kích thước trang: @Html.DropDownList("size", (List<SelectListItem>)ViewBag.Size, new { @onchange = "this.form.submit();" })
+            </p>
+        }
+    </div>
+    <div class="col-md-6 col-lg-6 col-xs-6 col-sm-6 text-right">
+        Trang: @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
+    </div>
+</div>
+
+@Html.PagedListPager(Model, page => Url.Action("DanhSachLoaiSP", "QLLoaiSP", new { page, size = ViewBag.CurrentSize }))
+<script>
+    $(document).ready(function () {
+        $('#Table-LoaiSP').DataTable({
+            responsive: true
+        });
+    });
+</script>

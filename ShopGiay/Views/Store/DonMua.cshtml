@@ -1,0 +1,70 @@
+﻿@model List<ShopGiay.Models.DONHANG>
+@{
+    ViewBag.Title = "DonMua";
+    Layout = "~/Views/Shared/_ClientLayouts.cshtml";
+}
+
+@section SiteNavBar {
+    @{ Html.RenderAction("SiteNavBar", "Store");}
+}
+<div class="site-section">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-md-9 order-2">
+                <div class="col-md-12">
+                    <div class="row mb-5">
+                        <div class="col-md-12">
+                            <h2 class="h3 mb-3 text-black">Your Order</h2>
+                            <div class="p-3 p-lg-5 border">
+                                @foreach (var item in Model)
+                                {
+                                    <table class="table site-block-order-table mb-5">
+                                        <thead>
+                                            <tr>
+                                                <th>Mã đơn hàng</th>
+                                                <th>Ngày mua</th>
+                                                <th>Tình trạng</th>
+                                                <th>Tổng tiền</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>@item.MaDH</td>
+                                                <td>@item.NgayDatHang</td>
+                                                <td><strong>@item.TinhTrang</strong></td>
+                                                <td>
+                                                    <strong class="mx-2">
+                                                        @string.Format("{0:0,0}", @item.TongTien) VNĐ
+                                                    </strong>
+                                                </td>
+                                                <td>@Html.ActionLink("Chi tiết", "DetailDonHang", new { @maDH = item.MaDH }, new { @style = "btn btn-primart"})</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 order-1 mb-5 mb-md-0">
+                <div class="border p-4 rounded mb-4">
+                    <h3 class="mb-3 h6 text-uppercase text-black d-block">@ViewBag.TenKH</h3>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-1">@Html.ActionLink("Chỉnh sửa thông tin", "UpdateInfoCaNhan", new { @maKH = Session["UserID"] })</li>
+                        <li class="mb-1">@Html.ActionLink("Đổi mật khẩu", "ChangePassword")</li>
+                        <li class="mb-1">@Html.ActionLink("Đơn mua", "DonMua", new { @maKH = Session["UserID"] })</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>`
+
+@section SiteFooter{
+    @Html.Action("SiteFooter", "Store")
+}
+
+

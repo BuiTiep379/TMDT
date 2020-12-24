@@ -1,0 +1,114 @@
+﻿@model List<ShopGiay.Models.GIOHANG>
+@{
+    ViewBag.Title = "ThanhToan";
+    Layout = "~/Views/Shared/_ClientLayouts.cshtml";
+}
+
+@section SiteNavBar {
+    @{ Html.RenderAction("SiteNavBar", "Store");}
+}
+@section SiteBlocksCover {
+   
+}
+@section SiteSection{
+    
+}
+
+<div class="site-section" style="padding-top: 50px; padding-bottom: 50px ">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 mb-5 mb-md-0">
+                <h3 class="h3 mb-3 text-black">Billing Details</h3>
+
+                <div class="p-3 p-lg-5" style="border: 0.5px solid black">
+                    <table class="table site-block-order-table mb-5" style="margin-bottom: 10px; padding-bottom: 50px">
+                        <thead>
+                            <tr>
+                                <th>ĐỊA CHỈ NHẬN HÀNG</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><label>@ViewBag.TenKH </label><strong> <label>@ViewBag.DiaChi</label></strong> <br /> <label style="font-size: 15px" id="diachi">@ViewBag.Sdt</label> </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div>
+                        <button class="btn btn-secondary">@Html.ActionLink("Thay đổi địa chỉ", "ThayDoiDiaChi", new { @maKH = Session["UserID"] })</button>
+                        <button class="btn btn-secondary">
+                            @Html.ActionLink("Apply Promo code", "ApplyPromoCode", new {@maKH = Session["UserID"] })</button>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-12" style="padding-top: 50px">
+                <div class="row mb-5">
+                    <div class="col-md-12">
+                        <h3 class="h3 mb-3 text-black">Your Order</h3>
+                        <div class="p-3 p-lg-5" style=" border: 0.5px solid black">
+                            <table class="table site-block-order-table mb-5" >
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Color</th>
+                                        <th>Size</th>
+                                        <th>Quantity</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.TenSP</td>
+                                            <td>
+                                                <strong class="mx-2">
+                                                    @item.TenMau
+                                                </strong>
+                                            </td>
+                                            <td> @item.TenSize</td>
+                                            <td> @item.SoLuong</td>
+                                            <td>@string.Format("{0:0,0}", @item.ThanhTien) VNĐ</td>
+                                        </tr>
+                                    }
+                                    <tr>
+                                        <td class="text-black " colspan="4"></td>
+                                        <td class="text-black " style="float: left">@string.Format("{0:0,0}", ViewBag.TongTien) VNĐ</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-black " colspan="4"></td>
+                                        <td class="text-black" style="float: left">@string.Format("{0:0,0}", ViewBag.TongGiam) VNĐ</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-black" colspan="4">Order Total</td>
+                                        <td class="text-black "> @string.Format("{0:0,0}", TempData["TongTien"]) VNĐ</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                <div>
+                    <button class="btn btn-success" type="submit">Xác nhận thanh toán</button>
+                    <button class="btn btn-danger" style="float: left">@Html.ActionLink("Hủy thanh toán", "HuyThanhToan",new { @maKH = Session["UserID"]})</button>
+                </div>
+            }
+            <!-- </form> -->
+        </div>
+     </div>
+   </div>
+
+
+@section SiteFooter{
+    @Html.Action("SiteFooter", "Store")
+}
+
+
+

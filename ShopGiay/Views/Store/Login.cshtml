@@ -1,0 +1,72 @@
+﻿@model ShopGiay.Models.KHACHHANG
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_ClientLayouts.cshtml";
+}
+
+@section SiteNavBar {
+    @{ Html.RenderAction("SiteNavBar", "Store");}
+}
+@section SiteBlocksCover {
+
+}
+@section SiteSection {
+
+}
+<div class="site-section" style="margin-bottom: 300px">
+    <div class="container">
+        <div class="col-8" style="margin-left: 180px">
+            <div class="wrap">
+                <h3 style="text-align: center; margin-bottom: 10px; font-weight: 600; color: forestgreen">LOGIN</h3>
+                <div class="comments-area">
+                    <form action="/Store/Login" method="post">
+                        @Html.AntiForgeryToken()
+                        @if (TempData["ThongBao"] != null)
+                        {
+                            <div class="alert alert-success alert-dismissible" role="alert">
+                                <strong>@TempData["ThongBao"]</strong>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        }
+
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Username</label>
+                            <input type="email" class="form-control login_text_field_bg input-style" name="txtemail" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="" required="" autofocus="">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Password</label>
+                            <input type="password" class="form-control login_text_field_bg input-style" name="txtmatkhau" value="" id="exampleInputPassword1" placeholder="" required="">
+                        </div>
+                        <div class="form-group" style="padding-top: 20px; float: right">
+                            <input type="submit" class="btn btn-default" value="ĐĂNG NHẬP">
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+
+
+@section SiteBlocks2{
+
+}
+
+@section SiteBlocks8{
+
+}
+
+@section SiteBlocks3{
+
+}
+
+
+@section SiteFooter{
+    @Html.Action("SiteFooter", "Store")
+}
+
+

@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <title>Shoppers &mdash; Colorlib e-Commerce Template</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+   
+    <link rel="stylesheet" href="~/Content/Client/css/font-awesome.min.css">
+    <link rel="stylesheet" href="~/Content/Client/css/font-awesome.css"/>
+    <link rel="stylesheet" href="~/Content/Client/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/Content/Client/css/magnific-popup.css">
+    <link rel="stylesheet" href="~/Content/Client/css/jquery-ui.css">
+    <link rel="stylesheet" href="~/Content/Client/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="~/Content/Client/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="~/Content/Client/css/aos.css">
+    <link rel="stylesheet" href="~/Content/Client/css/style.css">
+
+</head>
+<body>
+
+    <div class="site-wrap">
+        @RenderSection("SiteNavBar", false)
+        @RenderBody()
+        @RenderSection("SiteBlocks3", false)
+        @RenderSection("SiteFooter", false)
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function () { 
+
+            var defaults = {
+                containerID: 'toTop', // fading element id
+                containerHoverID: 'toTopHover', // fading element hover id
+                scrollSpeed: 1200,
+                easingType: 'linear'
+            };
+
+
+            $().UItoTop({ easingType: 'easeOutQuart' });
+
+        });
+    </script>
+    <a href="#" id="toTop" style="display: block;"><span id="toTopHover" style="opacity: 1;"></span></a>
+    <script src="~/Content/Client/js/jquery-3.3.1.min.js"></script>
+    <script src="~/Content/Client/js/jquery-ui.js"></script>
+    <script src="~/Content/Client/js/popper.min.js"></script>
+    <script src="~/Content/Client/js/bootstrap.min.js"></script>
+    <script src="~/Content/Client/js/owl.carousel.min.js"></script>
+    <script src="~/Content/Client/js/jquery.magnific-popup.min.js"></script>
+    <script src="~/Content/Client/js/aos.js"></script>
+    <script src="~/Content/Client/js/main.js"></script>
+</body>
+</html>

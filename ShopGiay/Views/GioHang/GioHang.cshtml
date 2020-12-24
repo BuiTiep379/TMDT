@@ -1,0 +1,173 @@
+﻿@using ShopGiay.Models;
+@model List<GIOHANG>
+@{
+    ViewBag.Title = "GioHang";
+    Layout = "~/Views/Shared/_ClientLayouts.cshtml";
+}
+@section SiteNavBar {
+    @{ Html.RenderAction("SiteNavBar", "Store");}
+}
+@section SiteBlocksCover {
+
+}
+@section SiteSection {
+
+}
+
+@{
+    if (TempData["KhongCo"] != null)
+    {
+        <div class="container">
+            <div class="col-6" style="margin-left: 280px">
+                <div class="alert alert-info alert-dismissible" role="alert" style="height: 60px">
+                    <strong style="margin-left: 180px">@TempData["KhongCo"]</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="margin-top: 4px">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="card-block" style="margin-left:180px; margin-bottom: 50px">
+                    <a href="/Store/Shop" class="btn btn-sm btn-primary">Shopping Now</a>
+                </div>
+            </div>
+        </div>
+
+    }
+    else
+    {
+        <div style="width: auto; margin: 5px 100px 50px 100px">
+            <h3 style="text-align: center; margin-bottom: 30px; font-weight: 600; color: forestgreen">MY CART</h3>
+            @if (TempData["LoiSL"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible" role="alert" style="height: 60px">
+                    <strong>@TempData["LoiSL"]</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="margin-top: 4px">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            <div class="row mb-5">
+                <div class="site-blocks-table">
+                    <div class="col-md-12">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="product-thumbnail text-center" style="font-weight: bold;">Ảnh</th>
+                                    <th class="product-name text-center" style="font-weight: bold; width: 500px">Tên sản phẩm</th>
+                                    <th class="product-name text-center" style="font-weight: bold;">Màu sắc</th>
+                                    <th class="product-name text-center" style="font-weight: bold;">Size</th>
+                                    <th class="product-price text-center" style="font-weight: bold;">Giá</th>
+                                    <th class="product-quantity text-center" style="font-weight: bold; width: 180px">Số lượng</th>
+                                    <th class="product-total text-center" style="font-weight: bold; width: 200px">Tổng cộng</th>
+                                    <th class="product-remove text-center" style="font-weight: bold;  width: 180px"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td class="product-thumbnail" style="width: 200px">
+                                            <a href="@Url.Action("XemChiTiet", "SanPham", new { @maSP = item.MaSP})"> <img src="@Url.Content("~/HinhAnh/HinhAnhSP/"+ item.HinhAnh)" style="width: 150px; height: 100px;" class="img-fluid"></a>
+                                        </td>
+                                        @using (Html.BeginForm("CapNhatGioHang", "GioHang", new { @maSP = item.MaSP, @maMau = item.MaMau, @maSize = item.MaSize }))
+                                        {
+                                            <td class="product-name" style="width: 400px; height: 100px;">
+                                                <h2 class="h5">@item.TenSP</h2>
+                                            </td>
+                                            <td class="product-name">
+                                                <h2 class="h5 text-center">@item.TenMau</h2>
+                                            </td>
+                                            <td class="product-name">
+                                                <h2 class="h5 text-center">@item.TenSize</h2>
+                                            </td>
+                                            <td class="product-name"><h2 class="h5  text-center">@string.Format("{0:0,0}", @item.DonGia) VNĐ</h2></td>
+                                            <td>
+                                                <div class="input-group mb-3" style="max-width: 140px;">
+                                                    <div class="input-group-prepend">
+                                                        <button class="btn btn-outline-primary js-btn-minus" type="button">&minus;</button>
+                                                    </div>
+                                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                                    @Html.TextBox("txtSoLuong", item.SoLuong, new { @class = "form-control text-center", @style = "font-weight: bold; font-size: 18px" })
+                                                    @Html.ValidationMessage("LoiSL", new { @class = "text-danger" })
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-outline-primary js-btn-plus" type="button">&plus;</button>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="product-name"><h2 class="h5 text-center">@string.Format("{0:0,0}", @item.ThanhTien) VNĐ</h2></td>
+                                            <td>
+                                                <input type="submit" value="Cập nhật" class="btn btn-success" style="margin: 30px 0px 10px;" />
+                                                <br />
+                                                @Html.ActionLink("X", "XoaGioHang", new { @maSP = item.MaSP, @maMau = item.MaMau, @maSize = item.MaSize }, new { @class = "btn btn-danger", @style = "margin-bottom: 20px ; width: 40px; height: 40px" })
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="row mb-5">
+                        <div class="col-md-5 mb-3 mb-md-0">
+                            <button id="btnUpdate" class="btn btn-success btn-sm btn-block">UPDATE CART</button>
+                        </div>
+                        <div class="col-md-5">
+                            <button id="btnContinue" class="btn btn-outline-success btn-sm btn-block">CONTINUE SHOPPING</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 pl-5">
+                    <div class="row justify-content-end">
+                        <div class="col-md-7">
+                            <div class="row">
+                                <div class="col-md-12 text-right border-bottom mb-5">
+                                    <h3 class="text-black h4 text-uppercase">CART TOTALS</h3>
+                                </div>
+                            </div>
+                            <div class="row mb-5">
+                                <div class="col-md-6">
+                                    <span class="text-black">TOTAL: </span>
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    <strong style="font-size: 20px; font-weight: bold">@string.Format("{0:0,0}", TempData["TongTien"]) VNĐ</strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <button class="btn btn-success btn-lg py-3 btn-block" id="btnPayment">@Html.ActionLink("PROCCED TO CHECKOUT", "ThanhToan", new
+                                    {
+                                        @maKH = ViewBag.MaKH@*, @email = ViewBag.Email, @diaChiGiao = ViewBag.DiaChi, @sdt = ViewBag.Sdt*@})</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+@section SiteBlocks2{
+
+}
+
+@section SiteBlocks8{
+
+}
+
+@section SiteBlocks3{
+
+}
+
+@section jsFooter{
+
+    <script src="/Content/Client/js/Cart.js"></script>
+}
+@section SiteFooter{
+    @Html.Action("SiteFooter", "Store")
+}

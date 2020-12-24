@@ -1,0 +1,27 @@
+﻿@model ShopGiay.Models.KHACHHANG 
+@{
+    ViewBag.Title = "ThayDoiDiaChi";
+    Layout = "~/Views/Shared/_ClientLayouts.cshtml";
+}
+
+<div class="site-section">
+    <div class="container-fluid">
+        <div class="col-12">
+            @using (Html.BeginForm())
+            {
+                <div class="form-control">
+                    <div class="form-group">
+                        @Html.TextBoxFor(x => x.DiaChi)
+                        @Html.ValidationMessageFor(m => m.DiaChi, "", new { @class = "badge badge-danger" })
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success">Thay đổi</button>
+                        @Html.ActionLink("Trở về", "ThanhToan", new { @maKH = Session["UserID"] })
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
