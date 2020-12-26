@@ -46,8 +46,7 @@
             <div class="col-md-12" style="padding-top: 50px">
                 <div class="row mb-5">
                     <div class="col-md-12">
-                        <h3 class="h3 mb-3 text-black">Your Order</h3>
-                        <div class="p-3 p-lg-5" style=" border: 0.5px solid black">
+                        <div class="p-3 p-lg-5 border">
                             <table class="table site-block-order-table mb-5" >
                                 <thead>
                                     <tr>
@@ -95,10 +94,15 @@
             @using (Html.BeginForm())
             {
                 @Html.AntiForgeryToken()
-                <div>
-                    <button class="btn btn-success" type="submit">Xác nhận thanh toán</button>
-                    <button class="btn btn-danger" style="float: left">@Html.ActionLink("Hủy thanh toán", "HuyThanhToan",new { @maKH = Session["UserID"]})</button>
-                </div>
+        <div>
+            <button class="btn btn-success" type="submit">Xác nhận thanh toán</button>
+            @{ if (Session["Paypal"] == null)
+                {
+                    @Html.ActionLink("Pay with Paypal Account", "PaymentWithPaypal", "GioHang", new { @class = "btn btn-primary" })
+                }
+            }
+            <button class="btn btn-danger">@Html.ActionLink("Hủy thanh toán", "HuyThanhToan", new { @maKH = Session["UserID"] })</button>
+        </div>
             }
             <!-- </form> -->
         </div>

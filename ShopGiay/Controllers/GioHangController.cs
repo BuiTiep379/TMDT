@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using ShopGiay.Models;
 using System.Data.Entity;
+using PayPal.Api;
 
 
 namespace ShopGiay.Controllers
@@ -337,9 +338,24 @@ namespace ShopGiay.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult XacNhanThanhToan(int maKH)
         {
-            string code = Session["Code"].ToString();
-            PROMOCODE check = db.PROMOCODEs.SingleOrDefault(x => x.Code == code);
-            int promoID = check.Id;
+            string code = null;
+            int promoID = 0;
+            if (Session["Code"] != null)
+            {
+                code  = Session["Code"].ToString();
+                PROMOCODE check = db.PROMOCODEs.SingleOrDefault(x => x.Code == code);
+                if (check != null)
+                {
+                    promoID = check.Id;
+                }
+            }
+           
+            string thanhToan = "Chưa thanh toán";
+            if (Session["Paypal"] != null)
+            {
+                thanhToan = "Đã thanh toán";
+            }    
+                
             KHACHHANG kh = db.KHACHHANGs.SingleOrDefault(x => x.MaKH == maKH);
             DONHANG dh = new DONHANG()
             {
@@ -349,7 +365,7 @@ namespace ShopGiay.Controllers
                 NgayGiaoHang = null,
                 DiaChiGiao = kh.DiaChi,
                 TongTien = TongTien(),
-                ThanhToan = "Cash",
+                ThanhToan = thanhToan,
                 TinhTrang = "Chưa xác nhận",
                 HoTen = kh.TenKH,
                 Email = kh.Email,
@@ -500,6 +516,238 @@ namespace ShopGiay.Controllers
             Session.Remove("Code");
             return RedirectToAction("GioHang");
         }
+
+       
+        public decimal DoiTien(decimal st)
+        {
+
+            decimal USD;
+            USD = 22602;
+            return (st) / USD;
+        }
+       
+
+        public ActionResult PaymentWithPaypal()
+        {
+            //getting the apiContext as earlier
+            APIContext apiContext = Configuration.GetAPIContext();
+
+            try
+            {
+                string payerId = Request.Params["PayerID"];
+
+                if (string.IsNullOrEmpty(payerId))
+                {
+                    //this section will be executed first because PayerID doesn't exist
+
+                    //it is returned by the create function call of the payment class
+
+                    // Creating a payment
+
+                    // baseURL is the url on which paypal sendsback the data.
+
+                    // So we have provided URL of this controller only
+
+                    string baseURI = Request.Url.Scheme + "://" + Request.Url.Authority + "/GioHang/PaymentWithPayPal?";
+
+                    //guid we are generating for storing the paymentID received in session
+
+                    //after calling the create function and it is used in the payment execution
+
+                    var guid = Convert.ToString((new Random()).Next(100000));
+
+                    //CreatePayment function gives us the payment approval url
+
+                    //on which payer is redirected for paypal acccount payment
+
+                    var createdPayment = this.CreatePayment(apiContext, baseURI + "guid=" + guid);
+
+                    //get links returned from paypal in response to Create function call
+
+                    var links = createdPayment.links.GetEnumerator();
+
+                    string paypalRedirectUrl = null;
+
+                    while (links.MoveNext())
+                    {
+                        Links lnk = links.Current;
+
+                        if (lnk.rel.ToLower().Trim().Equals("approval_url"))
+                        {
+                            //saving the payapalredirect URL to which user will be redirected for payment
+                            paypalRedirectUrl = lnk.href;
+                        }
+                    }
+
+                    // saving the paymentID in the key guid
+                    Session.Add(guid, createdPayment.id);
+
+                    return Redirect(paypalRedirectUrl);
+                }
+                else
+                {
+                    // This section is executed when we have received all the payments parameters
+
+                    // from the previous call to the function Create
+
+                    // Executing a payment
+
+                    var guid = Request.Params["guid"];
+
+                    var executedPayment = ExecutePayment(apiContext, payerId, Session[guid] as string);
+
+                    if (executedPayment.state.ToLower() != "approved")
+                    {
+                        return View("Failure");
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("Error" + ex.Message);
+                return View("Failure");
+            }
+            int maKH = int.Parse(Session["UserID"].ToString());
+            //string code = Session["Code"].ToString();
+            //PROMOCODE check = db.PROMOCODEs.SingleOrDefault(x => x.Code == code);
+            //int promoID = check.Id;
+            KHACHHANG kh = db.KHACHHANGs.SingleOrDefault(x => x.MaKH == maKH);
+            DONHANG dh = new DONHANG()
+            {
+                MaKH = int.Parse(Session["UserID"].ToString()),
+                PromoID = null,
+                NgayDatHang = DateTime.Now,
+                NgayGiaoHang = null,
+                DiaChiGiao = kh.DiaChi,
+                TongTien = TongTien(),
+                ThanhToan = "Đã thanh toán",
+                TinhTrang = "Chưa xác nhận",
+                HoTen = kh.TenKH,
+                Email = kh.Email,
+                Sdt = kh.Sdt
+            };
+
+            db.DONHANGs.Add(dh);
+            db.SaveChanges();
+            List<GIOHANG> listGioHang = LayGioHang();
+            foreach (var item in listGioHang)
+            {
+                int maSP = item.MaSP;
+                int maSize = item.MaSize;
+                int maMau = item.MaMau;
+                int soLuong = item.SoLuong;
+                CHITIETSP ctsp = db.CHITIETSPs.SingleOrDefault(x => x.MaSP == maSP && x.MaMau == maMau && x.MaSize == maSize);
+                ctsp.SoLuong -= soLuong;
+                db.Entry(ctsp).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+            foreach (var item in listGioHang)
+            {
+                int maSP = item.MaSP;
+                int maSize = item.MaSize;
+                int maMau = item.MaMau;
+                int soLuong = item.SoLuong;
+                decimal donGia = item.ThanhTien;
+                CHITIETDONHANG ctdh = new CHITIETDONHANG()
+                {
+                    MaDH = dh.MaDH,
+                    MaSP = maSP,
+                    MaMau = maMau,
+                    MaSize = maSize,
+                    SoLuong = soLuong,
+                    DonGia = donGia
+                };
+                db.CHITIETDONHANGs.Add(ctdh);
+                db.SaveChanges();
+            }
+            Session.Remove("GIOHANG");
+            return RedirectToAction("ThanksYou");
+        }
+
+        private Payment payment;
+
+        private Payment ExecutePayment(APIContext apiContext, string payerId, string paymentId)
+        {
+            var paymentExecution = new PaymentExecution() { payer_id = payerId };
+            this.payment = new Payment() { id = paymentId };
+            return this.payment.Execute(apiContext, paymentExecution);
+        }
+
+        private Payment CreatePayment(APIContext apiContext, string redirectUrl)
+        {
+            List<GIOHANG> listGioHang = LayGioHang();
+            decimal tongTien = listGioHang.Sum(n => n.ThanhTien);
+            decimal tongTienDoi = DoiTien(tongTien);
+            decimal tongGiam = 0;
+            if (Session["TongGiam"] != null)
+            {
+                tongGiam = decimal.Parse(Session["TongGiam"].ToString());
+            }
+            decimal tongGiamDoi = DoiTien(tongGiam);
+            decimal tongTienCon = tongTienDoi - tongGiamDoi;
+            //create itemlist and add item objects to it
+            var itemList = new ItemList() { items = new List<Item>() };
+            //Adding Item Details like name, currency, price etc
+            foreach (var sp in listGioHang)
+            {
+                decimal donGia = DoiTien(sp.DonGia);
+                itemList.items.Add(new Item()
+                {
+                    name = sp.TenSP,
+                    description = "Size: " + sp.TenSize + "  Màu sắc: " + sp.TenMau,
+                    currency = "USD",
+                    price = donGia.ToString("F"),
+                    quantity = sp.SoLuong.ToString(),
+                });
+            }
+
+            var payer = new Payer() { payment_method = "paypal" };
+
+            // Configure Redirect Urls here with RedirectUrls object
+            var redirUrls = new RedirectUrls()
+            {
+                cancel_url = redirectUrl + "&Cancel=true",
+                return_url = redirectUrl
+            };
+
+            // Adding Tax, shipping and Subtotal details
+            var details = new Details()
+            {
+                subtotal = tongTienCon.ToString("F"),
+            };
+
+            //Final amount with details
+            var amount = new Amount()
+            {
+                currency = "USD",
+                total = details.subtotal, // Total must be equal to sum of tax, shipping and subtotal.
+                details = details
+            };
+
+            var transactionList = new List<Transaction>();
+            // Adding description about the transaction
+            transactionList.Add(new Transaction()
+            {
+                description = "Transaction description",
+                invoice_number = Convert.ToString((new Random()).Next(100000)),
+                amount = amount,
+                item_list = itemList
+            });
+
+
+            this.payment = new Payment()
+            {
+                intent = "sale",
+                payer = payer,
+                transactions = transactionList,
+                redirect_urls = redirUrls
+            };
+
+            // Create a payment using a APIContext
+            return this.payment.Create(apiContext);
+
+        }
     }
-    
 }
+
