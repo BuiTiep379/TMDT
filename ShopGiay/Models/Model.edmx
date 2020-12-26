@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="ShopGiayModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="ShopGiayModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="CHITIETDONHANG">
           <Key>
             <PropertyRef Name="MaDH" />
@@ -36,10 +36,11 @@
           <Property Name="MaDH" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MaKH" Type="int" />
           <Property Name="PromoID" Type="int" />
+          <Property Name="MaNV" Type="int" />
           <Property Name="NgayDatHang" Type="datetime" />
           <Property Name="NgayGiaoHang" Type="datetime" />
           <Property Name="DiaChiGiao" Type="nvarchar" MaxLength="50" />
-          <Property Name="TongTien" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="TongTien" Type="decimal" Precision="18" Scale="0" />
           <Property Name="ThanhToan" Type="nvarchar" MaxLength="50" />
           <Property Name="TinhTrang" Type="nvarchar" MaxLength="50" />
           <Property Name="HoTen" Type="nvarchar" MaxLength="50" />
@@ -221,6 +222,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_DH_NHANVIEN">
+          <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="0..1" />
+          <End Role="DONHANG" Type="Self.DONHANG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NHANVIEN">
+              <PropertyRef Name="MaNV" />
+            </Principal>
+            <Dependent Role="DONHANG">
+              <PropertyRef Name="MaNV" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_DH_Promo">
           <End Role="PROMOCODE" Type="Self.PROMOCODE" Multiplicity="0..1" />
           <End Role="DONHANG" Type="Self.DONHANG" Multiplicity="*" />
@@ -301,6 +314,10 @@
             <End Role="KHACHHANG" EntitySet="KHACHHANG" />
             <End Role="DONHANG" EntitySet="DONHANG" />
           </AssociationSet>
+          <AssociationSet Name="FK_DH_NHANVIEN" Association="Self.FK_DH_NHANVIEN">
+            <End Role="NHANVIEN" EntitySet="NHANVIEN" />
+            <End Role="DONHANG" EntitySet="DONHANG" />
+          </AssociationSet>
           <AssociationSet Name="FK_DH_Promo" Association="Self.FK_DH_Promo">
             <End Role="PROMOCODE" EntitySet="PROMOCODE" />
             <End Role="DONHANG" EntitySet="DONHANG" />
@@ -314,7 +331,8 @@
             <End Role="SANPHAM" EntitySet="SANPHAM" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ShopGiayModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -331,10 +349,10 @@
           <Property Name="DonGia" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
           <Property Name="MaSize" Type="Int32" Nullable="false" />
           <Property Name="MaMau" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="DONHANG" Relationship="Self.FK_CTDH_DH" FromRole="CHITIETDONHANG" ToRole="DONHANG" />
           <NavigationProperty Name="MAUSAC" Relationship="Self.FK_CTDH_MAU" FromRole="CHITIETDONHANG" ToRole="MAUSAC" />
           <NavigationProperty Name="SIZE" Relationship="Self.FK_CTDH_SIZE" FromRole="CHITIETDONHANG" ToRole="SIZE" />
           <NavigationProperty Name="SANPHAM" Relationship="Self.FK_CTDH_SP" FromRole="CHITIETDONHANG" ToRole="SANPHAM" />
-          <NavigationProperty Name="DONHANG" Relationship="ShopGiayModel.FK_CTDH_DH" FromRole="CHITIETDONHANG" ToRole="DONHANG" />
         </EntityType>
         <EntityType Name="CHITIETSP">
           <Key>
@@ -349,6 +367,28 @@
           <NavigationProperty Name="SIZE" Relationship="Self.FK_CTSP_SIZE" FromRole="CHITIETSP" ToRole="SIZE" />
           <NavigationProperty Name="SANPHAM" Relationship="Self.FK_CTSP_SP" FromRole="CHITIETSP" ToRole="SANPHAM" />
         </EntityType>
+        <EntityType Name="DONHANG">
+          <Key>
+            <PropertyRef Name="MaDH" />
+          </Key>
+          <Property Name="MaDH" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MaKH" Type="Int32" />
+          <Property Name="PromoID" Type="Int32" />
+          <Property Name="MaNV" Type="Int32" />
+          <Property Name="NgayDatHang" Type="DateTime" Precision="3" />
+          <Property Name="NgayGiaoHang" Type="DateTime" Precision="3" />
+          <Property Name="DiaChiGiao" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TongTien" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="ThanhToan" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TinhTrang" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="HoTen" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Sdt" Type="String" MaxLength="11" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="CHITIETDONHANGs" Relationship="Self.FK_CTDH_DH" FromRole="DONHANG" ToRole="CHITIETDONHANG" />
+          <NavigationProperty Name="KHACHHANG" Relationship="Self.FK_DH_KHACHHANG" FromRole="DONHANG" ToRole="KHACHHANG" />
+          <NavigationProperty Name="NHANVIEN" Relationship="Self.FK_DH_NHANVIEN" FromRole="DONHANG" ToRole="NHANVIEN" />
+          <NavigationProperty Name="PROMOCODE" Relationship="Self.FK_DH_Promo" FromRole="DONHANG" ToRole="PROMOCODE" />
+        </EntityType>
         <EntityType Name="KHACHHANG">
           <Key>
             <PropertyRef Name="MaKH" />
@@ -359,7 +399,7 @@
           <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Sdt" Type="String" MaxLength="11" FixedLength="false" Unicode="false" />
           <Property Name="MatKhau" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="DONHANGs" Relationship="ShopGiayModel.FK_DH_KHACHHANG" FromRole="KHACHHANG" ToRole="DONHANG" />
+          <NavigationProperty Name="DONHANGs" Relationship="Self.FK_DH_KHACHHANG" FromRole="KHACHHANG" ToRole="DONHANG" />
         </EntityType>
         <EntityType Name="LOAISP">
           <Key>
@@ -400,6 +440,18 @@
           <Property Name="CMND" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
           <Property Name="MatKhau" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="QuyenNV" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <NavigationProperty Name="DONHANGs" Relationship="Self.FK_DH_NHANVIEN" FromRole="NHANVIEN" ToRole="DONHANG" />
+        </EntityType>
+        <EntityType Name="PROMOCODE">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="Value" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Code" Type="String" MaxLength="250" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="Status" Type="Boolean" />
+          <NavigationProperty Name="DONHANGs" Relationship="Self.FK_DH_Promo" FromRole="PROMOCODE" ToRole="DONHANG" />
         </EntityType>
         <EntityType Name="SANPHAM">
           <Key>
@@ -429,6 +481,18 @@
           <NavigationProperty Name="CHITIETDONHANGs" Relationship="Self.FK_CTDH_SIZE" FromRole="SIZE" ToRole="CHITIETDONHANG" />
           <NavigationProperty Name="CHITIETSPs" Relationship="Self.FK_CTSP_SIZE" FromRole="SIZE" ToRole="CHITIETSP" />
         </EntityType>
+        <Association Name="FK_CTDH_DH">
+          <End Role="DONHANG" Type="Self.DONHANG" Multiplicity="1" />
+          <End Role="CHITIETDONHANG" Type="Self.CHITIETDONHANG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DONHANG">
+              <PropertyRef Name="MaDH" />
+            </Principal>
+            <Dependent Role="CHITIETDONHANG">
+              <PropertyRef Name="MaDH" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_CTDH_MAU">
           <End Role="MAUSAC" Type="Self.MAUSAC" Multiplicity="1" />
           <End Role="CHITIETDONHANG" Type="Self.CHITIETDONHANG" Multiplicity="*" />
@@ -501,6 +565,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_DH_KHACHHANG">
+          <End Role="KHACHHANG" Type="Self.KHACHHANG" Multiplicity="0..1" />
+          <End Role="DONHANG" Type="Self.DONHANG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="KHACHHANG">
+              <PropertyRef Name="MaKH" />
+            </Principal>
+            <Dependent Role="DONHANG">
+              <PropertyRef Name="MaKH" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DH_NHANVIEN">
+          <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="0..1" />
+          <End Role="DONHANG" Type="Self.DONHANG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NHANVIEN">
+              <PropertyRef Name="MaNV" />
+            </Principal>
+            <Dependent Role="DONHANG">
+              <PropertyRef Name="MaNV" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DH_Promo">
+          <End Role="PROMOCODE" Type="Self.PROMOCODE" Multiplicity="0..1" />
+          <End Role="DONHANG" Type="Self.DONHANG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PROMOCODE">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DONHANG">
+              <PropertyRef Name="PromoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_SP_LOAI">
           <End Role="LOAISP" Type="Self.LOAISP" Multiplicity="0..1" />
           <End Role="SANPHAM" Type="Self.SANPHAM" Multiplicity="*" />
@@ -528,13 +628,19 @@
         <EntityContainer Name="ShopGiayEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="CHITIETDONHANGs" EntityType="Self.CHITIETDONHANG" />
           <EntitySet Name="CHITIETSPs" EntityType="Self.CHITIETSP" />
+          <EntitySet Name="DONHANGs" EntityType="Self.DONHANG" />
           <EntitySet Name="KHACHHANGs" EntityType="Self.KHACHHANG" />
           <EntitySet Name="LOAISPs" EntityType="Self.LOAISP" />
           <EntitySet Name="MAUSACs" EntityType="Self.MAUSAC" />
           <EntitySet Name="NHANHIEUx" EntityType="Self.NHANHIEU" />
           <EntitySet Name="NHANVIENs" EntityType="Self.NHANVIEN" />
+          <EntitySet Name="PROMOCODEs" EntityType="Self.PROMOCODE" />
           <EntitySet Name="SANPHAMs" EntityType="Self.SANPHAM" />
           <EntitySet Name="SIZEs" EntityType="Self.SIZE" />
+          <AssociationSet Name="FK_CTDH_DH" Association="Self.FK_CTDH_DH">
+            <End Role="DONHANG" EntitySet="DONHANGs" />
+            <End Role="CHITIETDONHANG" EntitySet="CHITIETDONHANGs" />
+          </AssociationSet>
           <AssociationSet Name="FK_CTDH_MAU" Association="Self.FK_CTDH_MAU">
             <End Role="MAUSAC" EntitySet="MAUSACs" />
             <End Role="CHITIETDONHANG" EntitySet="CHITIETDONHANGs" />
@@ -559,6 +665,18 @@
             <End Role="SANPHAM" EntitySet="SANPHAMs" />
             <End Role="CHITIETSP" EntitySet="CHITIETSPs" />
           </AssociationSet>
+          <AssociationSet Name="FK_DH_KHACHHANG" Association="Self.FK_DH_KHACHHANG">
+            <End Role="KHACHHANG" EntitySet="KHACHHANGs" />
+            <End Role="DONHANG" EntitySet="DONHANGs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DH_NHANVIEN" Association="Self.FK_DH_NHANVIEN">
+            <End Role="NHANVIEN" EntitySet="NHANVIENs" />
+            <End Role="DONHANG" EntitySet="DONHANGs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DH_Promo" Association="Self.FK_DH_Promo">
+            <End Role="PROMOCODE" EntitySet="PROMOCODEs" />
+            <End Role="DONHANG" EntitySet="DONHANGs" />
+          </AssociationSet>
           <AssociationSet Name="FK_SP_LOAI" Association="Self.FK_SP_LOAI">
             <End Role="LOAISP" EntitySet="LOAISPs" />
             <End Role="SANPHAM" EntitySet="SANPHAMs" />
@@ -567,89 +685,8 @@
             <End Role="NHANHIEU" EntitySet="NHANHIEUx" />
             <End Role="SANPHAM" EntitySet="SANPHAMs" />
           </AssociationSet>
-          <EntitySet Name="PROMOCODEs" EntityType="ShopGiayModel.PROMOCODE" />
-          <EntitySet Name="DONHANGs" EntityType="ShopGiayModel.DONHANG" />
-          <AssociationSet Name="FK_CTDH_DH" Association="ShopGiayModel.FK_CTDH_DH">
-            <End Role="DONHANG" EntitySet="DONHANGs" />
-            <End Role="CHITIETDONHANG" EntitySet="CHITIETDONHANGs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DH_KHACHHANG" Association="ShopGiayModel.FK_DH_KHACHHANG">
-            <End Role="KHACHHANG" EntitySet="KHACHHANGs" />
-            <End Role="DONHANG" EntitySet="DONHANGs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DH_Promo" Association="ShopGiayModel.FK_DH_Promo">
-            <End Role="PROMOCODE" EntitySet="PROMOCODEs" />
-            <End Role="DONHANG" EntitySet="DONHANGs" />
-          </AssociationSet>
-          </EntityContainer>
-        <EntityType Name="PROMOCODE">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="true" Unicode="true" />
-          <Property Name="Value" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
-          <Property Name="Code" Type="String" Nullable="false" MaxLength="250" FixedLength="true" Unicode="true" />
-          <Property Name="Status" Type="Boolean" />
-          <NavigationProperty Name="DONHANGs" Relationship="ShopGiayModel.FK_DH_Promo" FromRole="PROMOCODE" ToRole="DONHANG" />
-        </EntityType>
-        <EntityType Name="DONHANG">
-          <Key>
-            <PropertyRef Name="MaDH" />
-          </Key>
-          <Property Name="MaDH" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MaKH" Type="Int32" />
-          <Property Name="PromoID" Type="Int32" />
-          <Property Name="NgayDatHang" Type="DateTime" Precision="3" />
-          <Property Name="NgayGiaoHang" Type="DateTime" Precision="3" />
-          <Property Name="DiaChiGiao" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="TongTien" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="ThanhToan" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="TinhTrang" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="HoTen" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Sdt" Type="String" MaxLength="11" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="CHITIETDONHANGs" Relationship="ShopGiayModel.FK_CTDH_DH" FromRole="DONHANG" ToRole="CHITIETDONHANG" />
-          <NavigationProperty Name="KHACHHANG" Relationship="ShopGiayModel.FK_DH_KHACHHANG" FromRole="DONHANG" ToRole="KHACHHANG" />
-          <NavigationProperty Name="PROMOCODE" Relationship="ShopGiayModel.FK_DH_Promo" FromRole="DONHANG" ToRole="PROMOCODE" />
-        </EntityType>
-        <Association Name="FK_CTDH_DH">
-          <End Type="ShopGiayModel.DONHANG" Role="DONHANG" Multiplicity="1" />
-          <End Type="ShopGiayModel.CHITIETDONHANG" Role="CHITIETDONHANG" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="DONHANG">
-              <PropertyRef Name="MaDH" />
-            </Principal>
-            <Dependent Role="CHITIETDONHANG">
-              <PropertyRef Name="MaDH" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DH_KHACHHANG">
-          <End Type="ShopGiayModel.KHACHHANG" Role="KHACHHANG" Multiplicity="0..1" />
-          <End Type="ShopGiayModel.DONHANG" Role="DONHANG" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="KHACHHANG">
-              <PropertyRef Name="MaKH" />
-            </Principal>
-            <Dependent Role="DONHANG">
-              <PropertyRef Name="MaKH" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DH_Promo">
-          <End Type="ShopGiayModel.PROMOCODE" Role="PROMOCODE" Multiplicity="0..1" />
-          <End Type="ShopGiayModel.DONHANG" Role="DONHANG" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PROMOCODE">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="DONHANG">
-              <PropertyRef Name="PromoID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        </Schema>
+        </EntityContainer>
+      </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -675,6 +712,25 @@
                 <ScalarProperty Name="MaSize" ColumnName="MaSize" />
                 <ScalarProperty Name="MaMau" ColumnName="MaMau" />
                 <ScalarProperty Name="SoLuong" ColumnName="SoLuong" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DONHANGs">
+            <EntityTypeMapping TypeName="ShopGiayModel.DONHANG">
+              <MappingFragment StoreEntitySet="DONHANG">
+                <ScalarProperty Name="MaDH" ColumnName="MaDH" />
+                <ScalarProperty Name="MaKH" ColumnName="MaKH" />
+                <ScalarProperty Name="PromoID" ColumnName="PromoID" />
+                <ScalarProperty Name="MaNV" ColumnName="MaNV" />
+                <ScalarProperty Name="NgayDatHang" ColumnName="NgayDatHang" />
+                <ScalarProperty Name="NgayGiaoHang" ColumnName="NgayGiaoHang" />
+                <ScalarProperty Name="DiaChiGiao" ColumnName="DiaChiGiao" />
+                <ScalarProperty Name="TongTien" ColumnName="TongTien" />
+                <ScalarProperty Name="ThanhToan" ColumnName="ThanhToan" />
+                <ScalarProperty Name="TinhTrang" ColumnName="TinhTrang" />
+                <ScalarProperty Name="HoTen" ColumnName="HoTen" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Sdt" ColumnName="Sdt" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -730,6 +786,17 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="PROMOCODEs">
+            <EntityTypeMapping TypeName="ShopGiayModel.PROMOCODE">
+              <MappingFragment StoreEntitySet="PROMOCODE">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="SANPHAMs">
             <EntityTypeMapping TypeName="ShopGiayModel.SANPHAM">
               <MappingFragment StoreEntitySet="SANPHAM">
@@ -751,35 +818,6 @@
               <MappingFragment StoreEntitySet="SIZE">
                 <ScalarProperty Name="MaSize" ColumnName="MaSize" />
                 <ScalarProperty Name="Size" ColumnName="Size" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="PROMOCODEs">
-            <EntityTypeMapping TypeName="ShopGiayModel.PROMOCODE">
-              <MappingFragment StoreEntitySet="PROMOCODE">
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Code" ColumnName="Code" />
-                <ScalarProperty Name="Value" ColumnName="Value" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="DONHANGs">
-            <EntityTypeMapping TypeName="ShopGiayModel.DONHANG">
-              <MappingFragment StoreEntitySet="DONHANG">
-                <ScalarProperty Name="Sdt" ColumnName="Sdt" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="HoTen" ColumnName="HoTen" />
-                <ScalarProperty Name="TinhTrang" ColumnName="TinhTrang" />
-                <ScalarProperty Name="ThanhToan" ColumnName="ThanhToan" />
-                <ScalarProperty Name="TongTien" ColumnName="TongTien" />
-                <ScalarProperty Name="DiaChiGiao" ColumnName="DiaChiGiao" />
-                <ScalarProperty Name="NgayGiaoHang" ColumnName="NgayGiaoHang" />
-                <ScalarProperty Name="NgayDatHang" ColumnName="NgayDatHang" />
-                <ScalarProperty Name="PromoID" ColumnName="PromoID" />
-                <ScalarProperty Name="MaKH" ColumnName="MaKH" />
-                <ScalarProperty Name="MaDH" ColumnName="MaDH" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
