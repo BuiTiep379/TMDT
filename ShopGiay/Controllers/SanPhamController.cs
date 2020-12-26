@@ -47,7 +47,7 @@ namespace ShopGiay.Controllers
 
             page = (page ?? 1);
             int pageNumber = (page ?? 1);
-            int pageSize = (size ?? 3);
+            int pageSize = (size ?? 6);
             var listSP = from sp in db.SANPHAMs select sp;
             listSP = listSP.OrderBy(x => x.MaSP);
             if (search != null)
