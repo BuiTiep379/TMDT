@@ -1,7 +1,7 @@
 ﻿@model ShopGiay.Models.KHACHHANG
 @{
     ViewBag.Title = "InfoCaNhan";
-    Layout = "~/Views/Shared/_ShopLayouts.cshtml";
+    Layout = "~/Views/Shared/_ClientLayouts.cshtml";
 }
 @section SiteNavBar{
     @{ Html.RenderAction("SiteNavBar", "Store");}
@@ -10,7 +10,7 @@
     <div class="container">
         <div class="row mb-5">
             <div class="col-md-9 order-2">
-                <h2>MY INFOMATION</h2>
+                <h3 style="text-align: center">Thông tin cá nhân</h3>
                 <div class="col-12 md-5">
                     <div>
                         @using (Html.BeginForm())
@@ -25,20 +25,20 @@
                                 </div>
                             }
                             <div class="form-group col-xs-6">
-                                @Html.LabelFor(model => model.TenKH, htmlAttributes: new { @class = "control-label col-md-5", @style = "font-weight: bold;" })
-                                @Html.TextBoxFor(m => m.TenKH, new { @class = "form-control" })
+                                @Html.DisplayNameFor(model => model.TenKH)
+                                @Html.DisplayFor(model => model.TenKH)
                             </div>
                             <div class="form-group col-xs-6">
-                                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-5", @style = "font-weight: bold;" })
-                                @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+                                @Html.DisplayNameFor(model => model.Email)
+                                @Html.DisplayFor(model => model.Email)
                             </div>
                             <div class="form-group col-xs-6">
-                                @Html.LabelFor(model => model.DiaChi, htmlAttributes: new { @class = "control-label col-md-5", @style = "font-weight: bold;" })
-                                @Html.TextBoxFor(model => model.DiaChi, new { @class = "form-control" })
+                                @Html.DisplayNameFor(model => model.DiaChi)
+                                @Html.DisplayFor(model => model.DiaChi)
                             </div>
                             <div class="form-group col-xs-6">
-                                @Html.LabelFor(model => model.Sdt, htmlAttributes: new { @class = "control-label col-md-5", @style = "font-weight: bold;" })
-                                @Html.TextBoxFor(model => model.Sdt, new { @class = "form-control" })
+                                @Html.DisplayNameFor(model => model.Sdt)
+                                @Html.DisplayFor(model => model.Sdt)
                             </div>
                             <div class="form-group col-xs-6">
                                 <div class="col-md-offset-2 col-md-10">
@@ -52,19 +52,20 @@
             </div>
 
             <div class="col-md-3 order-1 mb-5 mb-md-0">
-                <div class="border p-4 rounded mb-4">
+                <div class="p-4 rounded mb-4">
                     <h3 class="mb-3 h6 text-uppercase text-black d-block">@ViewBag.TenKH</h3>
                     <ul class="list-unstyled mb-0">
-                        <li class="mb-1">@Html.ActionLink("Chỉnh sửa thông tin","UpdateInfoCaNhan", new { @maKH = Session["UserID"] })</li>
+                        <li class="mb-1">@Html.ActionLink("Chỉnh sửa thông tin", "UpdateInfoCaNhan", new { @maKH = Session["UserID"] })</li>
                         <li class="mb-1">@Html.ActionLink("Đổi mật khẩu", "ChangePassword")</li>
-                        <li class="mb-1">@Html.ActionLink("Đơn mua","DonMua", new { @maKH = Session["UserID"] })</li>
+                        <li class="mb-1">@Html.ActionLink("Đơn mua", "DonMua", new { @maKH = Session["UserID"] })</li>
                     </ul>
                 </div>
             </div>
         </div>
-
     </div>
 </div>
+
+
 @section SiteBlocks3{
 }
 @section SiteFooter{

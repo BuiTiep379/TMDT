@@ -35,7 +35,6 @@
                                         <th>Size</th>
                                         <th>Quantity</th>
                                         <th>Price</th>
-                                        <th>Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -43,18 +42,18 @@
                                     {
                                         <tr>
                                             <td>@item.SANPHAM.TenSP</td>
-                                            <td>
-                                                @item.MAUSAC.MaMau
-                                            </td>
                                             <td>@item.SIZE.Size</td>
+                                            <td>
+                                                @item.MAUSAC.MauSac
+                                            </td>
+
                                             <td>@item.SoLuong</td>
-                                            <td><strong class="mx-2">@string.Format("{0:0,0}", @item.DonGia) VNĐ </strong></td>
-                                            <td>@string.Format("{0:0,0}", @item.SoLuong * item.DonGia) VNĐ</td>
+                                            <td>@string.Format("{0:0,0}", @item.DonGia) VNĐ</td>
                                         </tr>
                                     }
                                     <tr>
-                                        <td class="text-black font-weight-bold" colspan="5"><strong>Order Total</strong></td>
-                                        <td class="text-black font-weight-bold"><strong>@string.Format("{0:0,0}", ViewBag.TongTien) VNĐ</strong></td>
+                                        <td class="text-black font-weight-bold" colspan="4"><strong>Order Total</strong></td>
+                                        <td class="text-black font-weight-bold">@string.Format("{0:0,0}", ViewBag.TongTien) VNĐ</td>
                                     </tr>
                                 </tbody>
                             </table>

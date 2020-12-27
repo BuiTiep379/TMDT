@@ -65,7 +65,6 @@
                 <td>@Html.DisplayFor(modelItem => item.CMND)</td>
                 <td>@Html.DisplayFor(modelItem => item.QuyenNV)</td>
                 <td>
-                    <button class="btn btn-info">@Html.ActionLink("Chi tiết", "DetailNhanVien", "QLNhanVien", new { @manv = item.MaNV }, new { @style = "color: white", })</button>
                     <button class="btn btn-danger">  @Html.ActionLink("Xóa", "DeleteNhanVien", "QLNhanVien", new { @manv = item.MaNV }, new { @style = "color: white", })</button>
                 </td>
             </tr>
