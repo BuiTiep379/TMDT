@@ -454,13 +454,6 @@
     <Content Include="Content\Client\scss\_site-base.scss" />
     <Content Include="Content\Client\scss\_site-blocks.scss" />
     <Content Include="Content\Client\scss\_site-navbar.scss" />
-    <EntityDeploy Include="Models\Model.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>Model.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\Model.edmx.diagram">
-      <DependentUpon>Model.edmx</DependentUpon>
-    </Content>
     <Content Include="Areas\Admin\Views\QLPromoCode\DanhSachPromoCode.cshtml" />
     <Content Include="Areas\Admin\Views\QLPromoCode\AddPromoCode.cshtml" />
     <Content Include="Areas\Admin\Views\QLPromoCode\EditPromoCode.cshtml" />
@@ -472,7 +465,13 @@
     <Content Include="Content\Client\fonts\themify.eot" />
     <Content Include="Content\Client\fonts\themify.ttf" />
     <Content Include="Content\Client\fonts\themify.woff" />
-    <Content Include="Areas\Admin\Views\AdminHome\Login.cshtml" />
+    <EntityDeploy Include="Models\Model.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Model.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\Model.edmx.diagram">
+      <DependentUpon>Model.edmx</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
