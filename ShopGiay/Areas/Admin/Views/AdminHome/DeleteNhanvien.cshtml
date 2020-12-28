@@ -1,0 +1,108 @@
+﻿@model ShopGiay.Models.NHANVIEN
+@{
+    ViewBag.Title = "DeleteNhanvien";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayouts.cshtml";
+}
+
+@section SidebarMenu
+{
+    @Html.Action("SidebarMenu", "AdminHome")
+}
+@section NavBar{
+    @Html.Action("NavBar", "AdminHome")
+}
+@section Footer
+{
+    @Html.Action("Footer", "AdminHome")
+}
+<div class="container-fluid" style="margin-left: 100px">
+    <div class="col-lg-12">
+        <h2>Xóa nhân viên</h2>
+        <h3>
+            Có chắc bạn muốn xóa nhân viên này?
+        </h3>
+        <div>
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.MaNV)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.MaNV)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.TenNV)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.TenNV)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.DiaChi)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.DiaChi)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Email)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Email)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Sdt)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Sdt)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.GioiTinh)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.GioiTinh)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.NgaySinh)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.NgaySinh)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.CMND)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.CMND)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.QuyenNV)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.QuyenNV)
+                </dd>
+            </dl>
+            @using (Html.BeginForm())
+            {
+                @*@Html.AntiForgeryToken()*@
+                <div class="form-actions no-color">
+                    <button type="submit" value="Delete" class="btn btn-danger">Xóa</button>
+                    <button class="btn btn-info" style="color: white">@Html.ActionLink("Trở về", "DanhSachNV")</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
