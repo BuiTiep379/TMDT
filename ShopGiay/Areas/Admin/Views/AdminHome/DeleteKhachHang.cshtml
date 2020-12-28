@@ -1,0 +1,45 @@
+﻿@model ShopGiay.Models.KHACHHANG
+@{
+    ViewBag.Title = "DeleteKhachHang";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayouts.cshtml";
+}
+
+
+@section SidebarMenu
+{
+    @Html.Action("SidebarMenu", "AdminHome")
+}
+@section NavBar{
+    @Html.Action("NavBar", "AdminHome")
+}
+@section Footer
+{
+    @Html.Action("Footer", "AdminHome")
+}
+<div class="container-fluid" style="margin-left: 100px">
+    <div class="col-lg-12">
+        <h2>Xóa khách hàng</h2>
+        <h3>Bạn có chắc muốn xóa khách hàng này!</h3>
+        <div>
+            <dl class="dl-horizontal">
+                <dt>@Html.DisplayNameFor(model => model.TenKH)</dt>
+                <dd>@Html.DisplayFor(model => model.TenKH)</dd>
+                <dt>@Html.DisplayNameFor(model => model.DiaChi)</dt>
+                <dd>@Html.DisplayFor(model => model.DiaChi)</dd>
+                <dt>@Html.DisplayNameFor(model => model.Email)</dt>
+                <dd>@Html.DisplayFor(model => model.Email)</dd>
+                <dt>@Html.DisplayNameFor(model => model.Sdt)</dt>
+                <dd>@Html.DisplayFor(model => model.Sdt)</dd>
+            </dl>
+            @using (Html.BeginForm())
+            {
+                @*@Html.AntiForgeryToken()*@
+                <div class="form-actions no-color">
+                    <button type="submit" value="Delete" class="btn btn-danger">Xóa</button>||
+                    <button class="btn btn-info">@Html.ActionLink("Trở về", "DanhSachKH", "AdminHome")</button>
+                </div>
+            }
+        </div>
+
+    </div>
+</div>

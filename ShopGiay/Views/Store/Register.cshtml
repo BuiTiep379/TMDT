@@ -20,12 +20,12 @@
                 <form action="/Store/Register" method="post">
                     @Html.AntiForgeryToken()
                     <div class="form-group" style="padding-top: 10px">
-                        <input data-val="true" type="text" style=" width: 710px; height: 43px" id="txttenkh" name="txttenkh" data-val-required="Tên khách hàng không được để trống" required placeholder="khách hàng" />
-                        @Html.ValidationMessageFor(m => m.TenKH, "", new { @class = "badge badge-danger" })
+                        <input data-val="true" type="text" style=" width: 710px; height: 43px" id="txttenkh" name="txttenkh" data-val-required="Tên khách hàng không được để trống" required placeholder="Tên khách hàng" />
+                        @*@Html.ValidationMessageFor(m => m.TenKH, "", new { @class = "badge badge-danger" })*@
                     </div>
                     <div class="form-group" style="padding-top: 10px">
                         <input data-val="true" type="email" style=" width: 710px; height: 43px" id="txtemail" name="txtemail" data-val-regex="Email không đúng"  data-val-required="Email không được để trống" placeholder="Email"/>
-                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "badge badge-danger" })
+                        @*@Html.ValidationMessageFor(m => m.Email, "", new { @class = "badge badge-danger" })*@
                         @Html.ValidationMessage("EmailExist", new { @class = "text-danger" })
                         @if (ViewBag.error != null)
                         {
@@ -34,15 +34,15 @@
                     </div>
                     <div class="form-group" style="padding-top: 10px">
                         <input data-val="true" type="text" style=" width: 710px; height: 43px" id="txtdiachi" name="txtdiachi" data-val-regex="Địa chỉ không đúng" data-val-required="Địa chỉ không được để trống" placeholder="Địa chỉ" />
-                        @Html.ValidationMessageFor(m => m.DiaChi, "", new { @class = "badge badge-danger" })
+                        @*@Html.ValidationMessageFor(m => m.DiaChi, "", new { @class = "badge badge-danger" })*@
                     </div>
                     <div class="form-group" style="padding-top: 10px">
                         <input data-val="true" style=" width: 710px; height: 43px" placeholder="Số điện thoại" id="txtsdt" name="txtsdt" data-val-regex-pattern="^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$" data-val-regex="Số điện thoại không đúng" type="tel" data-val-required="Số điện thoại không được để trống"/>
-                        @Html.ValidationMessageFor(m => m.Sdt, "", new { @class = "badge badge-danger" })
+                        @*@Html.ValidationMessageFor(m => m.Sdt, "", new { @class = "badge badge-danger" })*@
                     </div>
                     <div class="form-group" style="padding-top: 10px">
                         <input data-val="true" style=" width: 710px; height: 43px" data-val-regex="Mật khẩu phải tối thiểu sáu ký tự, ít nhất một chữ cái và một số" data-val-regex-pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$" data-val-required="Mật khẩu không được để trống" id="txtmatkhau" name="txtmatkhau" placeholder="Mật khẩu" type="password">
-                        @Html.ValidationMessageFor(m => m.MatKhau, "", new { @class = "badge badge-danger" })
+                        @*@Html.ValidationMessageFor(m => m.MatKhau, "", new { @class = "badge badge-danger" })*@
                     </div>
                     <div class="form-group" style="padding-top: 10px">
                         <input data-val="true" style=" width: 710px; height: 43px" data-val-equalto="Xác nhận mật khẩu không trùng khớp với mật khẩu" data-val-equalto-other="*.MatKhau" data-val-required="Xác nhận mật khẩu không được để trống" id="txtxnmk" name="txtxnmk" placeholder=" Xác nhận Mật khẩu" type="password">

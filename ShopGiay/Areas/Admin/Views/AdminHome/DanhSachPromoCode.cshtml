@@ -1,0 +1,113 @@
+﻿@using PagedList.Mvc;
+@model PagedList.PagedList<ShopGiay.Models.PROMOCODE>
+@{
+    ViewBag.Title = "DanhSachPromoCode";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayouts.cshtml";
+}
+
+@section SidebarMenu
+{
+    @Html.Action("SidebarMenu", "AdminHome")
+}
+@section NavBar{
+    @Html.Action("NavBar", "AdminHome")
+}
+@section Footer
+{
+    @Html.Action("Footer", "AdminHome")
+}
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Danh sách nhân viên</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="dataTables_length" id="dataTable_length">
+                                <div class="col-md-6 col-lg-6 col-xs-6 col-sm-6" style="margin-bottom: 10px">
+                                    @using (Html.BeginForm("DanhSachPromoCode", "AdminHome", FormMethod.Get))
+                                    {
+                                        <p>
+                                            Kích thước trang: @Html.DropDownList("size", (List<SelectListItem>)ViewBag.Size, new { @onchange = "this.form.submit();", @class = "form-control-sm" })
+                                        </p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            @using (Html.BeginForm("DanhSachPromoCode", "AdminHome", FormMethod.Post))
+                            {
+                                <div class="col-lg-12" style="margin-bottom: 10px">
+                                    <div class="input-group custom-search-form">
+                                        <input style="background-color:white" id="search" name="search" type="text" value="" class="form-control" placeholder="Tìm kiếm theo tên" />
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-success" type="submit">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </span>
+                                        <div class="col-lg-4">
+                                            @Html.ActionLink("Thêm mới code", "AddPromoCode", "AdminHome", new { @class = "btn btn-primary" })
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+                                <thead>
+                                    <tr role="row">
+                                        <td width="450px">@Html.DisplayNameFor(model => model.First().Name)</td>
+                                        <td>@Html.DisplayNameFor(model => model.First().Value)</td>
+                                        <td width="250px">@Html.DisplayNameFor(model => model.First().Code)</td>
+                                        <td>@Html.DisplayNameFor(model => model.First().Status)</td>
+                                        <th width="350px">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Value)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Code)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                                            <td>
+                                                <button class="btn btn-success">@Html.ActionLink("Chỉnh sửa", "EditPromoCode", "AdminHome", new { @id = item.Id }, new { @style = "color: white", })</button>
+
+                                                @{
+                                                    if (item.Status == true)
+                                                    {
+                                                        <button class="btn btn-info">@Html.ActionLink("Hủy", "HuyCode", "AdminHome", new { @id = item.Id }, new { @style = "color: white", })</button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button class="btn btn-info">@Html.ActionLink("Kích hoạt", "KichHoatCode", "AdminHome", new { @id = item.Id }, new { @style = "color: white", })</button>
+                                                    }
+                                                }
+                                                <button class="btn btn-danger">  @Html.ActionLink("Xóa", "DeletePromoCode", "AdminHome", new { @id = item.Id }, new { @style = "color: white", })</button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-lg-6 col-xs-6 col-sm-6 text-right">
+                            Trang: @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
+                        </div>
+                    </div>
+                    @Html.PagedListPager(Model, page => Url.Action("DanhSachPromoCode", new { page, size = ViewBag.CurrentSize }))
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

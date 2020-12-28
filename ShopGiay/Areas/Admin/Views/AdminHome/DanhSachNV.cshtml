@@ -1,0 +1,117 @@
+﻿@using PagedList.Mvc;
+@model PagedList.PagedList<ShopGiay.Models.NHANVIEN>
+@{
+    ViewBag.Title = "DanhSachNV";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayouts.cshtml";
+}
+
+@section SidebarMenu
+{
+    @Html.Action("SidebarMenu", "AdminHome")
+}
+@section NavBar{
+    @Html.Action("NavBar", "AdminHome")
+}
+@section Footer
+{
+    @Html.Action("Footer", "AdminHome")
+}
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Danh sách nhân viên</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6" >
+                            <div class="dataTables_length" id="dataTable_length">
+                                <div class="col-md-6 col-lg-6 col-xs-6 col-sm-6" style="margin-bottom: 10px">
+                                    @using (Html.BeginForm("DanhSachNV", "AdminHome", FormMethod.Get))
+                                    {
+                                        <p>
+                                            Kích thước trang: @Html.DropDownList("size", (List<SelectListItem>)ViewBag.Size, new { @onchange = "this.form.submit();", @class="form-control-sm"})
+                                        </p>
+                                    }
+                                </div>  
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            @using (Html.BeginForm("DanhSachNV", "AdminHome", FormMethod.Post))
+                            {
+                                <div class="col-lg-12"  style="margin-bottom: 10px">
+                                    <div class="input-group custom-search-form">
+                                        <input style="background-color:white" id="search" name="search" type="text" value="" class="form-control" placeholder="Tìm kiếm theo tên" />
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-success" type="submit">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </span>
+                                        <div class="col-lg-4">
+                                            @Html.ActionLink("Thêm mới nhân viên", "AddNhanVien", "AdminHome", new { @class = "btn btn-primary" })
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+                                <thead>
+                                    <tr role="row">
+                                        <th>Tên nhân viên</th>
+                                        <th>Địa chỉ</th>
+                                        <th>Email</th>
+                                        <th>Số điện thoại</th>
+                                        <th>Giới tính</th>
+                                        <th>Ngày sinh</th>
+                                        <th>Số CMND</th>
+                                        <th>Quyền</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                    <tr>
+                                        <td>@Html.DisplayFor(modelItem => item.TenNV)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.DiaChi)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.Sdt)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.GioiTinh)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.NgaySinh)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.CMND)</td>
+                                        @{
+                                            if (item.QuyenNV == "1")
+                                            {
+                                                <td>Admin</td>
+                                            }
+                                            else
+                                            {
+                                                <td>Shipper</td>
+                                            }
+                                        }
+                                        <td>
+                                            <button class="btn btn-danger">  @Html.ActionLink("Xóa", "DeleteNhanVien", "AdminHome", new { @manv = item.MaNV }, new { @style = "color: white", })</button>
+                                        </td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-lg-6 col-xs-6 col-sm-6 text-right">
+                            Trang: @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
+                        </div>
+                    </div>
+                    @Html.PagedListPager(Model, page => Url.Action("DanhSachNV", new { page, size = ViewBag.CurrentSize }))
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
