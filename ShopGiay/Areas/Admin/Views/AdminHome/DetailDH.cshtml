@@ -1,0 +1,77 @@
+﻿@model List<ShopGiay.Models.CHITIETDONHANG>
+@{
+    ViewBag.Title = "DetailDH";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayouts.cshtml";
+}
+@section SidebarMenu
+{
+    @Html.Action("SidebarMenu", "AdminHome")
+}
+@section NavBar{
+    @Html.Action("NavBar", "AdminHome")
+}
+@section Footer
+{
+    @Html.Action("Footer", "AdminHome")
+}
+
+    <div class="container" style="margin-left: 100px;">  
+        <h2 style="text-align: center">CHI TIẾT ĐƠN HÀNG</h2>
+        <div class="row">
+            <div class="col-12">
+                <div>
+                    <h3 class="h3 mb-3 text-black">Địa chỉ</h3>
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <label for="c_lname" class="text-black">@ViewBag.TenKH</label><br />
+                            <label for="c_lname" class="text-black">@ViewBag.Sdt</label><br />
+                            <label for="c_lname" class="text-black">@ViewBag.DiaChi</label><br />
+                            @*<label for="c_lname" class="text-black">@ViewBag.PromoCode</label>*@
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-5">
+                    <div class="col-md-12">
+                        <h2 class="h3 mb-3 text-black">Chi tiết đơn hàng</h2>
+                        <div class="border">
+                            <table class="table site-block-order-table mb-5">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Color</th>
+                                        <th>Size</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.SANPHAM.TenSP</td>
+                                            <td>@item.SIZE.Size</td>
+                                            <td>
+                                                @item.MAUSAC.MauSac
+                                            </td>
+
+                                            <td>@item.SoLuong</td>
+                                            <td>@string.Format("{0:0,0}", @item.DonGia) VNĐ</td>
+                                        </tr>
+                                    }
+                                    <tr>
+                                        <td class="text-black font-weight-bold" colspan="4"><strong>Order Total</strong></td>
+                                        <td class="text-black font-weight-bold">@string.Format("{0:0,0}", ViewBag.TongTien) VNĐ</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                    
+
+               
+            </div>
+            <!-- </form> -->
+        </div>
+    </div>
+

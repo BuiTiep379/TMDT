@@ -6,13 +6,13 @@ using PayPal.Api;
 
 namespace ShopGiay.Models
 {
-    public static class Configuration
+    public static class PaypalConfiguration
     {
         public readonly static string ClientId;
         public readonly static string ClientSecret;
 
         // Static constructor for setting the readonly static members.
-        static Configuration()
+        static PaypalConfiguration()
         {
             var config = GetConfig();
             ClientId = config["clientId"];

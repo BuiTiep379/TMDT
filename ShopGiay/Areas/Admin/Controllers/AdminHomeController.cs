@@ -16,8 +16,77 @@ namespace ShopGiay.Areas.Admin.Controllers
     public class AdminHomeController : Controller
     {
         // GET: Admin/Home
-        public ActionResult Index()
+        public ActionResult Index(FormCollection form)
         {
+            // Biểu đồ cột
+            var ordersForBar = db.DONHANGs.ToList();
+            var dataForBar = new List<decimal>();
+            var categoriesForBar = new List<string>();
+            for (int i = 1; i < 13; i++)
+            {
+                categoriesForBar.Add(i.ToString());
+                dataForBar.Add(0);
+            }
+
+            foreach (var order in ordersForBar)
+            {
+                if (!categoriesForBar.Contains(order.NgayDatHang.Month.ToString()))
+                {
+                    categoriesForBar.Add(order.NgayDatHang.Month.ToString());
+                    dataForBar.Add(order.TongTien);
+                }
+                else
+                {
+                    int index = categoriesForBar.IndexOf(order.NgayDatHang.Month.ToString());
+                    dataForBar[index] += order.TongTien;
+                }
+
+            }
+            ViewBag.barLabels = categoriesForBar.ToArray();
+            ViewBag.barData = dataForBar.ToArray();
+            // Biểu đồ tròn
+            var now = DateTime.Now;
+            int monthPie, yearPie;
+            string mouthYear = form["month"];
+            if (mouthYear != null)
+            {
+                monthPie = Convert.ToInt32(mouthYear.Substring(5, 2));
+                yearPie = Convert.ToInt32(mouthYear.Substring(0, 4));
+            }
+            else
+            {
+                monthPie = Convert.ToInt32(now.Month);
+                yearPie = Convert.ToInt32(now.Year);
+            }
+            var dataForPie = new List<decimal>();
+            var dhForPie = db.DONHANGs.Where(x => x.NgayDatHang.Month == monthPie && x.NgayDatHang.Year == yearPie);
+            var categoriesForPie = new List<string>();
+            List<int?> tempidOrder = new List<int?>();
+            List<int> tempidProduct = new List<int>();
+            foreach (var dh in dhForPie)
+            {
+                if (!tempidOrder.Contains(dh.MaDH))
+                    tempidOrder.Add(dh.MaDH);
+            }
+            var ctdhForPie = db.CHITIETDONHANGs.Where(x => tempidOrder.Contains(x.MaDH)).ToList();
+
+            foreach (var item in ctdhForPie)
+            {
+                if (!categoriesForPie.Contains(item.SANPHAM.NHANHIEU.TenNhanHieu))
+                {
+                    categoriesForPie.Add(item.SANPHAM.NHANHIEU.TenNhanHieu);
+                    dataForPie.Add(item.DonGia);
+                }
+                else
+                {
+                    int index = categoriesForPie.IndexOf(item.SANPHAM.NHANHIEU.TenNhanHieu);
+                    dataForPie[index] += item.SANPHAM.DonGia * item.SoLuong;
+                }
+            }
+            ViewBag.pieLabels = categoriesForPie.ToArray();
+            ViewBag.pieData = dataForPie.ToArray();
+            ViewBag.monthPie = monthPie;
+            ViewBag.yearPie = yearPie;
             return View();
         }
         [ChildActionOnly]
@@ -55,15 +124,15 @@ namespace ShopGiay.Areas.Admin.Controllers
             {
                 if (nv.QuyenNV == "1")
                 {
-                    Session["TaiKhoanNV"] = nv;
-                    Session["User"] = nv.TenNV;
+                    Session["UserID"] = nv.MaNV;
+                    Session["TenNV"] = nv.TenNV;
                     Session["Quyen"] = nv.QuyenNV;
                     return RedirectToAction("Index");
                 }
                 else
                 {
-                    Session["TaiKhoanNV"] = nv;
-                    Session["User"] = nv.TenNV;
+                    Session["UserID"] = nv.MaNV;
+                    Session["TenNV"] = nv.TenNV;
                     Session["Quyen"] = nv.QuyenNV;
                     return RedirectToAction("Index");
                 }
@@ -824,7 +893,7 @@ namespace ShopGiay.Areas.Admin.Controllers
             }
             return View(listCode.ToPagedList(pageNumber, pageSize));
         }
-        public ActionResult KichHoatCode(int id)
+        public ActionResult KichHoatCode(int id, int? page, int? size)
         {
             var code = db.PROMOCODEs.Find(id);
             if (code == null)
@@ -838,10 +907,10 @@ namespace ShopGiay.Areas.Admin.Controllers
                 code.Status = true;
                 db.Entry(code).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("DanhSachPromoCode");
+                return RedirectToAction("DanhSachPromoCode", new { @page = page, @size = size });
             }
         }
-        public ActionResult HuyCode(int id)
+        public ActionResult HuyCode(int id, int? page, int? size)
         {
             var code = db.PROMOCODEs.Find(id);
             if (code == null)
@@ -855,7 +924,7 @@ namespace ShopGiay.Areas.Admin.Controllers
                 code.Status = false;
                 db.Entry(code).State = System.Data.Entity.EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("DanhSachPromoCode");
+                return RedirectToAction("DanhSachPromoCode", new { @page = page, @size = size });
             }
         }
         [HttpGet]
@@ -943,7 +1012,121 @@ namespace ShopGiay.Areas.Admin.Controllers
             }
             db.PROMOCODEs.Remove(code);
             db.SaveChanges();
-            return RedirectToAction("DanhSachPromoCode");
+            return RedirectToAction("DanhSachPromoCode" );
         }
+
+        public ActionResult DanhSachDH(string search, int? page, int? size)
+        {
+            //Tạo list pagesize 
+            List<SelectListItem> items = new List<SelectListItem>();
+            items.Add(new SelectListItem { Text = "10", Value = "10" });
+            items.Add(new SelectListItem { Text = "20", Value = "20" });
+            // giữ kích thước trang được chọn trên Droplist
+            foreach (var item in items)
+            {
+                if (item.Value == size.ToString()) item.Selected = true;
+            }
+            ViewBag.Size = items;// viewbag dropdownlist
+            ViewBag.CurrentSize = size;
+
+            page = page ?? 1; // nếu null page =1
+            int pageNumber = (page ?? 1);
+            int pageSize = (size ?? 10);
+
+            var listDH = from dh in db.DONHANGs select dh;
+            listDH = listDH.OrderBy(x => x.MaDH);
+            if (!String.IsNullOrEmpty(search))
+            {
+                listDH = listDH.Where(x => x.HoTen.Contains(search));
+                return View(listDH.ToPagedList(pageNumber, pageSize));
+            }
+            // nếu từ khóa null thì trả về list 
+            return View(listDH.ToPagedList(pageNumber, pageSize));
+        }
+        public ActionResult XacNhanDH(int maDH, int? page, int? size)
+        {
+            var dh = db.DONHANGs.Find(maDH);
+            if (dh == null)
+            {
+                Response.StatusCode = 404;
+                return null;
+
+            }
+            else
+            {
+                dh.TinhTrang = "Đã xác nhận";
+                db.Entry(dh).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("DanhSachDH", new {@page =  page, @size = size});
+            }
+        }
+        public ActionResult DetailDH(int? maDH)
+        {
+            var dh = db.DONHANGs.SingleOrDefault(x => x.MaDH == maDH);
+            ViewBag.TenKH = dh.HoTen;
+            ViewBag.Sdt = dh.Sdt;
+            ViewBag.DiaChi = dh.DiaChiGiao;
+            ViewBag.TinhTrang = dh.TinhTrang;
+            ViewBag.TongTien = dh.TongTien;
+            //ViewBag.PromoCode = dh.PROMOCODE.Code;
+            var ctdh = db.CHITIETDONHANGs.Where(x => x.MaDH == maDH);
+            if (ctdh == null)
+            {
+                Response.StatusCode = 404;
+                return null;
+            }
+            else
+            {
+                return View(ctdh.ToList());
+            }
+        }
+        public ActionResult SoLuongNhanVien()
+        {
+            var slnv = db.NHANVIENs.OrderBy(m => m.MaNV).Count();
+            ViewBag.SoLuongNV = slnv;
+            return PartialView();
+        }
+
+        public ActionResult SoLuongKhachHang()
+        {
+            var slkh = db.KHACHHANGs.OrderBy(m => m.MaKH).Count();
+            ViewBag.SoLuongKH = slkh;
+            return PartialView();
+        }
+        public ActionResult SoLuongDonHang()
+        {
+            var sldh = db.DONHANGs.OrderBy(m => m.MaDH).Count();
+            ViewBag.SoLuongDH = sldh;
+            return PartialView();
+        }
+        public ActionResult TongDoanhThu()
+        {
+            var tongdt = db.DONHANGs.OrderBy(m => m.MaDH).Sum(m => m.TongTien);
+            ViewBag.TongDoanhThu = tongdt;
+            return PartialView();
+        }
+
+        public ActionResult InfoCaNhan(int? maNV)
+        {
+            maNV = int.Parse(Session["UserID"].ToString());
+
+            if (maNV == 0)
+            {
+                return RedirectToAction("Login");
+            }
+            else
+            {
+                NHANVIEN nv = db.NHANVIENs.SingleOrDefault(x => x.MaNV == maNV);
+                if (nv == null)
+                {
+                    Response.StatusCode = 404;
+                    return null;
+                }
+                ViewBag.TenKH = nv.TenNV;
+                return View(nv);
+            }
+        }
+
+
     }
 }

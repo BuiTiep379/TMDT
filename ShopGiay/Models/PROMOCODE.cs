@@ -14,19 +14,10 @@ namespace ShopGiay.Models
     
     public partial class PROMOCODE
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public PROMOCODE()
-        {
-            this.DONHANGs = new HashSet<DONHANG>();
-        }
-    
         public int Id { get; set; }
         public string Name { get; set; }
         public decimal Value { get; set; }
         public string Code { get; set; }
         public Nullable<bool> Status { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DONHANG> DONHANGs { get; set; }
     }
 }

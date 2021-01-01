@@ -23,14 +23,14 @@ namespace ShopGiay.Models
         [Display(Name = "Mã giảm giá")]
         public Nullable<int> PromoID { get; set; }
         [Display(Name = "Ngày đặt hàng")]
-        public Nullable<System.DateTime> NgayDatHang { get; set; }
+        public System.DateTime NgayDatHang { get; set; }
         [Display(Name = "Ngày giao hàng")]
         public Nullable<System.DateTime> NgayGiaoHang { get; set; }
         [Display(Name = "Địa chỉ giao hàng")]
         [Required(ErrorMessage ="{0} không được bỏ trống")]
         public string DiaChiGiao { get; set; }
         [Display(Name = "Tổng tiền")]
-        public Nullable<decimal> TongTien { get; set; }
+        public decimal TongTien { get; set; }
         [Display(Name = "Thanh toán")]
         public string ThanhToan { get; set; }
         [Display(Name ="Tình trạng")]

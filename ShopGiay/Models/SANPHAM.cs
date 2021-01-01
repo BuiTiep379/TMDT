@@ -24,9 +24,9 @@ namespace ShopGiay.Models
         public int MaSP { get; set; }
         public string TenSP { get; set; }
         public string Anh { get; set; }
-        public Nullable<int> MaNhanHieu { get; set; }
-        public Nullable<int> MaLoai { get; set; }
-        public Nullable<decimal> DonGia { get; set; }
+        public int MaNhanHieu { get; set; }
+        public int MaLoai { get; set; }
+        public decimal DonGia { get; set; }
         public string Anh2 { get; set; }
         public string Anh3 { get; set; }
         public string MoTa { get; set; }
