@@ -21,7 +21,7 @@
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Danh sách nhân viên</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Danh sách mã giảm giá</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -63,7 +63,7 @@
                             <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
                                 <thead>
                                     <tr role="row">
-                                        <td width="450px">@Html.DisplayNameFor(model => model.First().Name)</td>
+                                        <td width="400px">@Html.DisplayNameFor(model => model.First().Name)</td>
                                         <td>@Html.DisplayNameFor(model => model.First().Value)</td>
                                         <td width="250px">@Html.DisplayNameFor(model => model.First().Code)</td>
                                         <td>@Html.DisplayNameFor(model => model.First().Status)</td>
@@ -77,18 +77,29 @@
                                             <td>@Html.DisplayFor(modelItem => item.Name)</td>
                                             <td>@Html.DisplayFor(modelItem => item.Value)</td>
                                             <td>@Html.DisplayFor(modelItem => item.Code)</td>
-                                            <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                                            @{
+                                                if (item.Status == true)
+                                                {
+                                                    <td>Đã kích hoạt</td>
+                                                }
+                                                else
+                                                {
+                                                    <td>
+                                                        Chưa kích hoạt
+                                                    </td>
+                                                }
+                                            } 
                                             <td>
                                                 <button class="btn btn-success">@Html.ActionLink("Chỉnh sửa", "EditPromoCode", "AdminHome", new { @id = item.Id }, new { @style = "color: white", })</button>
 
                                                 @{
                                                     if (item.Status == true)
                                                     {
-                                                        <button class="btn btn-info">@Html.ActionLink("Hủy", "HuyCode", "AdminHome", new { @id = item.Id }, new { @style = "color: white", })</button>
+                                                        <button class="btn btn-info">@Html.ActionLink("Hủy", "HuyCode", "AdminHome", new { @id = item.Id, @page = Model.PageNumber, @size = Model.PageSize }, new { @style = "color: white", })</button>
                                                     }
                                                     else
                                                     {
-                                                        <button class="btn btn-info">@Html.ActionLink("Kích hoạt", "KichHoatCode", "AdminHome", new { @id = item.Id }, new { @style = "color: white", })</button>
+                                                        <button class="btn btn-info">@Html.ActionLink("Kích hoạt", "KichHoatCode", "AdminHome", new { @id = item.Id, @page = Model.PageNumber, @size = Model.PageSize }, new { @style = "color: white", })</button>
                                                     }
                                                 }
                                                 <button class="btn btn-danger">  @Html.ActionLink("Xóa", "DeletePromoCode", "AdminHome", new { @id = item.Id }, new { @style = "color: white", })</button>

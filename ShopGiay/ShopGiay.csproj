@@ -342,7 +342,7 @@
     <Compile Include="Models\CHITIETSP.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Configuration.cs" />
+    <Compile Include="Models\PaypalConfiguration.cs" />
     <Compile Include="Models\DONHANG.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -398,6 +398,8 @@
     <Compile Include="Models\SIZE.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="MoMoSecurity.cs" />
+    <Compile Include="PaymentRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -2088,9 +2090,9 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\Client\css\aos.css" />
-    <Content Include="Content\Client\css\bootstrap.min.css" />
     <Content Include="Content\Client\css\bootstrap\bootstrap-grid.css" />
     <Content Include="Content\Client\css\bootstrap\bootstrap-reboot.css" />
+    <Content Include="Content\Client\css\bootstrap.min.css" />
     <Content Include="Content\Client\css\font-awesome.css" />
     <Content Include="Content\Client\css\font-awesome.min.css" />
     <Content Include="Content\Client\css\jquery-ui.css" />
@@ -2257,7 +2259,6 @@
     <Content Include="Content\Client\scss\_site-blocks.scss" />
     <Content Include="Content\Client\scss\_site-navbar.scss" />
     <Content Include="Areas\Admin\Views\AdminHome\DanhSachPromoCode.cshtml" />
-    <Content Include="Areas\Admin\Views\AdminHome\AddPromoCode.cshtml" />
     <Content Include="Areas\Admin\Views\AdminHome\EditPromoCode.cshtml" />
     <Content Include="Areas\Admin\Views\AdminHome\DeletePromoCode.cshtml" />
     <Content Include="Content\Client\fonts\fontawesome-webfont.eot" />
@@ -2268,6 +2269,17 @@
     <Content Include="Content\Client\fonts\themify.ttf" />
     <Content Include="Content\Client\fonts\themify.woff" />
     <Content Include="Areas\Admin\Views\AdminHome\Login.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminHome\NavBar.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminHome\AddNhanVien.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminHome\DanhSachNV.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminHome\DeleteNhanvien.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminHome\DanhSachDH.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminHome\DetailDH.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminHome\SoLuongNhanVien.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminHome\SoLuongKhachHang.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminHome\SoLuongDonHang.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminHome\TongDoanhThu.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminHome\TKDoanhThuThang.cshtml" />
     <EntityDeploy Include="Models\Model.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>Model.Designer.cs</LastGenOutput>
@@ -2275,6 +2287,7 @@
     <Content Include="Models\Model.edmx.diagram">
       <DependentUpon>Model.edmx</DependentUpon>
     </Content>
+    <Content Include="Areas\Admin\Views\AdminHome\TKNhanHieuBanChay.cshtml" />
     <Content Include="Content\Admin\scss\navs\_global.scss" />
     <Content Include="Content\Admin\scss\navs\_sidebar.scss" />
     <Content Include="Content\Admin\scss\navs\_topbar.scss" />
@@ -2447,10 +2460,6 @@
     <Content Include="Content\Admin\vendor\fontawesome-free\webfonts\fa-solid-900.woff2" />
     <Content Include="Content\Admin\vendor\jquery\jquery.min.map" />
     <Content Include="Content\Admin\vendor\jquery\jquery.slim.min.map" />
-    <Content Include="Areas\Admin\Views\AdminHome\NavBar.cshtml" />
-    <Content Include="Areas\Admin\Views\AdminHome\AddNhanVien.cshtml" />
-    <Content Include="Areas\Admin\Views\AdminHome\DanhSachNV.cshtml" />
-    <Content Include="Areas\Admin\Views\AdminHome\DeleteNhanvien.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -2503,7 +2512,6 @@
     <Content Include="Views\Store\DonMua.cshtml" />
     <Content Include="Views\Store\DetailDonHang.cshtml" />
     <Content Include="Views\GioHang\ThayDoiDiaChi.cshtml" />
-    <Content Include="Views\GioHang\ApplyPromoCode.cshtml" />
     <Content Include="Views\GioHang\Success.cshtml" />
     <Content Include="Views\GioHang\Failure.cshtml" />
   </ItemGroup>

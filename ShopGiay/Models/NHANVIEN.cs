@@ -14,12 +14,6 @@ namespace ShopGiay.Models
     
     public partial class NHANVIEN
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public NHANVIEN()
-        {
-            this.DONHANGs = new HashSet<DONHANG>();
-        }
-    
         public int MaNV { get; set; }
         public string TenNV { get; set; }
         public string DiaChi { get; set; }
@@ -30,8 +24,5 @@ namespace ShopGiay.Models
         public string CMND { get; set; }
         public string MatKhau { get; set; }
         public string QuyenNV { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DONHANG> DONHANGs { get; set; }
     }
 }

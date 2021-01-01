@@ -34,29 +34,28 @@
             <PropertyRef Name="MaDH" />
           </Key>
           <Property Name="MaDH" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="MaKH" Type="int" />
+          <Property Name="MaKH" Type="int" Nullable="false" />
           <Property Name="PromoID" Type="int" />
-          <Property Name="MaNV" Type="int" />
-          <Property Name="NgayDatHang" Type="datetime" />
+          <Property Name="NgayDatHang" Type="datetime" Nullable="false" />
           <Property Name="NgayGiaoHang" Type="datetime" />
-          <Property Name="DiaChiGiao" Type="nvarchar" MaxLength="50" />
-          <Property Name="TongTien" Type="decimal" Precision="18" Scale="0" />
-          <Property Name="ThanhToan" Type="nvarchar" MaxLength="50" />
-          <Property Name="TinhTrang" Type="nvarchar" MaxLength="50" />
-          <Property Name="HoTen" Type="nvarchar" MaxLength="50" />
-          <Property Name="Email" Type="varchar" MaxLength="50" />
-          <Property Name="Sdt" Type="varchar" MaxLength="11" />
+          <Property Name="DiaChiGiao" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="TongTien" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="ThanhToan" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="TinhTrang" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="HoTen" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Sdt" Type="varchar" MaxLength="11" Nullable="false" />
         </EntityType>
         <EntityType Name="KHACHHANG">
           <Key>
             <PropertyRef Name="MaKH" />
           </Key>
           <Property Name="MaKH" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="TenKH" Type="nvarchar" MaxLength="50" />
-          <Property Name="DiaChi" Type="nvarchar" MaxLength="250" />
-          <Property Name="Email" Type="varchar" MaxLength="50" />
-          <Property Name="Sdt" Type="varchar" MaxLength="11" />
-          <Property Name="MatKhau" Type="varchar" MaxLength="50" />
+          <Property Name="TenKH" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="DiaChi" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Sdt" Type="varchar" MaxLength="11" Nullable="false" />
+          <Property Name="MatKhau" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="LOAISP">
           <Key>
@@ -77,7 +76,7 @@
             <PropertyRef Name="MaNhanHieu" />
           </Key>
           <Property Name="MaNhanHieu" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="TenNhanHieu" Type="nvarchar" MaxLength="50" />
+          <Property Name="TenNhanHieu" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="NHANVIEN">
           <Key>
@@ -109,11 +108,11 @@
             <PropertyRef Name="MaSP" />
           </Key>
           <Property Name="MaSP" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="TenSP" Type="nvarchar" MaxLength="100" />
-          <Property Name="Anh" Type="varchar(max)" />
-          <Property Name="MaNhanHieu" Type="int" />
-          <Property Name="MaLoai" Type="int" />
-          <Property Name="DonGia" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="TenSP" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Anh" Type="varchar(max)" Nullable="false" />
+          <Property Name="MaNhanHieu" Type="int" Nullable="false" />
+          <Property Name="MaLoai" Type="int" Nullable="false" />
+          <Property Name="DonGia" Type="decimal" Precision="18" Scale="0" Nullable="false" />
           <Property Name="Anh2" Type="varchar(max)" />
           <Property Name="Anh3" Type="varchar(max)" />
           <Property Name="MoTa" Type="nvarchar(max)" Nullable="false" />
@@ -210,44 +209,8 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_DH_KHACHHANG">
-          <End Role="KHACHHANG" Type="Self.KHACHHANG" Multiplicity="0..1" />
-          <End Role="DONHANG" Type="Self.DONHANG" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="KHACHHANG">
-              <PropertyRef Name="MaKH" />
-            </Principal>
-            <Dependent Role="DONHANG">
-              <PropertyRef Name="MaKH" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DH_NHANVIEN">
-          <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="0..1" />
-          <End Role="DONHANG" Type="Self.DONHANG" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="NHANVIEN">
-              <PropertyRef Name="MaNV" />
-            </Principal>
-            <Dependent Role="DONHANG">
-              <PropertyRef Name="MaNV" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DH_Promo">
-          <End Role="PROMOCODE" Type="Self.PROMOCODE" Multiplicity="0..1" />
-          <End Role="DONHANG" Type="Self.DONHANG" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PROMOCODE">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="DONHANG">
-              <PropertyRef Name="PromoID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_SP_LOAI">
-          <End Role="LOAISP" Type="Self.LOAISP" Multiplicity="0..1" />
+          <End Role="LOAISP" Type="Self.LOAISP" Multiplicity="1" />
           <End Role="SANPHAM" Type="Self.SANPHAM" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="LOAISP">
@@ -259,7 +222,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_SP_NHANHIEU">
-          <End Role="NHANHIEU" Type="Self.NHANHIEU" Multiplicity="0..1" />
+          <End Role="NHANHIEU" Type="Self.NHANHIEU" Multiplicity="1" />
           <End Role="SANPHAM" Type="Self.SANPHAM" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="NHANHIEU">
@@ -309,18 +272,6 @@
           <AssociationSet Name="FK_CTSP_SP" Association="Self.FK_CTSP_SP">
             <End Role="SANPHAM" EntitySet="SANPHAM" />
             <End Role="CHITIETSP" EntitySet="CHITIETSP" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DH_KHACHHANG" Association="Self.FK_DH_KHACHHANG">
-            <End Role="KHACHHANG" EntitySet="KHACHHANG" />
-            <End Role="DONHANG" EntitySet="DONHANG" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DH_NHANVIEN" Association="Self.FK_DH_NHANVIEN">
-            <End Role="NHANVIEN" EntitySet="NHANVIEN" />
-            <End Role="DONHANG" EntitySet="DONHANG" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DH_Promo" Association="Self.FK_DH_Promo">
-            <End Role="PROMOCODE" EntitySet="PROMOCODE" />
-            <End Role="DONHANG" EntitySet="DONHANG" />
           </AssociationSet>
           <AssociationSet Name="FK_SP_LOAI" Association="Self.FK_SP_LOAI">
             <End Role="LOAISP" EntitySet="LOAISP" />
@@ -372,34 +323,29 @@
             <PropertyRef Name="MaDH" />
           </Key>
           <Property Name="MaDH" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MaKH" Type="Int32" />
+          <Property Name="MaKH" Type="Int32" Nullable="false" />
           <Property Name="PromoID" Type="Int32" />
-          <Property Name="MaNV" Type="Int32" />
-          <Property Name="NgayDatHang" Type="DateTime" Precision="3" />
+          <Property Name="NgayDatHang" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="NgayGiaoHang" Type="DateTime" Precision="3" />
-          <Property Name="DiaChiGiao" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="TongTien" Type="Decimal" Precision="18" Scale="0" />
-          <Property Name="ThanhToan" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="TinhTrang" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="HoTen" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Sdt" Type="String" MaxLength="11" FixedLength="false" Unicode="false" />
+          <Property Name="DiaChiGiao" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="TongTien" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="ThanhToan" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="TinhTrang" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="HoTen" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Sdt" Type="String" MaxLength="11" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="CHITIETDONHANGs" Relationship="Self.FK_CTDH_DH" FromRole="DONHANG" ToRole="CHITIETDONHANG" />
-          <NavigationProperty Name="KHACHHANG" Relationship="Self.FK_DH_KHACHHANG" FromRole="DONHANG" ToRole="KHACHHANG" />
-          <NavigationProperty Name="NHANVIEN" Relationship="Self.FK_DH_NHANVIEN" FromRole="DONHANG" ToRole="NHANVIEN" />
-          <NavigationProperty Name="PROMOCODE" Relationship="Self.FK_DH_Promo" FromRole="DONHANG" ToRole="PROMOCODE" />
         </EntityType>
         <EntityType Name="KHACHHANG">
           <Key>
             <PropertyRef Name="MaKH" />
           </Key>
           <Property Name="MaKH" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TenKH" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="DiaChi" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Sdt" Type="String" MaxLength="11" FixedLength="false" Unicode="false" />
-          <Property Name="MatKhau" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="DONHANGs" Relationship="Self.FK_DH_KHACHHANG" FromRole="KHACHHANG" ToRole="DONHANG" />
+          <Property Name="TenKH" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DiaChi" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Sdt" Type="String" MaxLength="11" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="MatKhau" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
         </EntityType>
         <EntityType Name="LOAISP">
           <Key>
@@ -423,7 +369,7 @@
             <PropertyRef Name="MaNhanHieu" />
           </Key>
           <Property Name="MaNhanHieu" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TenNhanHieu" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TenNhanHieu" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="SANPHAMs" Relationship="Self.FK_SP_NHANHIEU" FromRole="NHANHIEU" ToRole="SANPHAM" />
         </EntityType>
         <EntityType Name="NHANVIEN">
@@ -440,7 +386,6 @@
           <Property Name="CMND" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
           <Property Name="MatKhau" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="QuyenNV" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
-          <NavigationProperty Name="DONHANGs" Relationship="Self.FK_DH_NHANVIEN" FromRole="NHANVIEN" ToRole="DONHANG" />
         </EntityType>
         <EntityType Name="PROMOCODE">
           <Key>
@@ -451,18 +396,17 @@
           <Property Name="Value" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="Code" Type="String" MaxLength="250" FixedLength="true" Unicode="true" Nullable="false" />
           <Property Name="Status" Type="Boolean" />
-          <NavigationProperty Name="DONHANGs" Relationship="Self.FK_DH_Promo" FromRole="PROMOCODE" ToRole="DONHANG" />
         </EntityType>
         <EntityType Name="SANPHAM">
           <Key>
             <PropertyRef Name="MaSP" />
           </Key>
           <Property Name="MaSP" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TenSP" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Anh" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="MaNhanHieu" Type="Int32" />
-          <Property Name="MaLoai" Type="Int32" />
-          <Property Name="DonGia" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="TenSP" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Anh" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="MaNhanHieu" Type="Int32" Nullable="false" />
+          <Property Name="MaLoai" Type="Int32" Nullable="false" />
+          <Property Name="DonGia" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
           <Property Name="Anh2" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="Anh3" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="MoTa" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
@@ -565,44 +509,8 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_DH_KHACHHANG">
-          <End Role="KHACHHANG" Type="Self.KHACHHANG" Multiplicity="0..1" />
-          <End Role="DONHANG" Type="Self.DONHANG" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="KHACHHANG">
-              <PropertyRef Name="MaKH" />
-            </Principal>
-            <Dependent Role="DONHANG">
-              <PropertyRef Name="MaKH" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DH_NHANVIEN">
-          <End Role="NHANVIEN" Type="Self.NHANVIEN" Multiplicity="0..1" />
-          <End Role="DONHANG" Type="Self.DONHANG" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="NHANVIEN">
-              <PropertyRef Name="MaNV" />
-            </Principal>
-            <Dependent Role="DONHANG">
-              <PropertyRef Name="MaNV" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DH_Promo">
-          <End Role="PROMOCODE" Type="Self.PROMOCODE" Multiplicity="0..1" />
-          <End Role="DONHANG" Type="Self.DONHANG" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PROMOCODE">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="DONHANG">
-              <PropertyRef Name="PromoID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_SP_LOAI">
-          <End Role="LOAISP" Type="Self.LOAISP" Multiplicity="0..1" />
+          <End Role="LOAISP" Type="Self.LOAISP" Multiplicity="1" />
           <End Role="SANPHAM" Type="Self.SANPHAM" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="LOAISP">
@@ -614,7 +522,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_SP_NHANHIEU">
-          <End Role="NHANHIEU" Type="Self.NHANHIEU" Multiplicity="0..1" />
+          <End Role="NHANHIEU" Type="Self.NHANHIEU" Multiplicity="1" />
           <End Role="SANPHAM" Type="Self.SANPHAM" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="NHANHIEU">
@@ -665,18 +573,6 @@
             <End Role="SANPHAM" EntitySet="SANPHAMs" />
             <End Role="CHITIETSP" EntitySet="CHITIETSPs" />
           </AssociationSet>
-          <AssociationSet Name="FK_DH_KHACHHANG" Association="Self.FK_DH_KHACHHANG">
-            <End Role="KHACHHANG" EntitySet="KHACHHANGs" />
-            <End Role="DONHANG" EntitySet="DONHANGs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DH_NHANVIEN" Association="Self.FK_DH_NHANVIEN">
-            <End Role="NHANVIEN" EntitySet="NHANVIENs" />
-            <End Role="DONHANG" EntitySet="DONHANGs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DH_Promo" Association="Self.FK_DH_Promo">
-            <End Role="PROMOCODE" EntitySet="PROMOCODEs" />
-            <End Role="DONHANG" EntitySet="DONHANGs" />
-          </AssociationSet>
           <AssociationSet Name="FK_SP_LOAI" Association="Self.FK_SP_LOAI">
             <End Role="LOAISP" EntitySet="LOAISPs" />
             <End Role="SANPHAM" EntitySet="SANPHAMs" />
@@ -721,7 +617,6 @@
                 <ScalarProperty Name="MaDH" ColumnName="MaDH" />
                 <ScalarProperty Name="MaKH" ColumnName="MaKH" />
                 <ScalarProperty Name="PromoID" ColumnName="PromoID" />
-                <ScalarProperty Name="MaNV" ColumnName="MaNV" />
                 <ScalarProperty Name="NgayDatHang" ColumnName="NgayDatHang" />
                 <ScalarProperty Name="NgayGiaoHang" ColumnName="NgayGiaoHang" />
                 <ScalarProperty Name="DiaChiGiao" ColumnName="DiaChiGiao" />
