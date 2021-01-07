@@ -81,7 +81,7 @@
                                     </tr>
                                     <tr>
                                         <td class="text-black" colspan="4">Tổng tiền</td>
-                                        <td class="text-black "> @string.Format("{0:0,0}", TempData["TongTien"]) VNĐ</td>
+                                        <td class="text-black "> @string.Format("{0:0,0}", ViewBag.TongTienCon) VNĐ</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -137,10 +137,6 @@
                                 </div>
                             </div>
 
-                            <div class="border p-3 mb-3">
-                                @Html.ActionLink("Momo payment", "PaymentWithMomo", "GioHang", new { @class = "h6 md-0", @style = "color: black" })
-
-                            </div>
 
                             <div class="border p-3 mb-5">
                                  @Html.ActionLink("Paypal payment", "PaymentWithPaypal", "GioHang", new {@class = "h6 md-0", @style = "color: black" })

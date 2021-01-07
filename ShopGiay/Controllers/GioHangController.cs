@@ -268,56 +268,42 @@ namespace ShopGiay.Controllers
             List<GIOHANG> listGioHang = Session["GIOHANG"] as List<GIOHANG>;
             decimal tongTien = TongTien();
             decimal tongGiam = decimal.Parse(Session["TongGiam"].ToString());// tonggiam = 0;
+            decimal tongTienCon = tongTien - tongGiam;
             KHACHHANG kh = db.KHACHHANGs.SingleOrDefault(x => x.MaKH == maKH);
             ViewBag.TongGiam = tongGiam;
             ViewBag.TongTien = tongTien;
-            ViewBag.TongTienCon = tongTien;
+            ViewBag.TongTienCon = tongTienCon;
             ViewBag.TenKH = kh.TenKH;
             ViewBag.DiaChi = kh.DiaChi;
             ViewBag.Sdt = kh.Sdt;
-            if (Session["GIOHANG2"] != null)
-            {
-                List<GIOHANG> listGioHang2 = Session["GIOHANG2"] as List<GIOHANG>;
-                tongGiam = decimal.Parse(Session["TongGiam"].ToString());
-                decimal tongTienCon = tongTien - tongGiam;
-                ViewBag.TongGiam = tongGiam;// tiền trừ có mã giảm giá
-                ViewBag.TongTienCon = tongTienCon;// tiền còn lại
-                Session["TongTienCon"] = tongTienCon;// tiền còn lại
-                return View(listGioHang2);
-            }
+            Session["TongTienCon"] = tongTienCon;
             return View(listGioHang);
         }
         [HttpPost, ActionName("ThanhToan")]
         [ValidateAntiForgeryToken]
-        public ActionResult XacNhanThanhToan(int maKH)
+        public ActionResult XacNhanThanhToan()
         {
             string code = null;
-            int promoID = 0;
+            string promoID = null;
             if (Session["Code"] != null)
             {
-                code  = Session["Code"].ToString();
+                code = Session["Code"].ToString();
                 PROMOCODE check = db.PROMOCODEs.SingleOrDefault(x => x.Code == code);
                 if (check != null)
-                {
-                    promoID = check.Id;
-                }
+                    promoID = (check.Id).ToString();
             }
-           
+
             string thanhToan = "Chưa thanh toán";
-            if (Session["Paypal"] != null)
-            {
-                thanhToan = "Đã thanh toán";
-            }    
-                
+            int maKH = int.Parse(Session["UserID"].ToString());
             KHACHHANG kh = db.KHACHHANGs.SingleOrDefault(x => x.MaKH == maKH);
             DONHANG dh = new DONHANG()
             {
                 MaKH = int.Parse(Session["UserID"].ToString()),
-                PromoID = promoID,
+                PromoID = Convert.ToInt32(promoID),
                 NgayDatHang = DateTime.Now,
                 NgayGiaoHang = null,
                 DiaChiGiao = kh.DiaChi,
-                TongTien = TongTien(),
+                TongTien = decimal.Parse(Session["TongTienCon"].ToString()),
                 ThanhToan = thanhToan,
                 TinhTrang = "Chưa xác nhận",
                 HoTen = kh.TenKH,
@@ -399,49 +385,52 @@ namespace ShopGiay.Controllers
         }
         public ActionResult ApplyPromoCode()
         {
-            string code = Request.Form["txtcode"].ToString();
-            List<GIOHANG> listGioHangMoi = Session["GIOHANG"] as List<GIOHANG>;
-            if (code != null)
+            if (Session["Code"] != null)
             {
-                PROMOCODE check = db.PROMOCODEs.SingleOrDefault(x => x.Code == code);
-                if (check == null)
+                ViewBag.Error = "Bạn đã áp dụng mã giám giá rồi";
+            }    
+            else
+            {
+                string code = Request.Form["txtcode"].ToString();
+                List<GIOHANG> listGioHang = LayGioHang();
+                if (code != null)
                 {
-                    ViewBag.Error = "Mã giảm giá không chính xác";
-
-                }
-                else
-                {
-                    if (check.Status == false)
+                    PROMOCODE check = db.PROMOCODEs.SingleOrDefault(x => x.Code == code);
+                    if (check == null)
                     {
-                        ViewBag.Error = "Mã giảm giá áp dụng thành công!";
-                      
+                        ViewBag.Error = "Mã giảm giá không chính xác";
+
                     }
                     else
                     {
-                        Session["Code"] = code;
-                        
-                        foreach (var item in listGioHangMoi)
+                        if (check.Status == false)
                         {
-                            // một sản phẩm đầu trong giỏ hàng
-                            SANPHAM sp = db.SANPHAMs.SingleOrDefault(x => x.MaSP == item.MaSP);
-                            if (check.Code.Contains(sp.NHANHIEU.TenNhanHieu))
-                            {
-                                decimal tongGiam = 0;
-                                decimal giam = sp.DonGia * check.Value;
-                                tongGiam += giam;
-                                sp.DonGia -= giam;
-                                Session["TongGiam"] = tongGiam;
-                                List<GIOHANG> listGioHang2 = listGioHangMoi;
-                                Session["GIOHANG2"] = listGioHangMoi;
-                                return RedirectToAction("ThanhToan", new { @maKH = Session["UserID"] });
-                            }
-                        }
-                        
-                    }
+                            ViewBag.Error = "Mã giảm giá áp dụng thành công!";
 
-                }
+                        }
+                        else
+                        {
+                            Session["Code"] = code;
+                            decimal tongGiam = 0;
+                            foreach (var item in listGioHang)
+                            {
+                                // một sản phẩm đầu trong giỏ hàng
+                                SANPHAM sp = db.SANPHAMs.SingleOrDefault(x => x.MaSP == item.MaSP);
+                                if (check.Code.Contains(sp.NHANHIEU.TenNhanHieu))
+                                {
+                                    decimal giam = sp.DonGia * check.Value * item.SoLuong;
+                                    tongGiam += giam;
+                                }
+
+                            }
+                            Session["TongGiam"] = tongGiam;
+                        }
+
+                    }
+                }    
+           
             }
-            return RedirectToAction("ThanhToan", new { @maKH = Session["UserID"] });
+            return RedirectToAction("ThanhToan");
         }
         public ActionResult HuyThanhToan(int maKH)
         {
@@ -459,82 +448,57 @@ namespace ShopGiay.Controllers
             USD = 22602;
             return (st) / USD;
         }
-       
 
-        public ActionResult PaymentWithPaypal()
+
+        public ActionResult PaymentWithPaypal(string Cancel = null)
         {
-            //getting the apiContext as earlier
+            //getting the apiContext  
             APIContext apiContext = PaypalConfiguration.GetAPIContext();
 
             try
             {
+                //A resource representing a Payer that funds a payment Payment Method as paypal  
+                //Payer Id will be returned when payment proceeds or click to pay  
                 string payerId = Request.Params["PayerID"];
-
                 if (string.IsNullOrEmpty(payerId))
                 {
-                    //this section will be executed first because PayerID doesn't exist
-
-                    //it is returned by the create function call of the payment class
-
-                    // Creating a payment
-
-                    // baseURL is the url on which paypal sendsback the data.
-
-                    // So we have provided URL of this controller only
-
+                    //this section will be executed first because PayerID doesn't exist  
+                    //it is returned by the create function call of the payment class  
+                    // Creating a payment  
+                    // baseURL is the url on which paypal sendsback the data.  
                     string baseURI = Request.Url.Scheme + "://" + Request.Url.Authority + "/GioHang/PaymentWithPayPal?";
-
-                    //guid we are generating for storing the paymentID received in session
-
-                    //after calling the create function and it is used in the payment execution
-
+                    //here we are generating guid for storing the paymentID received in session  
+                    //which will be used in the payment execution  
                     var guid = Convert.ToString((new Random()).Next(100000));
-
-                    //CreatePayment function gives us the payment approval url
-
-                    //on which payer is redirected for paypal acccount payment
-
+                    //CreatePayment function gives us the payment approval url  
+                    //on which payer is redirected for paypal account payment  
                     var createdPayment = this.CreatePayment(apiContext, baseURI + "guid=" + guid);
-
-                    //get links returned from paypal in response to Create function call
-
+                    //get links returned from paypal in response to Create function call  
                     var links = createdPayment.links.GetEnumerator();
-
                     string paypalRedirectUrl = null;
-
                     while (links.MoveNext())
                     {
                         Links lnk = links.Current;
-
                         if (lnk.rel.ToLower().Trim().Equals("approval_url"))
                         {
-                            //saving the payapalredirect URL to which user will be redirected for payment
+                            //saving the payapalredirect URL to which user will be redirected for payment  
                             paypalRedirectUrl = lnk.href;
                         }
                     }
-
-                    // saving the paymentID in the key guid
+                    // saving the paymentID in the key guid  
                     Session.Add(guid, createdPayment.id);
-
                     return Redirect(paypalRedirectUrl);
                 }
                 else
                 {
-                    // This section is executed when we have received all the payments parameters
-
-                    // from the previous call to the function Create
-
-                    // Executing a payment
-
+                    // This function exectues after receving all parameters for the payment  
                     var guid = Request.Params["guid"];
-
                     var executedPayment = ExecutePayment(apiContext, payerId, Session[guid] as string);
-
+                    //If executed payment failed then we will show payment failure message to user  
                     if (executedPayment.state.ToLower() != "approved")
                     {
                         return View("Failure");
                     }
-
                 }
             }
             catch (Exception ex)
@@ -543,18 +507,25 @@ namespace ShopGiay.Controllers
                 return View("Failure");
             }
             int maKH = int.Parse(Session["UserID"].ToString());
-            //string code = Session["Code"].ToString();
-            //PROMOCODE check = db.PROMOCODEs.SingleOrDefault(x => x.Code == code);
-            //int promoID = check.Id;
+            string code = null;
+            string promoID = null;
+            if (Session["Code"] != null)
+            {
+                code = Session["Code"].ToString();
+                PROMOCODE check = db.PROMOCODEs.SingleOrDefault(x => x.Code == code);
+                if (check != null)
+                    promoID = (check.Id).ToString();
+            }
+
             KHACHHANG kh = db.KHACHHANGs.SingleOrDefault(x => x.MaKH == maKH);
             DONHANG dh = new DONHANG()
             {
                 MaKH = int.Parse(Session["UserID"].ToString()),
-                PromoID = null,
+                PromoID = Convert.ToInt32(promoID),
                 NgayDatHang = DateTime.Now,
                 NgayGiaoHang = null,
                 DiaChiGiao = kh.DiaChi,
-                TongTien = TongTien(),
+                TongTien = decimal.Parse(Session["TongTienCon"].ToString()),
                 ThanhToan = "Đã thanh toán",
                 TinhTrang = "Chưa xác nhận",
                 HoTen = kh.TenKH,
@@ -599,27 +570,24 @@ namespace ShopGiay.Controllers
             return RedirectToAction("ThanksYou");
         }
 
-        private Payment payment;
-
+        private PayPal.Api.Payment payment;
         private Payment ExecutePayment(APIContext apiContext, string payerId, string paymentId)
         {
-            var paymentExecution = new PaymentExecution() { payer_id = payerId };
-            this.payment = new Payment() { id = paymentId };
+            var paymentExecution = new PaymentExecution()
+            {
+                payer_id = payerId
+            };
+            this.payment = new Payment()
+            {
+                id = paymentId
+            };
             return this.payment.Execute(apiContext, paymentExecution);
         }
-
         private Payment CreatePayment(APIContext apiContext, string redirectUrl)
         {
-            List<GIOHANG> listGioHang = LayGioHang();
-            decimal tongTien = listGioHang.Sum(n => n.ThanhTien);
-            decimal tongTienDoi = DoiTien(tongTien);
-            decimal tongGiam = 0;
-            if (Session["TongGiam"] != null)
-            {
-                tongGiam = decimal.Parse(Session["TongGiam"].ToString());
-            }
-            decimal tongGiamDoi = DoiTien(tongGiam);
-            decimal tongTienCon = tongTienDoi - tongGiamDoi;
+            List<GIOHANG> listGioHang = Session["GIOHANG"] as List<GIOHANG>;
+            decimal tongTienCon = decimal.Parse(Session["TongTienCon"].ToString());
+            decimal tongTienConDoi = DoiTien(tongTienCon);
             //create itemlist and add item objects to it
             var itemList = new ItemList() { items = new List<Item>() };
             //Adding Item Details like name, currency, price etc
@@ -648,7 +616,7 @@ namespace ShopGiay.Controllers
             // Adding Tax, shipping and Subtotal details
             var details = new Details()
             {
-                subtotal = tongTienCon.ToString("F"),
+                subtotal = tongTienConDoi.ToString("F"),
             };
 
             //Final amount with details
@@ -670,7 +638,7 @@ namespace ShopGiay.Controllers
             });
 
 
-            this.payment = new Payment()
+            payment = new Payment()
             {
                 intent = "sale",
                 payer = payer,
@@ -679,205 +647,8 @@ namespace ShopGiay.Controllers
             };
 
             // Create a payment using a APIContext
-            return this.payment.Create(apiContext);
-
-        }
-
-
-        // Thanh toán momo 
-        public ActionResult PaymentWithMomo()
-        {
-            List<GIOHANG> listGioHang = LayGioHang();
-            DONHANG dh = new DONHANG();
-            string endpoint = ConfigurationManager.AppSettings["endpoint"].ToString();
-            string partnerCode = ConfigurationManager.AppSettings["partnerCode"].ToString();
-            string accessKey = ConfigurationManager.AppSettings["accessKey"].ToString();
-            string serectkey = ConfigurationManager.AppSettings["serectkey"].ToString();
-            string orderInfo = ConfigurationManager.AppSettings["orderInfo"].ToString();
-            string returnUrl = ConfigurationManager.AppSettings["returnUrl"].ToString();
-            string notifyurl = ConfigurationManager.AppSettings["notifyurl"].ToString();
-
-
-            var amount = Session["TongTien2"].ToString();
-            string orderid = dh.MaDH.ToString();
-            string requestId = Guid.NewGuid().ToString();
-            string extraData = "";
-
-            //Before sign HMAC SHA256 signature
-            string rawHash = "partnerCode=" +
-                partnerCode + "&accessKey=" +
-                accessKey + "&requestId=" +
-                requestId + "&amount=" +
-                amount + "&orderId=" +
-                orderid + "&orderInfo=" +
-                orderInfo + "&returnUrl=" +
-                returnUrl + "&notifyUrl=" +
-                notifyurl + "&extraData=" +
-                extraData;
-
-            //log.Debug("rawHash = " + rawHash);
-
-            MoMoSecurity crypto = new MoMoSecurity();
-            string signature = crypto.signSHA256(rawHash, serectkey);
-            //log.Debug("Signature = " + signature);
-
-            ////build body json request
-            JObject message = new JObject
-            {
-                { "partnerCode", partnerCode },
-                { "accessKey", accessKey },
-                { "requestId", requestId },
-                { "amount", amount },
-                { "orderId", orderid },
-                { "orderInfo", orderInfo },
-                { "returnUrl", returnUrl },
-                { "notifyUrl", notifyurl },
-                { "extraData", extraData },
-                { "requestType", "captureMoMoWallet" },
-                { "signature", signature }
-
-            };
-            //log.Debug("Json request to MoMo: "+ message.ToString());
-            string responseFromMomo = PaymentRequest.sendPaymentRequest(endpoint, message.ToString());
-
-            JObject jmessage = JObject.Parse(responseFromMomo);
-            return Redirect(jmessage.GetValue("payUrl").ToString());
-
-        }
-
-        public ActionResult ReturnUrl()
-        {
-            string param = Request.QueryString.ToString().Substring(0, Request.QueryString.ToString().IndexOf("signature") - 1);
-            param = Server.UrlDecode(param);
-            MoMoSecurity crypto = new MoMoSecurity();
-            string serectkey = ConfigurationManager.AppSettings["serectkey"].ToString();
-            string signature = crypto.signSHA256(param, serectkey);
-            ViewBag.message = "";
-            int a = Convert.ToInt32(Request["orderid"]);
-            var order = db.DONHANGs.Where(x => x.MaDH == a).FirstOrDefault();
-            if (signature != Request["signature"].ToString())
-            {
-                ViewBag.message = "thông tin không hợp lệ";
-                order.ThanhToan = "Đã thanh toán";
-                order.TinhTrang = "Thanh toán that bai";
-                return View();
-            }
-            if (!Request.QueryString["errorCode"].Equals("0"))
-            {
-                order.ThanhToan = "Đã thanh toán";
-                order.TinhTrang = "Thanh toán that bai";
-                ViewBag.message = "Thanh toán thất bại";
-                return View();
-            }
-            else
-            {
-                order.ThanhToan = "Đã thanh toán";
-                order.TinhTrang = "Đã xác nhận";
-                List<GIOHANG> listGioHang = LayGioHang();
-                foreach (var item in listGioHang)
-                {
-                    int maSP = item.MaSP;
-                    int maSize = item.MaSize;
-                    int maMau = item.MaMau;
-                    int soLuong = item.SoLuong;
-                    CHITIETSP ctsp = db.CHITIETSPs.SingleOrDefault(x => x.MaSP == maSP && x.MaMau == maMau && x.MaSize == maSize);
-                    ctsp.SoLuong -= soLuong;
-                    db.Entry(ctsp).State = EntityState.Modified;
-                    db.SaveChanges();
-                }
-                foreach (var item in listGioHang)
-                {
-                    int maSP = item.MaSP;
-                    int maSize = item.MaSize;
-                    int maMau = item.MaMau;
-                    int soLuong = item.SoLuong;
-                    decimal donGia = item.ThanhTien;
-                    CHITIETDONHANG ctdh = new CHITIETDONHANG()
-                    {
-                        MaDH = order.MaDH,
-                        MaSP = maSP,
-                        MaMau = maMau,
-                        MaSize = maSize,
-                        SoLuong = soLuong,
-                        DonGia = donGia
-                    };
-                    db.CHITIETDONHANGs.Add(ctdh);
-                    db.SaveChanges();
-                }
-                ViewBag.message = "thanh toán thành công";
-
-            }
-            return RedirectToAction("Purchase", "Store", new { Status = "PENDING" });
-        }
-        [HttpPost]
-        public ActionResult NotifyUrl()
-        {
-            string param = "";
-            param = "partner_code=" + Request["partner_code"] +
-                "&access_key=" + Request["access_key"] +
-                "&amount=" + Request["amount"] +
-                "&order_id=" + Request["order_id"] +
-                "&order_info=" + Request["order_info"] +
-                "&order_type=" + Request["order_type"] +
-                "&transaction_id" + Request["transaction_id"] +
-                "&message=" + Request["message"] +
-                "&response_time=" + Request["response_time"] +
-                "&status_code=" + Request["status_code"];
-
-            param = Server.UrlDecode(param);
-            MoMoSecurity crypto = new MoMoSecurity();
-            string serectkey = ConfigurationManager.AppSettings["serectkey"].ToString();
-            string signature = crypto.signSHA256(param, serectkey);
-
-            var order = db.DONHANGs.Where(x => x.MaDH == Convert.ToInt32(Request["order_id"])).FirstOrDefault();
-
-            if (signature != Request["signature"].ToString())
-            {
-
-            }
-            string status_code = Request["status_code"].ToString();
-            if (status_code != "0")
-            {
-                order.ThanhToan = "Đã thanh toán";
-                order.TinhTrang = "Thanh toán thất bại";//chờ xác nhận
-            }
-            else
-            {
-                order.ThanhToan = "Đã thanh toán";
-                order.TinhTrang = "Chờ xác nhận";//chờ xác nhận
-                List<GIOHANG> listGioHang = LayGioHang();
-                foreach (var item in listGioHang)
-                {
-                    int maSP = item.MaSP;
-                    int maSize = item.MaSize;
-                    int maMau = item.MaMau;
-                    int soLuong = item.SoLuong;
-                    CHITIETSP ctsp = db.CHITIETSPs.SingleOrDefault(x => x.MaSP == maSP && x.MaMau == maMau && x.MaSize == maSize);
-                    ctsp.SoLuong -= soLuong;
-                    db.Entry(ctsp).State = EntityState.Modified;
-                    db.SaveChanges();
-                }
-                foreach (var item in listGioHang)
-                {
-                    int maSP = item.MaSP;
-                    int maSize = item.MaSize;
-                    int maMau = item.MaMau;
-                    int soLuong = item.SoLuong;
-                    decimal donGia = item.ThanhTien;
-                    CHITIETDONHANG ctdh = new CHITIETDONHANG()
-                    {
-                        MaDH = order.MaDH,
-                        MaSP = maSP,
-                        MaMau = maMau,
-                        MaSize = maSize,
-                        SoLuong = soLuong,
-                        DonGia = donGia
-                    };
-                    db.CHITIETDONHANGs.Add(ctdh);
-                    db.SaveChanges();
-                }
-            }
-            return Json("", JsonRequestBehavior.AllowGet);
+            return payment.Create(apiContext);
+      
         }
     }
 }

@@ -21,5 +21,7 @@ namespace ShopGiay.Models
         [Required(ErrorMessage ="Tên loại sản phẩm không được để trống")]
         [Index(IsUnique = true)]
         public string TenLoai { get; set; }
+        [Display(Name = "Mã khách hàng")]
+        public Nullable<int> UserID { get; set; }
     }
 }

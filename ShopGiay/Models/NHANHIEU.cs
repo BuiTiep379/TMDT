@@ -22,7 +22,9 @@ namespace ShopGiay.Models
     
         public int MaNhanHieu { get; set; }
         public string TenNhanHieu { get; set; }
+        public Nullable<int> UserID { get; set; }
     
+        public virtual KHACHHANG KHACHHANG { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SANPHAM> SANPHAMs { get; set; }
     }

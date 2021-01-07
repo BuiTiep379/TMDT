@@ -24,5 +24,6 @@ namespace ShopGiay.Models
         public string CMND { get; set; }
         public string MatKhau { get; set; }
         public string QuyenNV { get; set; }
+        public Nullable<bool> Status { get; set; }
     }
 }

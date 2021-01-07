@@ -5,16 +5,16 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayouts.cshtml";
 }
 
-@section sidebarMenu
+@section SidebarMenu
 {
-    @Html.Action("SidebarMenu", "AdminHome")
-
+    @Html.Action("SidebarMenu", "MyShop")
 }
-
-@section headerStarts
+@section NavBar{
+    @Html.Action("NavBar", "MyShop")
+}
+@section Footer
 {
-    @Html.Action("HeaderStarts", "AdminHome")
-
+    @Html.Action("Footer", "MyShop")
 }
 <div class="container-fluid" style="margin-left: 100px">
     <div class="col-lg-12">

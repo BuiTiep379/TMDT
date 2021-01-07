@@ -47,6 +47,10 @@ namespace ShopGiay.Models
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public System.DateTime NgayCapNhat { get; set; }
+        [Display(Name = "Mã khách hàng")]
+        public Nullable<int> UserID { get; set; }
+        [Display(Name = "Trạng thái")]
+        public Nullable<bool> Status { get; set; }
     }
 
 }

@@ -20,5 +20,5 @@ namespace ShopGiay.Models
         [Display(Name = "Tên màu")]
         [Required(ErrorMessage = "{0} không được để trống")]
         public string MauSac { get; set; }
-    }
+    } 
 }

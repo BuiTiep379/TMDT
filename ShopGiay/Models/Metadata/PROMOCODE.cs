@@ -30,5 +30,7 @@ namespace ShopGiay.Models
         [Display(Name = "Trạng thái code")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "{0} không được để trống")]
         public Nullable<bool> Status { get; set; }
+        [Display(Name = "Mã khách hàng")]
+        public Nullable<int> UserID { get; set; }
     }
 }
