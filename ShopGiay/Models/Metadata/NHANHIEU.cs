@@ -21,5 +21,7 @@ namespace ShopGiay.Models
         [Required(ErrorMessage = "{0} không được để trống")]
         [Index(IsUnique = true)]
         public string TenNhanHieu { get; set; }
+        [Display(Name = "Mã khách hàng")]
+        public Nullable<int> UserID { get; set; }
     }
 }

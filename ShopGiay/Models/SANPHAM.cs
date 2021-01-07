@@ -31,11 +31,14 @@ namespace ShopGiay.Models
         public string Anh3 { get; set; }
         public string MoTa { get; set; }
         public System.DateTime NgayCapNhat { get; set; }
+        public Nullable<int> UserID { get; set; }
+        public Nullable<bool> Status { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CHITIETDONHANG> CHITIETDONHANGs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CHITIETSP> CHITIETSPs { get; set; }
+        public virtual KHACHHANG KHACHHANG { get; set; }
         public virtual LOAISP LOAISP { get; set; }
         public virtual NHANHIEU NHANHIEU { get; set; }
     }

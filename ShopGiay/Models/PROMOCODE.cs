@@ -19,5 +19,8 @@ namespace ShopGiay.Models
         public decimal Value { get; set; }
         public string Code { get; set; }
         public Nullable<bool> Status { get; set; }
+        public Nullable<int> UserID { get; set; }
+    
+        public virtual KHACHHANG KHACHHANG { get; set; }
     }
 }

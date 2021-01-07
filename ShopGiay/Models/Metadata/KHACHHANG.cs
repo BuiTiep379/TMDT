@@ -42,5 +42,7 @@ namespace ShopGiay.Models
         [DataType(DataType.Password)]
         [RegularExpression(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$", ErrorMessage = "Mật khẩu phải tối thiểu sáu ký tự, ít nhất một chữ cái và một số")]
         public string MatKhau { get; set; }
+        [Display(Name = "Trạng thái tài khoản")]
+        public Nullable<bool> Status { get; set; }
     }
 }

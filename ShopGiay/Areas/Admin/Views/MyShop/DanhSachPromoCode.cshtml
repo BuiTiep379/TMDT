@@ -7,14 +7,14 @@
 
 @section SidebarMenu
 {
-    @Html.Action("SidebarMenu", "AdminHome")
+    @Html.Action("SidebarMenu", "MyShop")
 }
 @section NavBar{
-    @Html.Action("NavBar", "AdminHome")
+    @Html.Action("NavBar", "MyShop")
 }
 @section Footer
 {
-    @Html.Action("Footer", "AdminHome")
+    @Html.Action("Footer", "MyShop")
 }
 <div class="container-fluid">
     <!-- Page Heading -->
@@ -88,7 +88,7 @@
                                                         Chưa kích hoạt
                                                     </td>
                                                 }
-                                            } 
+                                            }
                                             <td>
                                                 <button class="btn btn-success">@Html.ActionLink("Chỉnh sửa", "EditPromoCode", "AdminHome", new { @id = item.Id }, new { @style = "color: white", })</button>
 

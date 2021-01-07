@@ -1,18 +1,18 @@
-﻿@model ShopGiay.Models.CHITIETSP
+﻿@model ShopGiay.Models.PROMOCODE
 @{
-    ViewBag.Title = "DeleteCTSP";
+    ViewBag.Title = "DeletePromoCode";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayouts.cshtml";
 }
 @section SidebarMenu
 {
-    @Html.Action("SidebarMenu", "AdminHome")
+    @Html.Action("SidebarMenu", "MyShop")
 }
 @section NavBar{
-    @Html.Action("NavBar", "AdminHome")
+    @Html.Action("NavBar", "MyShop")
 }
 @section Footer
 {
-    @Html.Action("Footer", "AdminHome")
+    @Html.Action("Footer", "MyShop")
 }
 <div class="container-fluid" style="margin-left: 100px">
     <div class="col-lg-12">
@@ -21,33 +21,33 @@
             <hr />
             <dl class="dl-horizontal">
                 <dt>
-                    @Html.DisplayNameFor(model => model.ID)
+                    @Html.DisplayNameFor(model => model.Id)
                 </dt>
 
                 <dd>
-                    @Html.DisplayFor(model => model.ID)
+                    @Html.DisplayFor(model => model.Id)
                 </dd>
                 <dt>
-                    @Html.DisplayNameFor(model => model.SANPHAM.TenSP)
+                    @Html.DisplayNameFor(model => model.Name)
                 </dt>
 
                 <dd>
-                    @Html.DisplayFor(model => model.SANPHAM.TenSP)
+                    @Html.DisplayFor(model => model.Name)
                 </dd>
                 <dt>
-                    @Html.DisplayNameFor(model => model.MAUSAC.MauSac)
+                    @Html.DisplayNameFor(model => model.Value)
                 </dt>
 
                 <dd>
-                    @Html.DisplayFor(model => model.MAUSAC.MauSac)
+                    @Html.DisplayFor(model => model.Value)
                 </dd>
 
                 <dt>
-                    @Html.DisplayNameFor(model => model.SIZE.Size)
+                    @Html.DisplayNameFor(model => model.Status)
                 </dt>
 
                 <dd>
-                    @Html.DisplayFor(model => model.SIZE.Size)
+                    @Html.DisplayFor(model => model.Status)
                 </dd>
             </dl>
 
@@ -57,10 +57,9 @@
 
                 <div class="form-actions no-color">
                     <button type="submit" value="Delete" class="btn btn-danger">Xóa</button>
-                    <button class="btn btn-info">@Html.ActionLink("Trở về", "DanhSachChiTietSP", "AdminHome")</button>
+                    <button class="btn btn-info">@Html.ActionLink("Trở về", "DanhSachPromoCode", "AdminHome", new { @style = "color: white" })</button>
                 </div>
             }
         </div>
     </div>
 </div>
-

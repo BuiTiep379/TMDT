@@ -1,26 +1,29 @@
-﻿@model PagedList.IPagedList<ShopGiay.Models.MAUSAC>
+﻿
+@model PagedList.IPagedList<ShopGiay.Models.LOAISP>
 @using PagedList.Mvc;
 @{
-    ViewBag.Title = "DanhSachMauSac";
+    ViewBag.Title = "DanhSachLoaiSP";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayouts.cshtml";
 }
+
+
 @section SidebarMenu
 {
-    @Html.Action("SidebarMenu", "AdminHome")
+    @Html.Action("SidebarMenu", "MyShop")
 }
 @section NavBar{
-    @Html.Action("NavBar", "AdminHome")
+    @Html.Action("NavBar", "MyShop")
 }
 @section Footer
 {
-    @Html.Action("Footer", "AdminHome")
+    @Html.Action("Footer", "MyShop")
 }
 <div class="container-fluid">
     <!-- Page Heading -->
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Danh sách màu sắc</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Danh sách loại sản phẩm</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -29,7 +32,7 @@
                         <div class="col-sm-12 col-md-6">
                             <div class="dataTables_length" id="dataTable_length">
                                 <div class="col-md-6 col-lg-6 col-xs-6 col-sm-6" style="margin-bottom: 10px">
-                                    @using (Html.BeginForm("DanhSachMauSac", "AdminHome", FormMethod.Get))
+                                    @using (Html.BeginForm("DanhSachLoaiSP", "MyShop", FormMethod.Get))
                                     {
                                         <p>
                                             Kích thước trang: @Html.DropDownList("size", (List<SelectListItem>)ViewBag.Size, new { @onchange = "this.form.submit();", @class = "form-control-sm" })
@@ -39,7 +42,7 @@
                             </div>
                         </div>
                         <div class="col-sm-12 col-md-6">
-                            @using (Html.BeginForm("DanhSachMauSac", "AdminHome", FormMethod.Post))
+                            @using (Html.BeginForm("DanhSachLoaiSP", "MyShop", FormMethod.Post))
                             {
                                 <div class="col-lg-12" style="margin-bottom: 10px">
                                     <div class="input-group custom-search-form">
@@ -49,8 +52,8 @@
                                                 <i class="fa fa-search"></i>
                                             </button>
                                         </span>
-                                        <div class="col-lg-4">
-                                            @Html.ActionLink("Thêm mới màu sắc", "AddMau", "AdminHome", new { @class = "btn btn-primary" })
+                                        <div class="col-lg-6">
+                                            @Html.ActionLink("Thêm mới loại sản phẩm", "AddLoaiSP", "MyShop", new { @class = "btn btn-primary" })
                                         </div>
                                     </div>
                                 </div>
@@ -62,19 +65,20 @@
                             <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
                                 <thead>
                                     <tr role="row">
-                                        <th>@Html.DisplayNameFor(model => model.First().MauSac)</th>
-                                        <th width="200px">Thao tác</th>
+                                        <th>@Html.DisplayNameFor(model => model.First().TenLoai)</th>
+                                        <th width="250px">Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach (var item in Model)
                                     {
-                                    <tr>
-                                        <td>@Html.DisplayFor(modelItem => item.MauSac)</td>
-                                        <td>
-                                            <button class="btn btn-success">@Html.ActionLink("Chỉnh sửa", "EditMau", "AdminHome", new { @maMau = item.MaMau }, new { @style = "color: white", })</button>
-                                        </td>
-                                    </tr>
+                                        <tr>
+                                            <td>@Html.DisplayFor(modelItem => item.TenLoai)</td>
+                                            <td>
+                                                <button class="btn btn-success">@Html.ActionLink("Chỉnh sửa", "EditLoaiSP", "MyShop", new { @maLoai = item.MaLoai }, new { @style = "color: white", })</button>
+                                                <button class="btn btn-danger">  @Html.ActionLink("Xóa", "DeleteLoaiSP", "MyShop", new { @maLoai = item.MaLoai }, new { @style = "color: white", })</button>
+                                            </td>
+                                        </tr>
                                     }
                                 </tbody>
                             </table>
@@ -85,7 +89,7 @@
                             Trang: @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
                         </div>
                     </div>
-                    @Html.PagedListPager(Model, page => Url.Action("DanhSachMauSac", new { page, size = ViewBag.CurrentSize }))
+                    @Html.PagedListPager(Model, page => Url.Action("DanhSachLoaiSP", "AdminHome", new { page, size = ViewBag.CurrentSize }))
                 </div>
             </div>
         </div>

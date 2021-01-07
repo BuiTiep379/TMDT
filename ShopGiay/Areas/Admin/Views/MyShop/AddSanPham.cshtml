@@ -5,20 +5,20 @@
 }
 @section SidebarMenu
 {
-    @Html.Action("SidebarMenu", "AdminHome")
+    @Html.Action("SidebarMenu", "MyShop")
 }
 @section NavBar{
-    @Html.Action("NavBar", "AdminHome")
+    @Html.Action("NavBar", "MyShop")
 }
 @section Footer
 {
-    @Html.Action("Footer", "AdminHome")
+    @Html.Action("Footer", "MyShop")
 }
 
 <div class="container-fluid" style="margin-left: 100px">
     <div class="col-lg-12">
         <h2>THÊM MỚI</h2>
-        @using (Html.BeginForm("AddSanPham", "AdminHome", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+        @using (Html.BeginForm("AddSanPham", "MyShop", FormMethod.Post, new { @enctype = "multipart/form-data" }))
         {
             if (TempData["ThongBao"] != null)
             {
@@ -115,6 +115,7 @@
         }
     </div>
 </div>
+
 
 
 

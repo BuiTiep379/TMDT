@@ -1,0 +1,234 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayouts.cshtml";
+}
+@section SidebarMenu
+{
+    @Html.Action("SidebarMenu", "MyShop")
+}
+@section NavBar{
+    @Html.Action("NavBar", "MyShop")
+}
+@section Footer
+{
+    @Html.Action("Footer", "MyShop")
+}
+
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+    </div>
+
+    <!-- Content Row -->
+    <div class="row">
+
+      
+    </div>
+
+    <!-- Content Row -->
+
+    <div class="row">
+        <div class="col-xl-7 col-lg-7">
+            <!-- Bar Chart -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        Biểu đồ doanh thu theo tháng
+                    </h6>
+                </div>
+                <div class="card-body" style="height: 317px">
+                    <canvas id="barcanvas"></canvas>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-xl-5 col-lg-5">
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Biểu đồ tỷ lệ sản phẩm theo nhãn hiệu đã bán</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    <div class="chart-pie pt-4 pb-2">
+                        <canvas id="myPieChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <form action="/Admin/AdminHome/Index" method="post">
+                <div class="col-lg-12" style="margin-bottom: 10px">
+                    <div class="input-group custom-search-form">
+                        <label class="control-label" style="margin-right: 5px; margin-top: 5px; font-size: 16px">Nhập tháng: </label>
+                        <input class="form-control" type="month" name="month" placeholder="Landmark">
+                        <span class="input-group-btn">
+                            <button class="btn btn-success" type="submit">
+                                Thống kê
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        function number_format(number, decimals, dec_point, thousands_sep) {
+            // *     example: number_format(1234.56, 2, ',', ' ');
+            // *     return: '1 234,56'
+            number = (number + '').replace(',', '').replace(' ', '');
+            var n = !isFinite(+number) ? 0 : +number,
+                prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+                sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+                dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+                s = '',
+                toFixedFix = function (n, prec) {
+                    var k = Math.pow(10, prec);
+                    return '' + Math.round(n * k) / k;
+                };
+            // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+            s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+            if (s[0].length > 3) {
+                s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+            }
+            if ((s[1] || '').length < prec) {
+                s[1] = s[1] || '';
+                s[1] += new Array(prec - s[1].length + 1).join('0');
+            }
+            return s.join(dec);
+        }
+        let pieLabels = @Html.Raw(Json.Encode(ViewData["pieLabels"]));
+        let pieData = @Html.Raw(Json.Encode(ViewData["pieData"]));
+        let barLabels = @Html.Raw(Json.Encode(ViewData["barLabels"]));
+        let barData = @Html.Raw(Json.Encode(ViewData["barData"]));
+        const colors = pieLabels.map((label, index) => {
+            return `rgb(${Math.floor(Math.random() * 256)},${Math.floor(Math.random() * 256)},${Math.floor(Math.random() * 256)})`
+        })
+        window.onload = function () {
+            const ctxBar = document.getElementById("barcanvas");
+            window.myBar = new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+
+                    labels: barLabels,
+                    datasets: [{
+                        label: '',
+                        data: barData,
+                        //backgroundColor:'green',
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.6)',
+                            'rgba(54, 162, 235, 0.6)',
+                            'rgba(255, 206, 86, 0.6)',
+                            'rgba(75, 192, 192, 0.6)',
+                            'rgba(153, 102, 255, 0.6)',
+                            'rgba(255, 159, 64, 0.6)',
+                            'rgba(255, 99, 132, 0.6)',
+                            'rgba(255, 206, 86, 0.6)',
+                            'rgba(75, 192, 192, 0.6)',
+                            'rgba(153, 102, 255, 0.6)',
+                            'rgba(255, 159, 64, 0.6)',
+                            'rgba(255, 99, 132, 0.6)'
+                        ],
+                        borderWidth: 1,
+                        borderColor: '#777',
+                        hoverBorderWidth: 3,
+                        hoverBorderColor: '#000',
+                        maxBarThickness: 25
+                    }]
+                },
+                options: {
+                    legend: {
+                        display: false,
+                        position: 'right',
+                        labels: {
+                            fontColor: '#000'
+                        }
+                    },
+                    maintainAspectRatio: false,
+                    layout: {
+                        padding: {
+                            left: 10,
+                            right: 25,
+                            top: 25,
+                            bottom: 0
+                        }
+                    },
+                    scales: {
+                        xAxes: [{
+                            time: {
+                                unit: 'month'
+                            },
+                            gridLines: {
+                                display: true,
+                                drawBorder: true
+                            },
+
+                            maxBarThickness: 25,
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                min: 0,
+                                max: 100000000,
+                                maxTicksLimit: 5,
+                                padding: 10,
+                                // Include a dollar sign in the ticks
+                                callback: function (value, index, values) {
+                                    return '$' + number_format(value);
+                                }
+                            },
+                            gridLines: {
+                                color: "rgb(234, 236, 244)",
+                                zeroLineColor: "rgb(234, 236, 244)",
+                                drawBorder: false,
+                            }
+                        }],
+                    },
+                    tooltips: {
+                        enabled: true
+                    }
+                }
+            });
+
+            var ctxPie = document.getElementById("myPieChart");
+            window.myLine = new Chart(ctxPie, {
+                type: 'doughnut',
+                radius: '5',
+                data: {
+                    labels: pieLabels,
+                    datasets: [{
+                        data: pieData,
+                        backgroundColor: colors,
+                        hoverBackgroundColor: colors,
+                        hoverBorderColor: "rgba(234, 236, 244, 1)",
+                    }],
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    tooltips: {
+                        backgroundColor: "rgb(255,255,255)",
+                        bodyFontColor: "#858796",
+                        borderColor: '#dddfeb',
+                        borderWidth: 1,
+                        xPadding: 15,
+                        yPadding: 15,
+                        displayColors: false,
+                        caretPadding: 10,
+                    },
+                    legend: {
+                        display: false
+                    },
+                    cutoutPercentage: 80,
+                },
+            });
+        }
+
+
+
+    </script><!-- Page level custom scripts -->
+
+</div>
+
+
