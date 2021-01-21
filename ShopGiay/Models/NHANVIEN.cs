@@ -20,10 +20,10 @@ namespace ShopGiay.Models
         public string Email { get; set; }
         public string Sdt { get; set; }
         public string GioiTinh { get; set; }
-        public Nullable<System.DateTime> NgaySinh { get; set; }
+        public System.DateTime NgaySinh { get; set; }
         public string CMND { get; set; }
         public string MatKhau { get; set; }
-        public string QuyenNV { get; set; }
-        public Nullable<bool> Status { get; set; }
+        public int QuyenNV { get; set; }
+        public int Status { get; set; }
     }
 }

@@ -12,15 +12,13 @@ namespace ShopGiay.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class PROMOCODE
+    public partial class KHOHANG
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public decimal Value { get; set; }
-        public string Code { get; set; }
-        public Nullable<bool> Status { get; set; }
-        public Nullable<int> UserID { get; set; }
+        public int MaCT { get; set; }
+        public int SoLuongBan { get; set; }
+        public int SoLuongCon { get; set; }
     
-        public virtual KHACHHANG KHACHHANG { get; set; }
+        public virtual CHITIETSP CHITIETSP { get; set; }
     }
 }

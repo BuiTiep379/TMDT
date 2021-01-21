@@ -60,7 +60,7 @@ namespace ShopGiay.Models
         public string MatKhau { get; set; }
         [Display(Name = "Quyền nhân viên")]
         public string QuyenNV { get; set; }
-        [Display(Name = "Trạng thái tài khoản")]
-        public Nullable<bool> Status { get; set; }
+        [Display(Name = "Trạng thái")]
+        public int Status { get; set; }
     }
 }

@@ -7,18 +7,86 @@ using ShopGiay.Models;
 using PagedList;
 using System.IO;
 using System.Data.Entity;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace ShopGiay.Areas.Admin.Controllers
 {
     public class MyShopController : Controller
     {
         ShopGiayEntities db = new ShopGiayEntities();
-        
+        [HttpGet]
+        public ActionResult Login()
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Login(NHANVIEN nv)
+        {
+            string email = Request.Form["Email"].ToString();
+            string matKhau = Request.Form["MatKhau"].ToString();
+            string fMatKhau = GetMD5(matKhau);
+            NHANVIEN NVBan = db.NHANVIENs.SingleOrDefault(x => x.QuyenNV == 2);
+            nv = db.NHANVIENs.SingleOrDefault(n => n.Email == email && n.MatKhau == fMatKhau);
+            KHACHHANG kh = db.KHACHHANGs.SingleOrDefault(n => n.Email == email && n.MatKhau == fMatKhau);
+            if (kh != null)
+            {
+                ViewBag.ThongBao = "Tài khoản không phải của nhân viên bán!";
+                return View();
+            }
+            if (nv != null)
+            {
+                if (nv.QuyenNV != NVBan.QuyenNV)
+                {
+                    ViewBag.ThongBao = "Tài khoản không phải là nhân viên bán!";
+                    return View();
+                }
+                else
+                {
+                    Session["MaNV"] = nv.MaNV;
+                    Session["TenNV"] = nv.TenNV;
+                    Session["Quyen"] = nv.QuyenNV;
+                    return RedirectToAction("Index");
+                }
+
+            }
+            ViewBag.ThongBao = "Tên tài khoản hoặc mật khẩu không đúng!";
+            return View();
+        }
+        public ActionResult Logout()
+        {
+            Session.Clear();
+            return RedirectToAction("Login");
+        }
+        [NonAction]
+        public static string GetMD5(string text)
+        {
+            MD5 md5 = new MD5CryptoServiceProvider();
+
+            //compute hash from the bytes of text  
+            md5.ComputeHash(ASCIIEncoding.ASCII.GetBytes(text));
+
+            //get hash result after compute it  
+            byte[] result = md5.Hash;
+
+            StringBuilder strBuilder = new StringBuilder();
+            for (int i = 0; i < result.Length; i++)
+            {
+                //change it into 2 hexadecimal digits  
+                //for each byte  
+                strBuilder.Append(result[i].ToString("x2"));
+            }
+
+            return strBuilder.ToString();
+        }
         // GET: Admin/NguoiBan
+        #region Trang chủ người bán
         public ActionResult Index(FormCollection form)
         {
+            int maNV = int.Parse(Session["MaNV"].ToString());
             // Biểu đồ cột
-            var ordersForBar = db.DONHANGs.ToList();
+            var ordersForBar = db.DONHANGs.Where(x => x.TinhTrang == "DONE").ToList();
             var dataForBar = new List<decimal>();
             var categoriesForBar = new List<string>();
             for (int i = 1; i < 13; i++)
@@ -32,12 +100,14 @@ namespace ShopGiay.Areas.Admin.Controllers
                 if (!categoriesForBar.Contains(order.NgayDatHang.Month.ToString()))
                 {
                     categoriesForBar.Add(order.NgayDatHang.Month.ToString());
-                    dataForBar.Add(order.TongTien);
+                    decimal tongTien = order.CHITIETDONHANG.CHITIETSP.SANPHAM.DonGia* order.CHITIETDONHANG.SoLuong;
+                    dataForBar.Add(tongTien);
                 }
                 else
                 {
                     int index = categoriesForBar.IndexOf(order.NgayDatHang.Month.ToString());
-                    dataForBar[index] += order.TongTien;
+                    decimal tongTien = order.CHITIETDONHANG.CHITIETSP.SANPHAM.DonGia * order.CHITIETDONHANG.SoLuong;
+                    dataForBar[index] += tongTien;
                 }
 
             }
@@ -58,7 +128,7 @@ namespace ShopGiay.Areas.Admin.Controllers
                 yearPie = Convert.ToInt32(now.Year);
             }
             var dataForPie = new List<decimal>();
-            var dhForPie = db.DONHANGs.Where(x => x.NgayDatHang.Month == monthPie && x.NgayDatHang.Year == yearPie);
+            var dhForPie = db.DONHANGs.Where(x => x.NgayDatHang.Month == monthPie && x.NgayDatHang.Year == yearPie && x.TinhTrang == "DONE");
             var categoriesForPie = new List<string>();
             List<int?> tempidOrder = new List<int?>();
             List<int> tempidProduct = new List<int>();
@@ -71,15 +141,16 @@ namespace ShopGiay.Areas.Admin.Controllers
 
             foreach (var item in ctdhForPie)
             {
-                if (!categoriesForPie.Contains(item.SANPHAM.NHANHIEU.TenNhanHieu))
+                if (!categoriesForPie.Contains(item.CHITIETSP.SANPHAM.NHANHIEU.TenNhanHieu))
                 {
-                    categoriesForPie.Add(item.SANPHAM.NHANHIEU.TenNhanHieu);
-                    dataForPie.Add(item.DonGia);
+                    categoriesForPie.Add(item.CHITIETSP.SANPHAM.NHANHIEU.TenNhanHieu);
+                    decimal tongTien = item.CHITIETSP.SANPHAM.DonGia * item.SoLuong;
+                    dataForPie.Add(item.SoLuong * item.CHITIETSP.SANPHAM.DonGia);
                 }
                 else
                 {
-                    int index = categoriesForPie.IndexOf(item.SANPHAM.NHANHIEU.TenNhanHieu);
-                    dataForPie[index] += item.SANPHAM.DonGia * item.SoLuong;
+                    int index = categoriesForPie.IndexOf(item.CHITIETSP.SANPHAM.NHANHIEU.TenNhanHieu);
+                    dataForPie[index] += item.CHITIETSP.SANPHAM.DonGia * item.SoLuong;
                 }
             }
             ViewBag.pieLabels = categoriesForPie.ToArray();
@@ -88,6 +159,8 @@ namespace ShopGiay.Areas.Admin.Controllers
             ViewBag.yearPie = yearPie;
             return View();
         }
+        #endregion
+
         #region CHIA LAYOUT ADMIN
         public ActionResult SidebarMenu()
         {
@@ -125,27 +198,22 @@ namespace ShopGiay.Areas.Admin.Controllers
             page = (page ?? 1);
             int pageNumber = (page ?? 1);
             int pageSize = (size ?? 10);
-            int id = Convert.ToInt32(Session["UserID"]);
-            List<SANPHAM> listSP = new List<SANPHAM>();
-            foreach (var item in db.SANPHAMs)
+            var listSP = from sp in db.SANPHAMs 
+                         where (sp.Status == true)
+                         select sp;
+            listSP = listSP.OrderBy(x => x.MaSP);
+            if (!String.IsNullOrEmpty(search))
             {
-                if (item.UserID == id)
-                {
-                    listSP.Add(item);
-                }
-            }
-
-            if (search != null)
-            {
-                listSP = (List<SANPHAM>)listSP.Where(x => x.TenSP.Contains(search));
+                listSP = listSP.Where(x => x.TenSP.Contains(search));
+                return View(listSP.ToPagedList(pageNumber, pageSize));
             }
             return View(listSP.ToPagedList(pageNumber, pageSize));
         }
         [HttpGet]
         public ActionResult AddSanPham()
         {
-            ViewBag.MaNhanHieu = new SelectList(db.NHANHIEUx, "MaNhanHieu", "TenNhanHieu");
-            ViewBag.MaLoai = new SelectList(db.LOAISPs, "MaLoai", "TenLoai");
+            ViewBag.MaNhanHieu = new SelectList(db.NHANHIEUx.Where(x => x.Status == true), "MaNhanHieu", "TenNhanHieu");
+            ViewBag.MaLoai = new SelectList(db.LOAISPs.Where(x =>  x.Status == true), "MaLoai", "TenLoai");
             ViewBag.TenSanPham = new SelectList(db.SANPHAMs.ToList().OrderBy(x => x.MaSP), "MaSP", "TenSP");
             return View();
         }
@@ -155,9 +223,8 @@ namespace ShopGiay.Areas.Admin.Controllers
         {
             int maNhanHieu = int.Parse(Request.Form["MaNhanHieu"]);
             int maLoai = int.Parse(Request.Form["MaLoai"]);
-            int maKH = int.Parse(Session["UserID"].ToString());
-            ViewBag.MaLoai = new SelectList(db.LOAISPs, "MaLoai", "TenLoai", sp.MaLoai);
-            ViewBag.MaNhanHieu = new SelectList(db.NHANHIEUx, "MaNhanHieu", "TenNhanHieu", sp.MaNhanHieu);
+            ViewBag.MaLoai = new SelectList(db.LOAISPs.Where(x => x.Status == true), "MaLoai", "TenLoai", sp.MaLoai);
+            ViewBag.MaNhanHieu = new SelectList(db.NHANHIEUx.Where(x => x.Status == true), "MaNhanHieu", "TenNhanHieu", sp.MaNhanHieu);
             if (fileUpload == null)
             {
                 ViewBag.ThongBao = "Chọn hình ảnh";
@@ -211,10 +278,9 @@ namespace ShopGiay.Areas.Admin.Controllers
                 sp.Anh = fileUpload.FileName;
                 sp.Anh2 = fileUpload2.FileName;
                 sp.Anh3 = fileUpload3.FileName;
-                //sp.NgayCapNhat = DateTime.Now;
                 sp.MaNhanHieu = maNhanHieu;
                 sp.MaLoai = maLoai;
-                sp.UserID = maKH;
+                sp.Status = true;
                 db.SANPHAMs.Add(sp);
                 db.SaveChanges();
                 TempData["ThongBao"] = "Thêm mới sản phẩm thành công!";
@@ -235,8 +301,8 @@ namespace ShopGiay.Areas.Admin.Controllers
                 return null;
             }
             // nếu có đưa dữ liệu vào viewBagNhanHieu
-            ViewBag.NhanHieu = new SelectList(db.NHANHIEUx, "MaNhanHieu", "TenNhanHieu", sp.MaNhanHieu);
-            ViewBag.Loai = new SelectList(db.LOAISPs, "MaLoai", "TenLoai", sp.MaLoai);
+            ViewBag.MaLoai = new SelectList(db.LOAISPs.Where(x => x.Status == true), "MaLoai", "TenLoai", sp.MaLoai);
+            ViewBag.MaNhanHieu = new SelectList(db.NHANHIEUx.Where(x => x.Status == true), "MaNhanHieu", "TenNhanHieu", sp.MaNhanHieu);
             return View(sp);
         }
         [HttpPost]
@@ -260,8 +326,8 @@ namespace ShopGiay.Areas.Admin.Controllers
             {
                 TempData["ThongBao"] = "Chỉnh sửa sản phẩm không thành công!";
             }
-            ViewBag.NhanHieu = new SelectList(db.NHANHIEUx, "MaNhanHieu", "TenNhanHieu", sp.MaNhanHieu);
-            ViewBag.Loai = new SelectList(db.LOAISPs, "MaLoai", "TenLoai", sp.MaLoai);
+            ViewBag.MaNhanHieu = new SelectList(db.NHANHIEUx.Where(x => x.Status == true), "MaNhanHieu", "TenNhanHieu", sp.MaNhanHieu);
+            ViewBag.MaLoai = new SelectList(db.LOAISPs.Where(x => x.Status == true), "MaLoai", "TenLoai", sp.MaLoai);
             return View(sp);
         }
 
@@ -298,7 +364,8 @@ namespace ShopGiay.Areas.Admin.Controllers
                 Response.StatusCode = 404;
                 return null;
             }
-            db.SANPHAMs.Remove(sp);
+            sp.Status = false;
+            db.Entry(sp).State = EntityState.Modified;
             db.SaveChanges();
             return RedirectToAction("DanhSachSanPham");
         }
@@ -349,12 +416,6 @@ namespace ShopGiay.Areas.Admin.Controllers
                 listMau = listMau.Where(x => x.MauSac.Contains(search));
                 return View(listMau.ToPagedList(pageNumber, pageSize));
             }
-
-
-            if (search != null)
-            {
-                listMau = listMau.Where(x => x.MauSac.Contains(search));
-            }
             return View(listMau.ToPagedList(pageNumber, pageSize));
         }
 
@@ -367,7 +428,6 @@ namespace ShopGiay.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult AddMau(MAUSAC mau)
         {
-            int maKH = int.Parse(Session["UserID"].ToString());
             if (ModelState.IsValid)
             {
                 var mauSac = mau.MauSac;
@@ -444,19 +504,15 @@ namespace ShopGiay.Areas.Admin.Controllers
             page = page ?? 1;
             int pageNumber = (page ?? 1);
             int pageSize = (size ?? 10);
-            int id = Convert.ToInt32(Session["UserID"]);
-            List<LOAISP> listLoai = new List<LOAISP>();
-            foreach (var item in db.LOAISPs)
+          
+            var listLoai = from loai in db.LOAISPs 
+                           where loai.Status == true
+                           select loai;
+            listLoai = listLoai.OrderBy(x => x.MaLoai);
+            if (!String.IsNullOrEmpty(search))
             {
-                if (item.UserID == id)
-                {
-                    listLoai.Add(item);
-                }
-            }
-
-            if (search != null)
-            {
-                listLoai = (List<LOAISP>)listLoai.Where(x => x.TenLoai.Contains(search));
+                listLoai = listLoai.Where(x => x.TenLoai.Contains(search));
+                return View(listLoai.ToPagedList(pageNumber, pageSize));
             }
             return View(listLoai.ToPagedList(pageNumber, pageSize));
         }
@@ -470,14 +526,13 @@ namespace ShopGiay.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult AddLoaiSP(LOAISP loai)
         {
-            int maKH = int.Parse(Session["UserID"].ToString());
             if (ModelState.IsValid)
             {
                 var tenLoai = loai.TenLoai;
                 var check = db.LOAISPs.Where(x => x.TenLoai == tenLoai);
                 if (check.Count() == 0)
                 {
-                    loai.UserID = maKH;
+                    loai.Status = true;
                     db.LOAISPs.Add(loai);
                     db.SaveChanges();
                     TempData["ThongBao"] = "Thêm loại sản phẩm thành công!";
@@ -523,169 +578,154 @@ namespace ShopGiay.Areas.Admin.Controllers
             return View(loai);
         }
 
-        #endregion
-
-        #region QUẢN LÝ DANH SÁCH MÃ GIẢM GIÁ
-
-        public ActionResult DanhSachPromoCode(string search, int? page, int? size)
+        public ActionResult DeleteLoaiSP(int? maLoai)
         {
+
+            LOAISP loai = db.LOAISPs.SingleOrDefault(x => x.MaLoai == maLoai);
+            if (loai == null)
+            {
+                Response.StatusCode = 404;
+                return null;
+            }
+            return View(loai);
+        }
+
+        [HttpPost, ActionName("DeleteLoaiSP")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteLoaiConfirm(int maLoai)
+        {
+            LOAISP loai = db.LOAISPs.SingleOrDefault(x => x.MaLoai == maLoai);
+            if (loai == null)
+            {
+                Response.StatusCode = 404;
+                return null;
+            }
+            loai.Status = false;
+            db.Entry(loai).State = EntityState.Modified;
+            db.SaveChanges();
+            return RedirectToAction("DanhSachLoaiSP");
+        }
+        #endregion
+        #region QUẢN LÝ NHÃN HIỆU
+        public ActionResult DanhSachNhanHieu(string search, int? page, int? size)
+        {
+            // Tạo list page size 
             List<SelectListItem> items = new List<SelectListItem>();
             items.Add(new SelectListItem { Text = "10", Value = "10" });
             items.Add(new SelectListItem { Text = "20", Value = "20" });
 
-
+            // giữ size page hiện tại 
             foreach (var item in items)
             {
                 if (item.Value == size.ToString())
                     item.Selected = true;
             }
-
+            // ViewBag cho dropDownList
             ViewBag.Size = items;
+            // Viewbag cho size hiện tại
             ViewBag.CurrentSize = size;
-
-            page = (page ?? 1);
+            page = page ?? 1;
             int pageNumber = (page ?? 1);
             int pageSize = (size ?? 10);
-            int id = Convert.ToInt32(Session["UserID"]);
-            List<PROMOCODE> listCode = new List<PROMOCODE>();
-            foreach (var item in db.PROMOCODEs)
+            var listNH = from nh in db.NHANHIEUx 
+                         where nh.Status == true
+                         select nh;
+            listNH = listNH.OrderBy(x => x.MaNhanHieu);
+            if (!String.IsNullOrEmpty(search))
             {
-                if (item.UserID == id)
-                {
-                    listCode.Add(item);
-                }
+                listNH = listNH.Where(x => x.TenNhanHieu.Contains(search));
+                return View(listNH.ToPagedList(pageNumber, pageSize));
             }
-
-            if (search != null)
-            {
-                listCode = (List<PROMOCODE>)listCode.Where(x => x.Code.Contains(search));
-            }
-            return View(listCode.ToPagedList(pageNumber, pageSize));
-        }
-        public ActionResult KichHoatCode(int id, int? page, int? size)
-        {
-            var code = db.PROMOCODEs.Find(id);
-            if (code == null)
-            {
-                Response.StatusCode = 404;
-                return null;
-
-            }
-            else
-            {
-                code.Status = true;
-                db.Entry(code).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("DanhSachPromoCode", new { @page = page, @size = size });
-            }
-        }
-        public ActionResult HuyCode(int id, int? page, int? size)
-        {
-            var code = db.PROMOCODEs.Find(id);
-            if (code == null)
-            {
-                Response.StatusCode = 404;
-                return null;
-
-            }
-            else
-            {
-                code.Status = false;
-                db.Entry(code).State = System.Data.Entity.EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("DanhSachPromoCode", new { @page = page, @size = size });
-            }
+            return View(listNH.ToPagedList(pageNumber, pageSize));
         }
         [HttpGet]
-        public ActionResult AddPromoCode()
+        public ActionResult AddNhanHieu()
         {
             return View();
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AddPromoCode(FormCollection form)
-        {
-            int maKH = int.Parse(Session["UserID"].ToString());
-            string code = form["Code"].ToString();
-            string name = form["Name"].ToString();
-            decimal value = decimal.Parse(form["Value"].ToString());
-            bool status = bool.Parse(form["Status"]);
-            var kt = db.PROMOCODEs.Where(x => x.Code == code);
-            if (kt.Count() == 0)
-            {
-                var c = new PROMOCODE()
-                {
-                    Name = name,
-                    Code = code,
-                    Value = value,
-                    Status = status,
-                    UserID = maKH
-                };
-                db.PROMOCODEs.Add(c);
-                db.SaveChanges();
-                TempData["ThongBao"] = "Thêm code thành công!";
-                return View(c);
-            }
-            else
-            {
-                TempData["ThongBao"] = "Code đã tồn tại!";
-            }
-            return View();
-        }
-        [HttpGet]
-        public ActionResult EditPromoCode(int? id)
-        {
-            PROMOCODE code = db.PROMOCODEs.SingleOrDefault(x => x.Id == id);
-            if (code == null)
-            {
-                Response.StatusCode = 404;
-                return null;
-            }
-            return View(code);
-        }
-        [HttpPost]
-        [ValidateInput(false)]
-        public ActionResult EditPromoCode(PROMOCODE code)
+        public ActionResult AddNhanHieu(NHANHIEU nh)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(code).State = EntityState.Modified;
-                db.SaveChanges();
-                TempData["ThongBao"] = "Chỉnh sửa code thành công!";
+                var tenNH = nh.TenNhanHieu;
+                var check = db.NHANHIEUx.Where(x => x.TenNhanHieu == tenNH);
+                if (check.Count() == 0)
+                {
+                    nh.Status = true;
+                    db.NHANHIEUx.Add(nh);
+                    db.SaveChanges();
+                    TempData["ThongBao"] = "Thêm nhãn hiệu thành công!";
+                    return View(nh);
+                }
+                else
+                {
+                    TempData["ThongBao"] = "Tên nhãn hiệu đã tồn tại!";
+                    return View(nh);
+                }
             }
             else
             {
-                TempData["ThongBao"] = "Chỉnh sửa code không thành công!";
+                TempData["ThongBao"] = "Thêm nhãn hiệu không thành công!";
             }
-            return View(code);
+            return View();
         }
-
-        public ActionResult DeletePromoCode(int? id)
+        public ActionResult EditNH(int? maNH)
         {
-            PROMOCODE code = db.PROMOCODEs.SingleOrDefault(x => x.Id == id);
-            if (code == null)
+            NHANHIEU nh = db.NHANHIEUx.SingleOrDefault(x => x.MaNhanHieu == maNH);
+            if (nh == null)
             {
                 Response.StatusCode = 404;
                 return null;
             }
-            return View(code);
+            return View(nh);
         }
 
-        [HttpPost, ActionName("DeletePromoCode")]
+
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult EditNH(NHANHIEU nh)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(nh).State = EntityState.Modified;
+                db.SaveChanges();
+                TempData["ThongBao"] = "Chỉnh sửa nhãn hiệu thành công!";
+            }
+            else
+            {
+                TempData["ThongBao"] = "Chỉnh sửa nhãn hiệu không thành công!";
+            }
+            return View(nh);
+        }
+        public ActionResult DeleteNH(int? maNH)
+        {
+
+            NHANHIEU nh = db.NHANHIEUx.SingleOrDefault(x => x.MaNhanHieu == maNH);
+            if (nh == null)
+            {
+                Response.StatusCode = 404;
+                return null;
+            }
+            return View(nh);
+        }
+
+        [HttpPost, ActionName("DeleteNH")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirm(int id)
+        public ActionResult DeleteNHConfirm(int maNH)
         {
-            PROMOCODE code = db.PROMOCODEs.SingleOrDefault(x => x.Id == id);
-            if (code == null)
+            NHANHIEU nh = db.NHANHIEUx.SingleOrDefault(x => x.MaNhanHieu == maNH);
+            if (nh == null)
             {
                 Response.StatusCode = 404;
                 return null;
             }
-            db.PROMOCODEs.Remove(code);
+            nh.Status = false;
+            db.Entry(nh).State = EntityState.Modified;
             db.SaveChanges();
-            return RedirectToAction("DanhSachPromoCode");
+            return RedirectToAction("DanhSachNhanHieu");
         }
-
         #endregion
 
         #region DANH SÁCH CHI TIẾT SẢN PHẨM
@@ -709,19 +749,15 @@ namespace ShopGiay.Areas.Admin.Controllers
             page = (page ?? 1);
             int pageNumber = (page ?? 1);
             int pageSize = (size ?? 10);
-            int id = Convert.ToInt32(Session["UserID"]);
-            List<CHITIETSP> listCT = new List<CHITIETSP>();
-            foreach (var item in db.CHITIETSPs)
+            var listCT = from ct in db.CHITIETSPs 
+                         where ct.SANPHAM.Status == true
+                         where ct.Status == true
+                         select ct;
+            listCT = listCT.OrderBy(x => x.Id);
+            if (!String.IsNullOrEmpty(search))
             {
-                if (item.SANPHAM.UserID == id)
-                {
-                    listCT.Add(item);
-                }
-            }
-
-            if (search != null)
-            {
-                listCT = (List<CHITIETSP>)listCT.Where(x => x.SANPHAM.TenSP.Contains(search));
+                listCT = listCT.Where(x => x.SANPHAM.TenSP.Contains(search));
+                return View(listCT.ToPagedList(pageNumber, pageSize));
             }
             return View(listCT.ToPagedList(pageNumber, pageSize));
         }
@@ -740,19 +776,37 @@ namespace ShopGiay.Areas.Admin.Controllers
             int maMau = int.Parse(Request.Form["MaMau"]);
             int maSize = int.Parse(Request.Form["MaSize"]);
             int maSP = int.Parse(Request.Form["MaSP"]);
-            int id = Convert.ToInt32(Session["UserID"]);
             ViewBag.MaMau = new SelectList(db.MAUSACs.OrderBy(x => x.MaMau).ToList(), "MaMau", "MauSac");
             ViewBag.MaSize = new SelectList(db.SIZEs.OrderBy(x => x.MaSize).ToList(), "MaSize", "Size");
             ViewBag.MaSP = new SelectList(db.SANPHAMs.OrderBy(x => x.MaSP).ToList(), "MaSP", "TenSP");
+           
             if (ModelState.IsValid)
             {
                 ct.MaSP = maSP;
                 ct.MaMau = maMau;
                 ct.MaSize = maSize;
-                ct.SANPHAM.UserID = id;
-                db.CHITIETSPs.Add(ct);
-                db.SaveChanges();
-                TempData["ThongBao"] = "Thêm chi tiết sản phẩm thành công!";
+                ct.Status = true;
+                CHITIETSP ctsp = db.CHITIETSPs.SingleOrDefault(x => x.MaMau == maMau && x.MaSP == maSP && x.MaSize == maSize);
+                if (ctsp != null)
+                {
+                    TempData["ThongBao"] = "Chi tiết sản phẩm đã tồn tại!";
+                    return View();
+                }
+                else
+                {
+                    db.CHITIETSPs.Add(ct);
+
+                    KHOHANG kho = new KHOHANG()
+                    {
+                        MaCT = ct.Id,
+                        SoLuongBan = 0,
+                        SoLuongCon = 0,
+                    };
+                    db.KHOHANGs.Add(kho);
+                    db.SaveChanges();
+                    TempData["ThongBao"] = "Thêm chi tiết sản phẩm thành công!";
+                    return View();
+                }
             }
             else
             {
@@ -765,7 +819,7 @@ namespace ShopGiay.Areas.Admin.Controllers
         public ActionResult EditChiTietSP(int id)
         {
             // lấy ra sản phẩm theo mã
-            CHITIETSP ct = db.CHITIETSPs.SingleOrDefault(x => x.ID == id);
+            CHITIETSP ct = db.CHITIETSPs.SingleOrDefault(x => x.Id == id);
             if (ct == null)
             {
                 Response.StatusCode = 404;
@@ -806,7 +860,7 @@ namespace ShopGiay.Areas.Admin.Controllers
         }
         public ActionResult DeleteCTSP(int? id)
         {
-            CHITIETSP ct = db.CHITIETSPs.SingleOrDefault(x => x.ID == id);
+            CHITIETSP ct = db.CHITIETSPs.SingleOrDefault(x => x.Id == id);
             if (ct == null)
             {
                 Response.StatusCode = 404;
@@ -818,13 +872,14 @@ namespace ShopGiay.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteCTConfirm(int? id)
         {
-            CHITIETSP ct = db.CHITIETSPs.SingleOrDefault(x => x.ID == id);
+            CHITIETSP ct = db.CHITIETSPs.SingleOrDefault(x => x.Id == id);
             if (ct == null)
             {
                 Response.StatusCode = 404;
                 return null;
             }
-            db.CHITIETSPs.Remove(ct);
+            ct.Status = false;
+            db.Entry(ct).State = EntityState.Modified;
             db.SaveChanges();
             return RedirectToAction("DanhSachChiTietSP");
         }
@@ -850,16 +905,103 @@ namespace ShopGiay.Areas.Admin.Controllers
             int pageNumber = (page ?? 1);
             int pageSize = (size ?? 10);
 
-            int maKH = Convert.ToInt32(Session["UserID"]);
-            List<DONHANG> listDH = new List<DONHANG>();
-            foreach (var item in db.DONHANGs)
+            var listDH = from dh in db.DONHANGs select dh ;
+            listDH = listDH.OrderBy(x => x.MaDH);
+            if (!String.IsNullOrEmpty(search))
             {
-                if (item.SellerID == maKH)
-                    listDH.Add(item);
+                listDH = listDH.Where(x => x.KHACHHANG.TenKH.Contains(search));
+                return View(listDH.ToPagedList(pageNumber, pageSize));
             }
-            if (search != null)
+            // nếu từ khóa null thì trả về list 
+            return View(listDH.ToPagedList(pageNumber, pageSize));
+        }
+        public ActionResult DonHangChuaXN(string search, int? page, int? size)
+        {
+            //Tạo list pagesize 
+            List<SelectListItem> items = new List<SelectListItem>();
+            items.Add(new SelectListItem { Text = "10", Value = "10" });
+            items.Add(new SelectListItem { Text = "20", Value = "20" });
+            // giữ kích thước trang được chọn trên Droplist
+            foreach (var item in items)
             {
-                listDH = (List<DONHANG>)listDH.Where(x => x.HoTen.Contains(search));
+                if (item.Value == size.ToString()) item.Selected = true;
+            }
+            ViewBag.Size = items;// viewbag dropdownlist
+            ViewBag.CurrentSize = size;
+
+            page = page ?? 1; // nếu null page =1
+            int pageNumber = (page ?? 1);
+            int pageSize = (size ?? 10);
+
+            var listDH = from dh in db.DONHANGs
+                         where dh.TinhTrang == "Chờ xác nhận"
+                         select dh;
+            listDH = listDH.OrderBy(x => x.MaDH);
+            if (!String.IsNullOrEmpty(search))
+            {
+                listDH = listDH.Where(x => x.KHACHHANG.TenKH.Contains(search));
+                return View(listDH.ToPagedList(pageNumber, pageSize));
+            }
+            // nếu từ khóa null thì trả về list 
+            return View(listDH.ToPagedList(pageNumber, pageSize));
+        }
+        public ActionResult DHDangGiao(string search, int? page, int? size)
+        {
+            //Tạo list pagesize 
+            List<SelectListItem> items = new List<SelectListItem>();
+            items.Add(new SelectListItem { Text = "10", Value = "10" });
+            items.Add(new SelectListItem { Text = "20", Value = "20" });
+            // giữ kích thước trang được chọn trên Droplist
+            foreach (var item in items)
+            {
+                if (item.Value == size.ToString()) item.Selected = true;
+            }
+            ViewBag.Size = items;// viewbag dropdownlist
+            ViewBag.CurrentSize = size;
+
+            page = page ?? 1; // nếu null page =1
+            int pageNumber = (page ?? 1);
+            int pageSize = (size ?? 10);
+
+            var listDH = from dh in db.DONHANGs
+                         where dh.TinhTrang == "Đang giao"
+                         select dh;
+            listDH = listDH.OrderBy(x => x.MaDH);
+            if (!String.IsNullOrEmpty(search))
+            {
+                listDH = listDH.Where(x => x.KHACHHANG.TenKH.Contains(search));
+                return View(listDH.ToPagedList(pageNumber, pageSize));
+            }
+            // nếu từ khóa null thì trả về list 
+            return View(listDH.ToPagedList(pageNumber, pageSize));
+        }
+
+        public ActionResult DonHangThanhCong(string search, int? page, int? size)
+        {
+            //Tạo list pagesize 
+            List<SelectListItem> items = new List<SelectListItem>();
+            items.Add(new SelectListItem { Text = "10", Value = "10" });
+            items.Add(new SelectListItem { Text = "20", Value = "20" });
+            // giữ kích thước trang được chọn trên Droplist
+            foreach (var item in items)
+            {
+                if (item.Value == size.ToString()) item.Selected = true;
+            }
+            ViewBag.Size = items;// viewbag dropdownlist
+            ViewBag.CurrentSize = size;
+
+            page = page ?? 1; // nếu null page =1
+            int pageNumber = (page ?? 1);
+            int pageSize = (size ?? 10);
+
+            var listDH = from dh in db.DONHANGs
+                         where dh.TinhTrang == "DONE"
+                         select dh;
+            listDH = listDH.OrderBy(x => x.MaDH);
+            if (!String.IsNullOrEmpty(search))
+            {
+                listDH = listDH.Where(x => x.KHACHHANG.TenKH.Contains(search));
+                return View(listDH.ToPagedList(pageNumber, pageSize));
             }
             // nếu từ khóa null thì trả về list 
             return View(listDH.ToPagedList(pageNumber, pageSize));
@@ -874,21 +1016,20 @@ namespace ShopGiay.Areas.Admin.Controllers
             }
             else
             {
-                dh.TinhTrang = "Đã xác nhận";
+                dh.TinhTrang = "Đang giao";
                 db.Entry(dh).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("DanhSachDH", new { @page = page, @size = size });
+                return RedirectToAction("DonHangChuaXN", new { @page = page, @size = size });
             }
         }
         public ActionResult DetailDH(int? maDH)
         {
             var dh = db.DONHANGs.SingleOrDefault(x => x.MaDH == maDH);
-            ViewBag.TenKH = dh.HoTen;
-            ViewBag.Sdt = dh.Sdt;
+            ViewBag.TenKH = dh.KHACHHANG.TenKH;
+            ViewBag.Sdt = dh.KHACHHANG.Sdt;
             ViewBag.DiaChi = dh.DiaChiGiao;
             ViewBag.TinhTrang = dh.TinhTrang;
-            ViewBag.TongTien = dh.TongTien;
-            var ctdh = db.CHITIETDONHANGs.Where(x => x.MaDH == maDH);
+            List<CHITIETDONHANG> ctdh = db.CHITIETDONHANGs.Where(x => x.MaDH == maDH).ToList();
             if (ctdh == null)
             {
                 Response.StatusCode = 404;
@@ -896,7 +1037,14 @@ namespace ShopGiay.Areas.Admin.Controllers
             }
             else
             {
-                return View(ctdh.ToList());
+                decimal tongTien = 0;
+                foreach (var item in ctdh)
+                {
+                    decimal tong = item.CHITIETSP.SANPHAM.DonGia * item.SoLuong;
+                    tongTien += tong;
+                }    
+                ViewBag.TongTien = tongTien;
+                return View(ctdh);
             }
         }
         #endregion
@@ -904,29 +1052,129 @@ namespace ShopGiay.Areas.Admin.Controllers
 
         public ActionResult SoLuongDonHang()
         {
-            int maKH = Convert.ToInt32(Session["UserID"]);
             List<DONHANG> listDH = new List<DONHANG>();
             foreach (var item in db.DONHANGs)
             {
-                if (item.SellerID == maKH)
+                listDH.Add(item);
+            }
+            ViewBag.SoLuongDH = listDH.Count;
+            return PartialView();
+        }
+        #region số lượng đơn hàng đã giao thành công
+        public ActionResult SoLuongDHThanhCong()
+        {
+            List<DONHANG> listDH = new List<DONHANG>();
+            foreach (var item in db.DONHANGs)
+            {
+                if (item.TinhTrang == "DONE") 
                     listDH.Add(item);
             }
             ViewBag.SoLuongDH = listDH.Count;
             return PartialView();
         }
+        #endregion 
         public ActionResult TongDoanhThu()
         {
-            int maKH = Convert.ToInt32(Session["UserID"]);
-            List<DONHANG> listDH = new List<DONHANG>();
-            foreach (var item in db.DONHANGs)
+            var listDH = from dh in db.DONHANGs 
+                         where dh.TinhTrang == "DONE"
+                         select dh;
+            decimal tongDT = 0;
+            if (listDH == null)
             {
-                if (item.SellerID == maKH)
-                    listDH.Add(item);
+                ViewBag.TongDTDuKien = tongDT;
+                return PartialView();
             }
-            var tongdt = listDH.OrderBy(m => m.MaDH).Sum(m => m.TongTien);
-            ViewBag.TongDoanhThu = tongdt;
-            return PartialView();
+            else
+            {
+                foreach (var item in listDH)
+                {
+                    decimal tong = item.CHITIETDONHANG.CHITIETSP.SANPHAM.DonGia * item.CHITIETDONHANG.SoLuong;
+                    tongDT += tong;
+                }
+                ViewBag.TongDoanhThu = tongDT;
+                return PartialView();
+            }
         }
         #endregion
+        #region Tong doanh thu dự kiến
+        public ActionResult TongDTDuKien()
+        {
+            var listDH = from dh in db.DONHANGs
+                         select dh;
+            decimal tongDT = 0;
+            if (listDH == null)
+            {
+                ViewBag.TongDTDuKien = tongDT;
+                return PartialView();
+            }    
+            else
+            {
+                foreach (var item in listDH)
+                {
+                   decimal tong = item.CHITIETDONHANG.CHITIETSP.SANPHAM.DonGia * item.CHITIETDONHANG.SoLuong;
+                    tongDT += tong;
+                }    
+                ViewBag.TongDTDuKien = tongDT;
+                return PartialView();
+            }    
+           
+        }
+        #endregion
+        #region Quản lý kho hàng
+
+        public ActionResult DanhSachSPTrongKho(string search, int? page, int? size)
+        {
+            List<SelectListItem> items = new List<SelectListItem>();
+            items.Add(new SelectListItem { Text = "20", Value = "20" });
+            items.Add(new SelectListItem { Text = "40", Value = "40" });
+
+
+            foreach (var item in items)
+            {
+                if (item.Value == size.ToString())
+                    item.Selected = true;
+            }
+
+            ViewBag.Size = items;
+            ViewBag.CurrentSize = size;
+
+            page = (page ?? 1);
+            int pageNumber = (page ?? 1);
+            int pageSize = (size ?? 20);
+            var khoHang = from kho in db.KHOHANGs
+                         select kho;
+            khoHang = khoHang.OrderBy(x => x.Id);
+            if (!String.IsNullOrEmpty(search))
+            {
+                khoHang = khoHang.Where(x => x.CHITIETSP.SANPHAM.TenSP.Contains(search));
+                return View(khoHang.ToPagedList(pageNumber, pageSize));
+            }
+            return View(khoHang.ToPagedList(pageNumber, pageSize));
+        }
+        [HttpGet]
+        public ActionResult ThayDoiSoLuong(int id)
+        {
+            KHOHANG kho = db.KHOHANGs.Find(id);
+            if (kho == null)
+            {
+                Response.StatusCode = 404;
+                return null;
+            }
+            ViewBag.ID = id;
+            return View(kho);
+        }
+        public ActionResult ThayDoiSoLuong(KHOHANG kho)
+        {
+            int soLuongCon = int.Parse(Request.Form["SoLuongCon"].ToString());
+            int id = int.Parse(Request.Form["ID"].ToString());
+            kho = db.KHOHANGs.Find(id);
+            kho.SoLuongCon = soLuongCon;
+            db.Entry(kho).State = EntityState.Modified;
+            db.SaveChanges();
+            TempData["ThongBao"] = "Thêm số lượng sản phẩm thành công!";
+            return View();
+        }
+        #endregion
+
     }
 }

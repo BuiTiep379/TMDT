@@ -1,0 +1,52 @@
+﻿@model ShopGiay.Models.NHANHIEU
+@{
+    ViewBag.Title = "Chỉnh sửa nhãn hiệu";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayouts.cshtml";
+}
+@section SidebarMenu
+{
+    @Html.Action("SidebarMenu", "MyShop")
+}
+@section NavBar{
+    @Html.Action("NavBar", "MyShop")
+}
+@section Footer
+{
+    @Html.Action("Footer", "MyShop")
+}
+<div class="container-fluid" style="margin-left: 100px">
+    <div class="col-lg-12">
+        <h2>CHỈNH SỬA NHÃN HIỆU</h2>
+        <div @*style="padding-left: 300px"*@>
+            @using (Html.BeginForm())
+            {
+                if (TempData["ThongBao"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible" role="alert">
+                        <strong>@TempData["ThongBao"]</strong>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                }
+                @Html.AntiForgeryToken()
+                <div class="form-horizontal">
+                    @Html.ValidationSummary(true, "", new { @class = "text text-danger" })
+                    <div class="form-group" style="padding-top: 10px">
+                        @Html.LabelFor(model => model.TenNhanHieu, new { @class = "control-label col-md-2" })
+                        <div class="col-md-5">
+                            @Html.TextBoxFor(model => model.TenNhanHieu, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.TenNhanHieu, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group" style="padding-top: 10px">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" value="Lưu" class="btn btn-success" />
+                            @Html.ActionLink("Trở về", "DanhSachNhanHieu", null, new { @class = "btn btn-info" })
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

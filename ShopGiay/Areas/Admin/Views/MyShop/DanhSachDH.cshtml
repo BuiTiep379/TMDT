@@ -16,6 +16,22 @@
 {
     @Html.Action("Footer", "MyShop")
 }
+<div style="margin: 25px; height: 50px; padding-left:20px">
+    <div class="row">
+        <div class="col-sm col-example" style="background-color: #95fcfc; height: 50px">
+            @Html.ActionLink("Tất cả", "DanhSachDH", "MyShop", new { @style = "font-size: 20px; color: black; margin-left: 140px; text-decoration: none;" })
+        </div>
+        <div class="col-sm col-example" style="background-color: #b5fed9; height: 50px">
+            @Html.ActionLink("Chờ xác nhận", "DonHangChuaXN", "MyShop", new { @style = "font-size: 20px; color: black; margin-left: 140px; text-decoration: none;" })
+        </div>
+        <div class="col-sm col-example" style="background-color: aliceblue; height: 50px">
+            @Html.ActionLink("Đang giao", "DHDangGiao", "MyShop", new { @style = "font-size: 20px; color: black; margin-left: 140px; text-decoration: none;" })
+        </div>
+        <div class="col-sm col-example" style="background-color: blanchedalmond; height: 50px">
+            @Html.ActionLink("Đã giao", "DonHangThanhCong", "MyShop", new { @style = "font-size: 20px; color: black; margin-left: 140px; text-decoration: none;" })
+        </div>
+    </div>
+</div>
 <div class="container-fluid">
     <!-- Page Heading -->
     <!-- DataTales Example -->
@@ -75,19 +91,15 @@
                                     {
                                         <tr>
                                             <td>@Html.DisplayFor(modelItem => item.MaDH)</td>
-                                            <td>@Html.DisplayFor(modelItem => item.HoTen)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.KHACHHANG.TenKH)</td>
                                             <td>@Html.DisplayFor(modelItem => item.NgayDatHang)</td>
                                             <td>@Html.DisplayFor(modelItem => item.DiaChiGiao)</td>
-                                            <td>@string.Format("{0:0,0}", @item.TongTien) VNĐ</td>
+                                            <td>@string.Format("{0:0,0}", (item.CHITIETDONHANG.CHITIETSP.SANPHAM.DonGia * item.CHITIETDONHANG.SoLuong)) VNĐ</td>
                                             <td>@Html.DisplayFor(modelItem => item.ThanhToan)</td>
                                             <td>@Html.DisplayFor(modelItem => item.TinhTrang)</td>
-
                                             <td>
                                                 <button class="btn btn-info"> @Html.ActionLink("Chi tiết", "DetailDH", "MyShop", new { @maDH = item.MaDH }, new { @style = "color: white" })</button>
-                                                @if (item.TinhTrang == "Chưa xác nhận")
-                                                {
-                                                    <button class="btn btn-secondary">@Html.ActionLink("Xác nhận", "XacNhanDH", "MyShop", new { @maDH = item.MaDH, @page = Model.PageNumber, @size = Model.PageSize }, new { @style = "color: white" })</button>
-                                                }
+
                                             </td>
                                         </tr>
                                     }

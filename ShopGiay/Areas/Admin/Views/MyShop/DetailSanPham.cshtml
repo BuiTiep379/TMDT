@@ -1,5 +1,4 @@
-﻿@using PagedList;
-@using PagedList.Mvc;
+﻿@using PagedList.Mvc;
 @model PagedList.PagedList<ShopGiay.Models.CHITIETSP>
 
 @{
@@ -33,9 +32,6 @@
                     <th>
                         @Html.DisplayNameFor(model => model.First().SIZE.Size)
                     </th>
-                    <th>
-                        @Html.Label("Số lượng")
-                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -50,9 +46,6 @@
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.SIZE.Size)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.SoLuong)
                         </td>
                     </tr>
                 }

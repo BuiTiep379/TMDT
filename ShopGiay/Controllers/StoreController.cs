@@ -16,14 +16,7 @@ namespace ShopGiay.Controllers
         ShopGiayEntities db = new ShopGiayEntities();
          public ActionResult Index()
         {
-            if (Session["UserID"] != null)
-            {
-                return View();
-            }
-            else
-            {
-                return RedirectToAction("Login");
-            }
+            return View();
         }
 
 
@@ -96,6 +89,10 @@ namespace ShopGiay.Controllers
                 Session["UserID"] = kh.MaKH;
                 Session["Email"] = kh.Email;
                 Session["TenKH"] = kh.TenKH;
+                if (Session["GIOHANG"] != null)
+                {
+                    return RedirectToAction("GioHang", "GioHang");
+                }    
                 return RedirectToAction("Index");
             }
             ViewBag.ThongBao = "Tên tài khoản hoặc mật khẩu không đúng!!";
@@ -106,8 +103,7 @@ namespace ShopGiay.Controllers
         //Logout
         public ActionResult Logout()
         {
-            Session.Remove("UserID");
-            Session.Remove("Email");
+            Session.RemoveAll();
             return RedirectToAction("Login");
         }
 
@@ -267,37 +263,37 @@ namespace ShopGiay.Controllers
             KHACHHANG kh = db.KHACHHANGs.SingleOrDefault(x => x.MaKH == maKH);
             var dh = db.DONHANGs.Where(x => x.MaKH == maKH).ToList();
             ViewBag.TenKH = kh.TenKH;
-            
-            if (dh == null)
-            {
-                TempData["ThongBao"] = "Bạn chưa mua sản phẩm nào";
-                return View();
-            }    
-            
             return View(dh);
         }
-       
-       public ActionResult DetailDonHang(int? maDH)
+
+        public ActionResult DetailDH(int? maDH)
         {
+            int maKH = int.Parse(Session["UserID"].ToString());
             var dh = db.DONHANGs.SingleOrDefault(x => x.MaDH == maDH);
-            ViewBag.TenKH = dh.HoTen;
-            ViewBag.Sdt = dh.Sdt;
+            ViewBag.TenKH = dh.KHACHHANG.TenKH;
+            ViewBag.Sdt = dh.KHACHHANG.Sdt;
             ViewBag.DiaChi = dh.DiaChiGiao;
             ViewBag.TinhTrang = dh.TinhTrang;
-            ViewBag.TongTien = dh.TongTien;
-            var ctdh = db.CHITIETDONHANGs.Where(x => x.MaDH == maDH);
+            List<CHITIETDONHANG> ctdh = db.CHITIETDONHANGs.Where(x => x.MaDH == maDH).ToList();
             if (ctdh == null)
             {
                 Response.StatusCode = 404;
                 return null;
-            }    
+            }
             else
             {
-                return View(ctdh.ToList());
-            }    
+                decimal tongTien = 0;
+                foreach (var item in ctdh)
+                {
+                    decimal tong = item.CHITIETSP.SANPHAM.DonGia * item.SoLuong;
+                    tongTien += tong;
+                }
+                ViewBag.TongTien = tongTien;
+                return View(ctdh);
+            }
         }
-       
-        
+
+
         public ActionResult Shop()
         {
             return View();

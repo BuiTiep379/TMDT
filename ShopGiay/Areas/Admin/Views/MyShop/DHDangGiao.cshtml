@@ -1,10 +1,9 @@
 ﻿@using PagedList.Mvc;
-@model PagedList.PagedList<ShopGiay.Models.PROMOCODE>
+@model PagedList.PagedList<ShopGiay.Models.DONHANG>
 @{
-    ViewBag.Title = "DanhSachPromoCode";
+    ViewBag.Title = "DHDangGiao";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayouts.cshtml";
 }
-
 @section SidebarMenu
 {
     @Html.Action("SidebarMenu", "MyShop")
@@ -16,12 +15,28 @@
 {
     @Html.Action("Footer", "MyShop")
 }
+<div style="margin: 25px; height: 50px; padding-left:20px">
+    <div class="row">
+        <div class="col-sm col-example" style="background-color: #95fcfc; height: 50px">
+            @Html.ActionLink("Tất cả", "DanhSachDH", "MyShop", new { @style = "font-size: 20px; color: black; margin-left: 140px; text-decoration: none;" })
+        </div>
+        <div class="col-sm col-example" style="background-color: #b5fed9; height: 50px">
+            @Html.ActionLink("Chờ xác nhận", "DonHangChuaXN", "MyShop", new { @style = "font-size: 20px; color: black; margin-left: 140px; text-decoration: none;" })
+        </div>
+        <div class="col-sm col-example" style="background-color: aliceblue; height: 50px">
+            @Html.ActionLink("Đang giao", "DHDangGiao", "MyShop", new { @style = "font-size: 20px; color: black; margin-left: 140px; text-decoration: none;" })
+        </div>
+        <div class="col-sm col-example" style="background-color: blanchedalmond; height: 50px">
+            @Html.ActionLink("Đã giao", "DonHangThanhCong", "MyShop", new { @style = "font-size: 20px; color: black; margin-left: 140px; text-decoration: none;" })
+        </div>
+    </div>
+</div>
 <div class="container-fluid">
     <!-- Page Heading -->
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Danh sách mã giảm giá</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Danh sách đơn hàng</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -30,7 +45,7 @@
                         <div class="col-sm-12 col-md-6">
                             <div class="dataTables_length" id="dataTable_length">
                                 <div class="col-md-6 col-lg-6 col-xs-6 col-sm-6" style="margin-bottom: 10px">
-                                    @using (Html.BeginForm("DanhSachPromoCode", "AdminHome", FormMethod.Get))
+                                    @using (Html.BeginForm("DanhSachDH", "MyShop", FormMethod.Get))
                                     {
                                         <p>
                                             Kích thước trang: @Html.DropDownList("size", (List<SelectListItem>)ViewBag.Size, new { @onchange = "this.form.submit();", @class = "form-control-sm" })
@@ -40,7 +55,7 @@
                             </div>
                         </div>
                         <div class="col-sm-12 col-md-6">
-                            @using (Html.BeginForm("DanhSachPromoCode", "AdminHome", FormMethod.Post))
+                            @using (Html.BeginForm("DanhSachDH", "MyShop", FormMethod.Post))
                             {
                                 <div class="col-lg-12" style="margin-bottom: 10px">
                                     <div class="input-group custom-search-form">
@@ -50,9 +65,6 @@
                                                 <i class="fa fa-search"></i>
                                             </button>
                                         </span>
-                                        <div class="col-lg-4">
-                                            @Html.ActionLink("Thêm mới code", "AddPromoCode", "AdminHome", new { @class = "btn btn-primary" })
-                                        </div>
                                     </div>
                                 </div>
                             }
@@ -63,46 +75,29 @@
                             <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
                                 <thead>
                                     <tr role="row">
-                                        <td width="400px">@Html.DisplayNameFor(model => model.First().Name)</td>
-                                        <td>@Html.DisplayNameFor(model => model.First().Value)</td>
-                                        <td width="250px">@Html.DisplayNameFor(model => model.First().Code)</td>
-                                        <td>@Html.DisplayNameFor(model => model.First().Status)</td>
-                                        <th width="350px">Thao tác</th>
+                                        <th width="80px">Mã ĐH</th>
+                                        <th width="180px">Tên khách hàng</th>
+                                        <th width="150px">Ngày đặt hàng</th>
+                                        <th>Địa chỉ giao</th>
+                                        <th width="160px">Tổng tiền</th>
+                                        <th width="120px">Thanh toán</th>
+                                        <th width="160px">Tình trạng</th>
+                                        <th width="200px">Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach (var item in Model)
                                     {
                                         <tr>
-                                            <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                                            <td>@Html.DisplayFor(modelItem => item.Value)</td>
-                                            <td>@Html.DisplayFor(modelItem => item.Code)</td>
-                                            @{
-                                                if (item.Status == true)
-                                                {
-                                                    <td>Đã kích hoạt</td>
-                                                }
-                                                else
-                                                {
-                                                    <td>
-                                                        Chưa kích hoạt
-                                                    </td>
-                                                }
-                                            }
+                                            <td>@Html.DisplayFor(modelItem => item.MaDH)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.KHACHHANG.TenKH)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.NgayDatHang)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.DiaChiGiao)</td>
+                                            <td>@string.Format("{0:0,0}", (item.CHITIETDONHANG.CHITIETSP.SANPHAM.DonGia * item.CHITIETDONHANG.SoLuong)) VNĐ</td>
+                                            <td>@Html.DisplayFor(modelItem => item.ThanhToan)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.TinhTrang)</td>
                                             <td>
-                                                <button class="btn btn-success">@Html.ActionLink("Chỉnh sửa", "EditPromoCode", "AdminHome", new { @id = item.Id }, new { @style = "color: white", })</button>
-
-                                                @{
-                                                    if (item.Status == true)
-                                                    {
-                                                        <button class="btn btn-info">@Html.ActionLink("Hủy", "HuyCode", "AdminHome", new { @id = item.Id, @page = Model.PageNumber, @size = Model.PageSize }, new { @style = "color: white", })</button>
-                                                    }
-                                                    else
-                                                    {
-                                                        <button class="btn btn-info">@Html.ActionLink("Kích hoạt", "KichHoatCode", "AdminHome", new { @id = item.Id, @page = Model.PageNumber, @size = Model.PageSize }, new { @style = "color: white", })</button>
-                                                    }
-                                                }
-                                                <button class="btn btn-danger">  @Html.ActionLink("Xóa", "DeletePromoCode", "AdminHome", new { @id = item.Id }, new { @style = "color: white", })</button>
+                                                <button class="btn btn-info"> @Html.ActionLink("Chi tiết", "DetailDH", "MyShop", new { @maDH = item.MaDH }, new { @style = "color: white" })</button>
                                             </td>
                                         </tr>
                                     }
@@ -115,10 +110,12 @@
                             Trang: @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
                         </div>
                     </div>
-                    @Html.PagedListPager(Model, page => Url.Action("DanhSachPromoCode", new { page, size = ViewBag.CurrentSize }))
+                    @Html.PagedListPager(Model, page => Url.Action("DanhSachDH", new { page, size = ViewBag.CurrentSize }))
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
 

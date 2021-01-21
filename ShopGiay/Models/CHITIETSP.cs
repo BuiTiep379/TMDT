@@ -14,14 +14,25 @@ namespace ShopGiay.Models
     
     public partial class CHITIETSP
     {
-        public int ID { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public CHITIETSP()
+        {
+            this.CHITIETDONHANGs = new HashSet<CHITIETDONHANG>();
+            this.KHOHANGs = new HashSet<KHOHANG>();
+        }
+    
+        public int Id { get; set; }
         public int MaSP { get; set; }
         public int MaSize { get; set; }
         public int MaMau { get; set; }
-        public int SoLuong { get; set; }
+        public bool Status { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CHITIETDONHANG> CHITIETDONHANGs { get; set; }
+        public virtual SANPHAM SANPHAM { get; set; }
         public virtual MAUSAC MAUSAC { get; set; }
         public virtual SIZE SIZE { get; set; }
-        public virtual SANPHAM SANPHAM { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<KHOHANG> KHOHANGs { get; set; }
     }
 }

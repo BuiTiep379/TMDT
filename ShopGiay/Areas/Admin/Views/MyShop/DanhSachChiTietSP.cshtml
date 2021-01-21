@@ -65,17 +65,11 @@
                                         <th width="400px">
                                             @Html.DisplayNameFor(model => model.First().SANPHAM.TenSP)
                                         </th>
-                                        <th width="220px">
-                                            @Html.DisplayNameFor(model => model.First().SANPHAM.Anh)
-                                        </th>
                                         <th width="120px">
                                             @Html.DisplayNameFor(model => model.First().SIZE.Size)
                                         </th>
                                         <th width="120px">
                                             @Html.DisplayNameFor(model => model.First().MAUSAC.MauSac)
-                                        </th>
-                                        <th width="180px">
-                                            @Html.DisplayNameFor(model => model.First().SoLuong)
                                         </th>
                                         <th width="200px">Thao tác</th>
                                     </tr>
@@ -88,22 +82,16 @@
                                                 @Html.DisplayFor(modelItem => item.SANPHAM.TenSP)
                                             </td>
                                             <td>
-                                                <img width="200px" height="150px" src="@Url.Content("~/HinhAnh/HinhAnhSP/" + item.SANPHAM.Anh)" alt="">
-                                            </td>
-
-                                            <td>
                                                 @Html.DisplayFor(modelItem => item.SIZE.Size)
                                             </td>
 
                                             <td>
                                                 @Html.DisplayFor(modelItem => item.MAUSAC.MauSac)
                                             </td>
+                                          
                                             <td>
-                                                @Html.DisplayFor(modelItem => item.SoLuong)
-                                            </td>
-                                            <td>
-                                                <button class="btn btn-success">@Html.ActionLink("Chỉnh sửa", "EditChiTietSP", "MyShop", new { @id = item.ID }, new { @style = "color: white", })</button>
-                                                <button class="btn btn-danger">  @Html.ActionLink("Xóa", "DeleteCTSP", "MyShop", new { @id = item.ID }, new { @style = "color: white", })</button>
+                                                <button class="btn btn-success">@Html.ActionLink("Chỉnh sửa", "EditChiTietSP", "MyShop", new { @id = item.Id }, new { @style = "color: white", })</button>
+                                                <button class="btn btn-danger">  @Html.ActionLink("Xóa", "DeleteCTSP", "MyShop", new { @id = item.Id }, new { @style = "color: white", })</button>
                                             </td>
                                         </tr>
                                     }

@@ -86,14 +86,19 @@
                                         <td>@Html.DisplayFor(modelItem => item.NgaySinh)</td>
                                         <td>@Html.DisplayFor(modelItem => item.CMND)</td>
                                         @{
-                                            if (item.QuyenNV == "1")
+                                            if (item.QuyenNV == 1)
                                             {
                                                 <td>Admin</td>
+                                            }
+                                            else if (item.QuyenNV == 2)
+                                            {
+                                                <td>Người bán</td>
                                             }
                                             else
                                             {
                                                 <td>Shipper</td>
                                             }
+
                                         }
                                         <td>
                                             <button class="btn btn-danger">  @Html.ActionLink("Xóa", "DeleteNhanVien", "AdminHome", new { @manv = item.MaNV }, new { @style = "color: white", })</button>

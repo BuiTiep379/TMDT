@@ -24,8 +24,16 @@
 
     <!-- Content Row -->
     <div class="row">
+        @{ Html.RenderAction("SoLuongDonHang", "MyShop");}
 
-      
+        <!-- Earnings (Monthly) Card Example -->
+        @{ Html.RenderAction("SoLuongDHThanhCong", "MyShop");}
+
+        @{ Html.RenderAction("TongDTDuKien", "MyShop");}
+
+        <!-- Pending Requests Card Example -->
+        @{ Html.RenderAction("TongDoanhThu", "MyShop");}
+
     </div>
 
     <!-- Content Row -->
@@ -60,7 +68,7 @@
             </div>
         </div>
         <div class="col-sm-12 col-md-6">
-            <form action="/Admin/AdminHome/Index" method="post">
+            <form action="/Admin/MyShop/Index" method="post">
                 <div class="col-lg-12" style="margin-bottom: 10px">
                     <div class="input-group custom-search-form">
                         <label class="control-label" style="margin-right: 5px; margin-top: 5px; font-size: 16px">Nhập tháng: </label>
@@ -171,7 +179,7 @@
                         yAxes: [{
                             ticks: {
                                 min: 0,
-                                max: 100000000,
+                                max: 50000000,
                                 maxTicksLimit: 5,
                                 padding: 10,
                                 // Include a dollar sign in the ticks
