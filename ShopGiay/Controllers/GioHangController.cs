@@ -31,6 +31,11 @@ namespace ShopGiay.Controllers
 
         public ActionResult GioHang()
         {
+            if (Session["UserID"] == null)
+            {
+                return RedirectToAction("Login", "Store");
+            }    
+
             int maKH = int.Parse(Session["UserID"].ToString());
             KHACHHANG kh = db.KHACHHANGs.SingleOrDefault(x => x.MaKH == maKH);
             ViewBag.MaKH = maKH;
@@ -38,20 +43,6 @@ namespace ShopGiay.Controllers
             ViewBag.DiaChi = kh.DiaChi;
             ViewBag.Sdt = kh.Sdt;
             Session["TongGiam"] = "0";
-            if (Session["Code"] != null)
-            {
-                Session.Remove("Code");
-                Session.Remove("GIOHANG2");
-                List<GIOHANG> listGioHang = LayGioHang();
-                foreach (var item in listGioHang)
-                {
-                    int maSP = item.MaSP;
-                    SANPHAM sp = db.SANPHAMs.SingleOrDefault(x => x.MaSP == maSP);
-                    item.DonGia = decimal.Parse(sp.DonGia.ToString());
-                }
-                TempData["TongTien"] = TongTien();
-                return View(listGioHang);
-            }
             if (Session["GIOHANG"] == null)
             {
                 TempData["KhongCo"] = "Cart is empty";
@@ -65,65 +56,19 @@ namespace ShopGiay.Controllers
                 return View(listGioHang);
             }    
         }
-        // Tính tổng số lượng sản phẩm trong kho
+       
         private int TongSoLuong()
         {
             int tongsoluong = 0;
             List<GIOHANG> listGioHang = Session["GIOHANG"] as List<GIOHANG>;
             if (listGioHang != null)
             {
-                tongsoluong = listGioHang.Sum(n => n.SoLuong);
+                tongsoluong = listGioHang.Count();
             }
             return tongsoluong;
         }
 
-        //private List<GIOHANG> ApplyCode(string code, string message)
-        //{
-        //    List<GIOHANG> listGioHang = LayGioHang();
-        //    message = "";
-        //    if (code != null)
-        //    {
-        //        PROMOCODE check = db.PROMOCODEs.SingleOrDefault(x => x.Code == code);
-        //        if (check == null)
-        //        {
-        //            message = "0";
-        //            return listGioHang; // "Mã giảm giá không chính xác";
-        //        }
-        //        else
-        //        {
-        //            if (check.Status == false)
-        //            {
-        //                message = "-1";//"Mã giảm giá không còn áp dụng!";
-        //                return listGioHang; // 
-        //            }
-        //            else
-        //            {
-        //                Session["Code"] = code;
-        //                List<NHANHIEU> listNH = db.NHANHIEUx.OrderBy(x => x.MaNhanHieu).ToList();
-        //                foreach (var item in listNH)
-        //                {
-        //                    if (check.Code.Contains(item.TenNhanHieu))
-        //                    {
-        //                        int maNH = item.MaNhanHieu;
-        //                        foreach (var sp in listGioHang)
-        //                        {
-        //                            int nhanHieu = (int)db.SANPHAMs.SingleOrDefault(x => x.MaSP == sp.MaSP).MaNhanHieu;
-        //                            if (nhanHieu == maNH)
-        //                            {
-        //                                decimal giam = sp.DonGia * check.Value;
-        //                                sp.DonGia -= giam;
-        //                            }
-        //                        }
-        //                    }
-        //                    message = "1";
-        //                    return listGioHang;
-        //                }
-        //            }
-                    
-        //        }
-        //    }
-        //    return listGioHang;
-        //}
+       
         private int TongSoLuongSP(int maSP)
         {
             int tongsoluong = 0;
@@ -148,7 +93,6 @@ namespace ShopGiay.Controllers
 
         public ActionResult ThemSanPham(int maSP, string url)
         {
-          
             //lấy mã màu mã  size từ dropdownlist
             int maMau = int.Parse(Request.Form["MaMau"]);
             int maSize = int.Parse(Request.Form["MaSize"]);
@@ -161,20 +105,22 @@ namespace ShopGiay.Controllers
             }
             // kiểm tra sự tồn tại màu sắc và size của đôi giày trong kho
             CHITIETSP ct = db.CHITIETSPs.SingleOrDefault(x => x.MaSP == maSP && x.MaSize == maSize && x.MaMau == maMau);
-            if (ct == null)
+            var check = db.KHOHANGs.SingleOrDefault(x => x.MaCT == ct.Id).SoLuongCon;
+            if (check == 0)
             {
-                TempData["KhongThanhCong"] = "Products are out of stock. You can try different colors or sizes!";
-                return RedirectToAction("XemChiTiet", "SanPham", new { @maSP = sp.MaSP, @maNhanHieu = sp.MaNhanHieu, @maLoai = sp.MaLoai });
+                TempData["KhongThanhCong"] = "Sản phẩm đã hết hàng. Vui lòng chọn size và màu khách";
+                return RedirectToAction("XemChiTiet", "SanPham", new { @maSP = sp.MaSP, @maNhanHieu = sp.MaNhanHieu, @maLoai = sp.MaLoai});
             }
             //Lấy ra session giỏ hàng
             List<GIOHANG> listGioHang = LayGioHang();
             //Kiểm tra sản phẩm đã tồn tại trong giỏ hàng chưa?
             GIOHANG sanpham = listGioHang.Find(x => x.MaSP == maSP && x.MaMau == maMau && x.MaSize == maSize);
-            var slsp = db.CHITIETSPs.SingleOrDefault(n => n.MaSP == maSP && n.MaMau == maMau && n.MaSize == maSize).SoLuong;
+            CHITIETSP ct2 = db.CHITIETSPs.SingleOrDefault(n => n.MaSP == maSP && n.MaMau == maMau && n.MaSize == maSize);
+            var slsp = db.KHOHANGs.SingleOrDefault(x => x.MaCT == ct.Id).SoLuongCon;
             TempData["TongSoLuong"] = TongSoLuong();
             if (TongSoLuongSP(maSP) >= slsp && sanpham != null)
             {
-                TempData["LoiSL"] = "The product does not have the required quantity. Please choose less!";
+                TempData["LoiSL"] = "Sản phẩm hiện tại không đủ số lượng. Vui lòng chọn ít hơn!";
                 ModelState.AddModelError("LoiSP", "");
                 return RedirectToAction("XemChiTiet", "SanPham", new { @maSP = sp.MaSP, @maNhanHieu = sp.MaNhanHieu, @maLoai = sp.MaLoai });
             }
@@ -182,13 +128,13 @@ namespace ShopGiay.Controllers
             {
                 sanpham = new GIOHANG(maSP, maMau, maSize);
                 listGioHang.Add(sanpham);
-                TempData["ThanhCong"] = "Add to cart successfully";
+                TempData["ThanhCong"] = "Thêm sản phẩm vào giỏ hàng thành công";
                 return RedirectToAction("XemChiTiet", "SanPham", new { @maSP = sp.MaSP, @maNhanHieu = sp.MaNhanHieu, @maLoai = sp.MaLoai });
             }
             else
             {
                 sanpham.SoLuong++;
-                TempData["ThanhCong"] = "Add to cart successfully";
+                TempData["ThanhCong"] = "Thêm sản phẩm vào giỏ hàng thành công";
                 return RedirectToAction("XemChiTiet", "SanPham", new { @maSP = sp.MaSP, @maNhanHieu = sp.MaNhanHieu, @maLoai = sp.MaLoai });
             }
         }
@@ -197,8 +143,9 @@ namespace ShopGiay.Controllers
         {
             
             int check = Int32.Parse(Request.Form["txtSoLuong"]);// số lượng giày cần mua
-            var soLuongGiay = db.CHITIETSPs.SingleOrDefault(x => x.MaSP == maSP && x.MaMau == maMau && x.MaSize == maSize).SoLuong;// số lượng giày trong kho
-            if (check > soLuongGiay)
+            var ct = db.CHITIETSPs.SingleOrDefault(x => x.MaSP == maSP && x.MaMau == maMau && x.MaSize == maSize);
+            var slsp = db.KHOHANGs.SingleOrDefault(x => x.MaCT == ct.Id).SoLuongCon;// số lượng giày trong kho
+            if (check > slsp)
             {
                 TempData["LoiSL"] = "Sản phẩm hiện không đủ số lượng. Vui lòng chọn ít hơn!";
                 ModelState.AddModelError("LoiSP", " ");
@@ -252,6 +199,7 @@ namespace ShopGiay.Controllers
         [ChildActionOnly]
         public ActionResult GioHangPartial()
         {
+
             if (TongSoLuong() == 0)
             {
                 return PartialView();
@@ -262,55 +210,68 @@ namespace ShopGiay.Controllers
             return PartialView();
         }
 
+
+        //public List<DONHANG> TaoListDH(string diaChiGiao)
+        //{
+        //    int maKH = int.Parse(Session["UserID"].ToString());
+        //    List<GIOHANG> listGioHang = LayGioHang();
+        //    List<DONHANG> listDH = new List<DONHANG>();
+        //    List<int?> listSeller = new List<int?>();
+        //    DateTime myDateTime = DateTime.Now;
+        //    try
+        //    {
+        //        foreach (var item in listGioHang)
+        //        {
+        //            if (!listSeller.Contains(item.UserID))
+        //            {
+        //                listSeller.Add(item.UserID);
+        //                DONHANG dh = new DONHANG()
+        //                {
+        //                    MaKH = maKH,
+        //                    NgayDatHang = myDateTime,
+        //                    DiaChiGiao = diaChiGiao,
+        //                    TinhTrang = "Đang xử lý",
+        //                };
+        //                listDH.Add(dh);
+        //            }
+        //        }
+        //    }
+        //    catch
+        //    { }
+        //    return listDH;
+        //}    
         public ActionResult ThanhToan()
         {
             int maKH = int.Parse(Session["UserID"].ToString());
             List<GIOHANG> listGioHang = Session["GIOHANG"] as List<GIOHANG>;
-            decimal tongTien = TongTien();
-            decimal tongGiam = decimal.Parse(Session["TongGiam"].ToString());// tonggiam = 0;
-            decimal tongTienCon = tongTien - tongGiam;
+            TempData["TongTien"] = TongTien();
+            if (Session["TongGiam"] == null)
+            {
+                ViewBag.TongGiam = "0";
+            }
+            ViewBag.TongTien = listGioHang.Sum(n => n.ThanhTien);
+            maKH = int.Parse(Session["UserID"].ToString());
             KHACHHANG kh = db.KHACHHANGs.SingleOrDefault(x => x.MaKH == maKH);
-            ViewBag.TongGiam = tongGiam;
-            ViewBag.TongTien = tongTien;
-            ViewBag.TongTienCon = tongTienCon;
             ViewBag.TenKH = kh.TenKH;
             ViewBag.DiaChi = kh.DiaChi;
             ViewBag.Sdt = kh.Sdt;
-            Session["TongTienCon"] = tongTienCon;
             return View(listGioHang);
         }
         [HttpPost, ActionName("ThanhToan")]
         [ValidateAntiForgeryToken]
         public ActionResult XacNhanThanhToan()
         {
-            string code = null;
-            string promoID = null;
-            if (Session["Code"] != null)
-            {
-                code = Session["Code"].ToString();
-                PROMOCODE check = db.PROMOCODEs.SingleOrDefault(x => x.Code == code);
-                if (check != null)
-                    promoID = (check.Id).ToString();
-            }
-
-            string thanhToan = "Chưa thanh toán";
             int maKH = int.Parse(Session["UserID"].ToString());
             KHACHHANG kh = db.KHACHHANGs.SingleOrDefault(x => x.MaKH == maKH);
             DONHANG dh = new DONHANG()
             {
                 MaKH = int.Parse(Session["UserID"].ToString()),
-                PromoID = Convert.ToInt32(promoID),
                 NgayDatHang = DateTime.Now,
-                NgayGiaoHang = null,
                 DiaChiGiao = kh.DiaChi,
-                TongTien = decimal.Parse(Session["TongTienCon"].ToString()),
-                ThanhToan = thanhToan,
-                TinhTrang = "Chưa xác nhận",
-                HoTen = kh.TenKH,
-                Email = kh.Email,
-                Sdt = kh.Sdt
+                TongTien = TongTien(),
+                ThanhToan = "Chưa thanh toán",
+                TinhTrang = "Chờ xác nhận",
             };
-
             db.DONHANGs.Add(dh);
             db.SaveChanges();
             List<GIOHANG> listGioHang = LayGioHang();
@@ -321,27 +282,18 @@ namespace ShopGiay.Controllers
                 int maMau = item.MaMau;
                 int soLuong = item.SoLuong;
                 CHITIETSP ctsp = db.CHITIETSPs.SingleOrDefault(x => x.MaSP == maSP && x.MaMau == maMau && x.MaSize == maSize);
-                ctsp.SoLuong -= soLuong;
-                db.Entry(ctsp).State = EntityState.Modified;
-                db.SaveChanges();
-            }
-            foreach (var item in listGioHang)
-            {
-                int maSP = item.MaSP;
-                int maSize = item.MaSize;
-                int maMau = item.MaMau;
-                int soLuong = item.SoLuong;
-                decimal donGia = item.ThanhTien;
+                
                 CHITIETDONHANG ctdh = new CHITIETDONHANG()
                 {
                     MaDH = dh.MaDH,
-                    MaSP = maSP,
-                    MaMau = maMau,
-                    MaSize = maSize,
+                    MaCTSP = ctsp.Id,
                     SoLuong = soLuong,
-                    DonGia = donGia
                 };
+                KHOHANG slsp = db.KHOHANGs.SingleOrDefault(x => x.MaCT == ctsp.Id);// số lượng giày trong kho
+                slsp.SoLuongCon -= soLuong;
+                slsp.SoLuongBan += soLuong;
                 db.CHITIETDONHANGs.Add(ctdh);
+                db.Entry(slsp).State = EntityState.Modified;
                 db.SaveChanges();
             }
             Session.Remove("GIOHANG");
@@ -383,60 +335,9 @@ namespace ShopGiay.Controllers
                 return RedirectToAction("ThanhToan", new { maKH = maKH});
             }    
         }
-        public ActionResult ApplyPromoCode()
-        {
-            if (Session["Code"] != null)
-            {
-                ViewBag.Error = "Bạn đã áp dụng mã giám giá rồi";
-            }    
-            else
-            {
-                string code = Request.Form["txtcode"].ToString();
-                List<GIOHANG> listGioHang = LayGioHang();
-                if (code != null)
-                {
-                    PROMOCODE check = db.PROMOCODEs.SingleOrDefault(x => x.Code == code);
-                    if (check == null)
-                    {
-                        ViewBag.Error = "Mã giảm giá không chính xác";
-
-                    }
-                    else
-                    {
-                        if (check.Status == false)
-                        {
-                            ViewBag.Error = "Mã giảm giá áp dụng thành công!";
-
-                        }
-                        else
-                        {
-                            Session["Code"] = code;
-                            decimal tongGiam = 0;
-                            foreach (var item in listGioHang)
-                            {
-                                // một sản phẩm đầu trong giỏ hàng
-                                SANPHAM sp = db.SANPHAMs.SingleOrDefault(x => x.MaSP == item.MaSP);
-                                if (check.Code.Contains(sp.NHANHIEU.TenNhanHieu))
-                                {
-                                    decimal giam = sp.DonGia * check.Value * item.SoLuong;
-                                    tongGiam += giam;
-                                }
-
-                            }
-                            Session["TongGiam"] = tongGiam;
-                        }
-
-                    }
-                }    
-           
-            }
-            return RedirectToAction("ThanhToan");
-        }
+      
         public ActionResult HuyThanhToan(int maKH)
         {
-            Session.Remove("GIOHANG2");
-            Session.Remove("Code");
-            Session["TongGiam"] = 0;
             return RedirectToAction("GioHang");
         }
 
@@ -452,6 +353,7 @@ namespace ShopGiay.Controllers
 
         public ActionResult PaymentWithPaypal(string Cancel = null)
         {
+
             //getting the apiContext  
             APIContext apiContext = PaypalConfiguration.GetAPIContext();
 
@@ -507,32 +409,16 @@ namespace ShopGiay.Controllers
                 return View("Failure");
             }
             int maKH = int.Parse(Session["UserID"].ToString());
-            string code = null;
-            string promoID = null;
-            if (Session["Code"] != null)
-            {
-                code = Session["Code"].ToString();
-                PROMOCODE check = db.PROMOCODEs.SingleOrDefault(x => x.Code == code);
-                if (check != null)
-                    promoID = (check.Id).ToString();
-            }
-
             KHACHHANG kh = db.KHACHHANGs.SingleOrDefault(x => x.MaKH == maKH);
             DONHANG dh = new DONHANG()
             {
                 MaKH = int.Parse(Session["UserID"].ToString()),
-                PromoID = Convert.ToInt32(promoID),
                 NgayDatHang = DateTime.Now,
-                NgayGiaoHang = null,
                 DiaChiGiao = kh.DiaChi,
-                TongTien = decimal.Parse(Session["TongTienCon"].ToString()),
+                TongTien = TongTien(),
                 ThanhToan = "Đã thanh toán",
-                TinhTrang = "Chưa xác nhận",
-                HoTen = kh.TenKH,
-                Email = kh.Email,
-                Sdt = kh.Sdt
+                TinhTrang = "Chờ xác nhận",
             };
-
             db.DONHANGs.Add(dh);
             db.SaveChanges();
             List<GIOHANG> listGioHang = LayGioHang();
@@ -543,27 +429,18 @@ namespace ShopGiay.Controllers
                 int maMau = item.MaMau;
                 int soLuong = item.SoLuong;
                 CHITIETSP ctsp = db.CHITIETSPs.SingleOrDefault(x => x.MaSP == maSP && x.MaMau == maMau && x.MaSize == maSize);
-                ctsp.SoLuong -= soLuong;
-                db.Entry(ctsp).State = EntityState.Modified;
-                db.SaveChanges();
-            }
-            foreach (var item in listGioHang)
-            {
-                int maSP = item.MaSP;
-                int maSize = item.MaSize;
-                int maMau = item.MaMau;
-                int soLuong = item.SoLuong;
-                decimal donGia = item.ThanhTien;
+
                 CHITIETDONHANG ctdh = new CHITIETDONHANG()
                 {
                     MaDH = dh.MaDH,
-                    MaSP = maSP,
-                    MaMau = maMau,
-                    MaSize = maSize,
+                    MaCTSP = ctsp.Id,
                     SoLuong = soLuong,
-                    DonGia = donGia
                 };
+                KHOHANG slsp = db.KHOHANGs.SingleOrDefault(x => x.MaCT == ctsp.Id);// số lượng giày trong kho
+                slsp.SoLuongCon -= soLuong;
+                slsp.SoLuongBan += soLuong;
                 db.CHITIETDONHANGs.Add(ctdh);
+                db.Entry(slsp).State = EntityState.Modified;
                 db.SaveChanges();
             }
             Session.Remove("GIOHANG");
@@ -585,12 +462,10 @@ namespace ShopGiay.Controllers
         }
         private Payment CreatePayment(APIContext apiContext, string redirectUrl)
         {
-            List<GIOHANG> listGioHang = Session["GIOHANG"] as List<GIOHANG>;
-            decimal tongTienCon = decimal.Parse(Session["TongTienCon"].ToString());
-            decimal tongTienConDoi = DoiTien(tongTienCon);
-            //create itemlist and add item objects to it
+            List<GIOHANG> listGioHang = LayGioHang();
+            decimal tongTien = TongTien();
+            decimal tongTienDoi = DoiTien(tongTien);
             var itemList = new ItemList() { items = new List<Item>() };
-            //Adding Item Details like name, currency, price etc
             foreach (var sp in listGioHang)
             {
                 decimal donGia = DoiTien(sp.DonGia);
@@ -616,14 +491,14 @@ namespace ShopGiay.Controllers
             // Adding Tax, shipping and Subtotal details
             var details = new Details()
             {
-                subtotal = tongTienConDoi.ToString("F"),
+                subtotal = tongTienDoi.ToString("F"),
             };
 
             //Final amount with details
             var amount = new Amount()
             {
                 currency = "USD",
-                total = details.subtotal, // Total must be equal to sum of tax, shipping and subtotal.
+                total = (Convert.ToDecimal(details.subtotal)).ToString(), // Total must be equal to sum of tax, shipping and subtotal.
                 details = details
             };
 

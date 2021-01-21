@@ -1,0 +1,54 @@
+﻿@model ShopGiay.Models.LOAISP
+@{
+    ViewBag.Title = "DeleteLoaiSP";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayouts.cshtml";
+}
+
+@section SidebarMenu
+{
+    @Html.Action("SidebarMenu", "MyShop")
+}
+@section NavBar{
+    @Html.Action("NavBar", "MyShop")
+}
+@section Footer
+{
+    @Html.Action("Footer", "MyShop")
+}
+<div class="container-fluid" style="margin-left: 100px">
+    <div class="col-lg-12">
+        <h3>Bạn có thực sự muốn xóa?</h3>
+        <div>
+            <hr />
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.MaLoai)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.MaLoai)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.TenLoai)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.TenLoai)
+                </dd>
+                
+            </dl>
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-actions no-color">
+                    <button type="submit" class="btn btn-danger">Xóa</button>
+                    <button class="btn btn-info">@Html.ActionLink("Trở về", "DanhSachLoaiSP", "MyShop", new { @style = "color: white" })</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+

@@ -47,19 +47,19 @@
                                 @foreach (var item in Model)
                                 {
                                     <tr>
-                                        <td>@item.SANPHAM.TenSP</td>
-                                        <td>@item.SIZE.Size</td>
+                                        <td>@item.CHITIETSP.SANPHAM.TenSP</td>
+                                        <td>@item.CHITIETSP.SIZE.Size</td>
                                         <td>
-                                            @item.MAUSAC.MauSac
+                                            @item.CHITIETSP.MAUSAC.MauSac
                                         </td>
 
                                         <td>@item.SoLuong</td>
-                                        <td>@string.Format("{0:0,0}", @item.DonGia) VNĐ</td>
+                                        <td>@string.Format("{0:0,0}", (item.CHITIETSP.SANPHAM.DonGia * item.DONHANG.CHITIETDONHANG.SoLuong)) VNĐ</td>
                                     </tr>
                                 }
                                 <tr>
                                     <td class="text-black font-weight-bold" colspan="4"><strong>Order Total</strong></td>
-                                    <td class="text-black font-weight-bold">@string.Format("{0:0,0}", ViewBag.TongTien) VNĐ</td>
+                                    <td class="text-black font-weight-bold">@string.Format("{0:0,0}", @ViewBag.TongTien) VNĐ</td>
                                 </tr>
                             </tbody>
                         </table>

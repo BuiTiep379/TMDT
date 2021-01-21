@@ -13,15 +13,15 @@ namespace ShopGiay.Models
     }
     public class LOAISPMetadata
     {
-        [Display(Name ="Mã loại sản phẩm")]
+        [Display(Name = "Mã loại sản phẩm")]
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int MaLoai { get; set; }
         [Display(Name = "Tên loại sản phẩm")]
-        [Required(ErrorMessage ="Tên loại sản phẩm không được để trống")]
+        [Required(ErrorMessage = "Tên loại sản phẩm không được để trống")]
         [Index(IsUnique = true)]
         public string TenLoai { get; set; }
-        [Display(Name = "Mã khách hàng")]
-        public Nullable<int> UserID { get; set; }
+        [Display(Name = "Trạng thái")]
+        public bool Status { get; set; }
     }
 }

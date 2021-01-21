@@ -12,6 +12,8 @@ namespace ShopGiay.Models
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Core.Objects;
+    using System.Linq;
     
     public partial class ShopGiayEntities : DbContext
     {
@@ -25,16 +27,46 @@ namespace ShopGiay.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<CHITIETDONHANG> CHITIETDONHANGs { get; set; }
-        public virtual DbSet<CHITIETSP> CHITIETSPs { get; set; }
-        public virtual DbSet<DONHANG> DONHANGs { get; set; }
-        public virtual DbSet<KHACHHANG> KHACHHANGs { get; set; }
         public virtual DbSet<LOAISP> LOAISPs { get; set; }
         public virtual DbSet<MAUSAC> MAUSACs { get; set; }
         public virtual DbSet<NHANHIEU> NHANHIEUx { get; set; }
-        public virtual DbSet<NHANVIEN> NHANVIENs { get; set; }
-        public virtual DbSet<PROMOCODE> PROMOCODEs { get; set; }
-        public virtual DbSet<SANPHAM> SANPHAMs { get; set; }
         public virtual DbSet<SIZE> SIZEs { get; set; }
+        public virtual DbSet<KHOHANG> KHOHANGs { get; set; }
+        public virtual DbSet<SANPHAM> SANPHAMs { get; set; }
+        public virtual DbSet<CHITIETDONHANG> CHITIETDONHANGs { get; set; }
+        public virtual DbSet<CHITIETSP> CHITIETSPs { get; set; }
+        public virtual DbSet<DIACHIKH> DIACHIKHs { get; set; }
+        public virtual DbSet<DONHANG> DONHANGs { get; set; }
+        public virtual DbSet<KHACHHANG> KHACHHANGs { get; set; }
+        public virtual DbSet<NHANVIEN> NHANVIENs { get; set; }
+    
+        public virtual int UpdateInfoCaNhan(string tenNV, string diaChi, string email, string sdt, string gioiTinh, string cmnd)
+        {
+            var tenNVParameter = tenNV != null ?
+                new ObjectParameter("tenNV", tenNV) :
+                new ObjectParameter("tenNV", typeof(string));
+    
+            var diaChiParameter = diaChi != null ?
+                new ObjectParameter("diaChi", diaChi) :
+                new ObjectParameter("diaChi", typeof(string));
+    
+            var emailParameter = email != null ?
+                new ObjectParameter("email", email) :
+                new ObjectParameter("email", typeof(string));
+    
+            var sdtParameter = sdt != null ?
+                new ObjectParameter("sdt", sdt) :
+                new ObjectParameter("sdt", typeof(string));
+    
+            var gioiTinhParameter = gioiTinh != null ?
+                new ObjectParameter("gioiTinh", gioiTinh) :
+                new ObjectParameter("gioiTinh", typeof(string));
+    
+            var cmndParameter = cmnd != null ?
+                new ObjectParameter("cmnd", cmnd) :
+                new ObjectParameter("cmnd", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UpdateInfoCaNhan", tenNVParameter, diaChiParameter, emailParameter, sdtParameter, gioiTinhParameter, cmndParameter);
+        }
     }
 }

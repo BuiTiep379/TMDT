@@ -51,7 +51,7 @@
                                             </button>
                                         </span>
                                         <div class="col-lg-4">
-                                            @Html.ActionLink("Thêm mới nhân viên", "AddSanPham", "MyShop", new { @class = "btn btn-primary" })
+                                            @Html.ActionLink("Thêm mới sản phẩm", "AddSanPham", "MyShop", new { @class = "btn btn-primary" })
                                         </div>
                                     </div>
                                 </div>
@@ -93,7 +93,7 @@
                                                 @Html.DisplayFor(modelItem => item.TenSP)
                                             </td>
                                             <td>
-                                                <img width="50" height="50" src="@Url.Content("~/HinhAnh/HinhAnhSP/" + item.Anh)" alt="">
+                                                <img width="150" height="150" src="@Url.Content("~/HinhAnh/HinhAnhSP/" + item.Anh)" alt="">
                                             </td>
                                             <td>
                                                 @Html.DisplayFor(modelItem => item.NHANHIEU.TenNhanHieu)

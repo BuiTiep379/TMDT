@@ -27,6 +27,7 @@ namespace ShopGiay.Models
         public int SoLuong { get; set; }
         public decimal ThanhTien { get { return (SoLuong * DonGia); } }
         ShopGiayEntities db = new ShopGiayEntities();
+       
         public GIOHANG(int maSP, int maMau, int maSize)
         {
             MaSP = maSP;

@@ -19,10 +19,10 @@
                     <div class="col-6 col-md-4 order-3 order-md-3 text-right">
                         <div class="site-top-icons">
                             <a class="btn btn-secondary" href="/Store/Login" style="font-size: 15px">
-                                <i class="fa fa-sign-in"></i> LOGIN
+                                <i class="fa fa-sign-in"></i>
                             </a>
                             <a class="btn btn-secondary" href="/Store/Register" style="font-size: 15px">
-                                <i class="fa fa-user-plus"></i>Register
+                                <i class="fa fa-user-plus"></i>
                             </a>
                             <a class="fa fa-cart">
                                 @{Html.RenderAction("GioHangPartial", "GioHang");}
@@ -68,7 +68,7 @@
                     <div class="col-6 col-md-4 order-3 order-md-3 text-right">
                         <div class="site-top-icons">
                             <button class="btn btn-secondary"><i class="fa fa-user fa-fw"></i>@Html.ActionLink(@Session["TenKH"].ToString(), "InfoCaNhan", "Store", new { @maKH = Session["UserID"] }, new { @style = "color: black; font-size: 15px"})</button>
-                            <a  class="btn btn-secondary" href="/Store/Logout" style="font-size:15px"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                            <a  class="btn btn-secondary" href="/Store/Logout" style="font-size:15px"><i class="fa fa-sign-out fa-fw"></i></a>
                             <a class="fa fa-cart">
                                 @{Html.RenderAction("GioHangPartial", "GioHang");}
                             </a>

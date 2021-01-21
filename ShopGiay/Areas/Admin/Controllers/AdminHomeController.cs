@@ -15,78 +15,15 @@ namespace ShopGiay.Areas.Admin.Controllers
 {
     public class AdminHomeController : Controller
     {
+        ShopGiayEntities db = new ShopGiayEntities();
+        #region Trang chủ Admin
         // GET: Admin/Home
-        public ActionResult Index(FormCollection form)
+        public ActionResult Index()
         {
-            // Biểu đồ cột
-            var ordersForBar = db.DONHANGs.ToList();
-            var dataForBar = new List<decimal>();
-            var categoriesForBar = new List<string>();
-            for (int i = 1; i < 13; i++)
+            if (Session["Admin"] == null)
             {
-                categoriesForBar.Add(i.ToString());
-                dataForBar.Add(0);
-            }
-
-            foreach (var order in ordersForBar)
-            {
-                if (!categoriesForBar.Contains(order.NgayDatHang.Month.ToString()))
-                {
-                    categoriesForBar.Add(order.NgayDatHang.Month.ToString());
-                    dataForBar.Add(order.TongTien);
-                }
-                else
-                {
-                    int index = categoriesForBar.IndexOf(order.NgayDatHang.Month.ToString());
-                    dataForBar[index] += order.TongTien;
-                }
-
-            }
-            ViewBag.barLabels = categoriesForBar.ToArray();
-            ViewBag.barData = dataForBar.ToArray();
-            // Biểu đồ tròn
-            var now = DateTime.Now;
-            int monthPie, yearPie;
-            string mouthYear = form["month"];
-            if (mouthYear != null)
-            {
-                monthPie = Convert.ToInt32(mouthYear.Substring(5, 2));
-                yearPie = Convert.ToInt32(mouthYear.Substring(0, 4));
-            }
-            else
-            {
-                monthPie = Convert.ToInt32(now.Month);
-                yearPie = Convert.ToInt32(now.Year);
-            }
-            var dataForPie = new List<decimal>();
-            var dhForPie = db.DONHANGs.Where(x => x.NgayDatHang.Month == monthPie && x.NgayDatHang.Year == yearPie);
-            var categoriesForPie = new List<string>();
-            List<int?> tempidOrder = new List<int?>();
-            List<int> tempidProduct = new List<int>();
-            foreach (var dh in dhForPie)
-            {
-                if (!tempidOrder.Contains(dh.MaDH))
-                    tempidOrder.Add(dh.MaDH);
-            }
-            var ctdhForPie = db.CHITIETDONHANGs.Where(x => tempidOrder.Contains(x.MaDH)).ToList();
-
-            foreach (var item in ctdhForPie)
-            {
-                if (!categoriesForPie.Contains(item.SANPHAM.NHANHIEU.TenNhanHieu))
-                {
-                    categoriesForPie.Add(item.SANPHAM.NHANHIEU.TenNhanHieu);
-                    dataForPie.Add(item.DonGia);
-                }
-                else
-                {
-                    int index = categoriesForPie.IndexOf(item.SANPHAM.NHANHIEU.TenNhanHieu);
-                    dataForPie[index] += item.SANPHAM.DonGia * item.SoLuong;
-                }
-            }
-            ViewBag.pieLabels = categoriesForPie.ToArray();
-            ViewBag.pieData = dataForPie.ToArray();
-            ViewBag.monthPie = monthPie;
-            ViewBag.yearPie = yearPie;
+                return RedirectToAction("Login","AdminHome");
+            }    
             return View();
         }
         [ChildActionOnly]
@@ -104,8 +41,9 @@ namespace ShopGiay.Areas.Admin.Controllers
         {
             return PartialView();
         }
-        ShopGiayEntities db = new ShopGiayEntities();
-
+        #endregion
+        
+        #region Thao tác cá nhân
         // GET: Admin/Login
         [HttpGet]
         public ActionResult Login()
@@ -119,23 +57,29 @@ namespace ShopGiay.Areas.Admin.Controllers
             string email = Request.Form["Email"].ToString();
             string matKhau = Request.Form["MatKhau"].ToString();
             string fMatKhau = GetMD5(matKhau);
+            NHANVIEN admin = db.NHANVIENs.Find(1);
             nv = db.NHANVIENs.SingleOrDefault(n => n.Email == email && n.MatKhau == fMatKhau);
+            KHACHHANG kh = db.KHACHHANGs.SingleOrDefault(n => n.Email == email && n.MatKhau == fMatKhau);
+            if (kh != null)
+            {
+                ViewBag.ThongBao = "Tài khoản không phải của nhân viên!";
+                return View();
+            }    
             if (nv != null)
             {
-                if (nv.QuyenNV == "1")
+                if (admin.QuyenNV != nv.QuyenNV)
                 {
-                    Session["UserID"] = nv.MaNV;
-                    Session["TenNV"] = nv.TenNV;
-                    Session["Quyen"] = nv.QuyenNV;
-                    return RedirectToAction("Index");
+                    ViewBag.ThongBao = "Tài khoản không phải là Admin!";
+                    return View();
                 }
                 else
                 {
-                    Session["UserID"] = nv.MaNV;
+                    Session["Admin"] = nv.MaNV;
                     Session["TenNV"] = nv.TenNV;
                     Session["Quyen"] = nv.QuyenNV;
                     return RedirectToAction("Index");
-                }
+                }    
+               
             }
             ViewBag.ThongBao = "Tên tài khoản hoặc mật khẩu không đúng!";
             return View();
@@ -168,7 +112,118 @@ namespace ShopGiay.Areas.Admin.Controllers
 
             return strBuilder.ToString();
         }
+        public ActionResult InfoCaNhan()
+        {
+            int maNV = int.Parse(Session["Admin"].ToString());
 
+            if (maNV == 0)
+            {
+                return RedirectToAction("Login");
+            }
+            else
+            {
+                NHANVIEN nv = db.NHANVIENs.SingleOrDefault(x => x.MaNV == maNV);
+                if (nv == null)
+                {
+                    Response.StatusCode = 404;
+                    return null;
+                }
+                ViewBag.TenNV = nv.TenNV;
+                ViewBag.Email = nv.Email;
+                return View();
+            }
+        }
+
+        [HttpGet]
+        public ActionResult UpdateInfoCaNhan(int? maNV)
+        {
+            maNV = int.Parse(Session["Admin"].ToString());
+
+            if (maNV == null)
+            {
+                return RedirectToAction("Login");
+            }
+            else
+            {
+                NHANVIEN nv = db.NHANVIENs.SingleOrDefault(x => x.MaNV == maNV);
+                if (nv == null)
+                {
+                    Response.StatusCode = 404;
+                    return null;
+                }
+                ViewBag.GioiTinh = nv.GioiTinh;
+                return View(nv);
+            }
+        }
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult UpdateInfoCaNhan(NHANVIEN nv)
+        {
+            string tenNV = Request.Form["TenNV"].ToString();
+            string diaChi = Request.Form["DiaChi"].ToString();
+            string email = Request.Form["Email"].ToString();
+            string sdt = Request.Form["Sdt"].ToString();
+            string gioiTinh = Request.Form["GioiTinh"].ToString();
+            string cmnd = Request.Form["CMND"].ToString();
+            if (ModelState.Count == 7)
+            {
+               // db.UpdateInfoCaNhan(tenNV, diaChi, email, sdt, gioiTinh, cmnd);
+                TempData["ThongBao"] = "Thay đổi thông tin thành công!";
+                return View(nv);
+            }
+            else
+            {
+                TempData["ThongBao"] = "Thay đổi thông tin không thành công!";
+            }
+            return View(nv);
+        }
+        [HttpGet]
+        public ActionResult ChangePassword()
+        {
+            int maNV = int.Parse(Session["Admin"].ToString());
+            NHANVIEN nv = db.NHANVIENs.SingleOrDefault(x => x.MaNV == maNV);
+            if (nv == null)
+            {
+                Response.StatusCode = 404;
+                return null;
+            }
+            ViewBag.TenNV = nv.TenNV;
+            ViewBag.Email = nv.Email;
+            return View();
+        }
+        [HttpPost]
+        public ActionResult ChangePassword(FormCollection form)
+        {
+            string email = form["email"].ToString();
+            string matKhau = form["matKhau"].ToString();
+            string matKhauMoi = form["matKhauMoi"].ToString();
+            string xacNhanMatKhau = form["xacNhanMatKhau"].ToString();
+
+            NHANVIEN nv = db.NHANVIENs.SingleOrDefault(x => x.Email == email);
+            if (email == null || matKhau == null || matKhauMoi == null || xacNhanMatKhau == null)
+            {
+                ViewBag.Error = "Nhập đầy đủ thông tin";
+                return View();
+            }
+            if (matKhau == matKhauMoi)
+            {
+                ViewBag.Error = "Nhập mật khẩu khác";
+                return View();
+            }
+            if (matKhauMoi != xacNhanMatKhau)
+            {
+                ViewBag.Error = "Xác nhận mật khẩu không chính xác";
+                return View();
+            }
+            var f_matKhau = GetMD5(matKhauMoi);
+            nv.MatKhau = f_matKhau;
+            db.Entry(nv).State = EntityState.Modified;
+            TempData["ThongBao"] = "Đổi mật khẩu thành công!";
+            db.SaveChanges();
+            return View();
+        }
+        #endregion
+        #region Quản lý nhân viên
         public ActionResult DanhSachNV(string search, int? page, int? size)
         {
             //Tạo list pagesize 
@@ -187,7 +242,9 @@ namespace ShopGiay.Areas.Admin.Controllers
             int pageNumber = (page ?? 1);
             int pageSize = (size ?? 5);
 
-            var listNV = from nv in db.NHANVIENs select nv;
+            var listNV = from nv in db.NHANVIENs
+                         where nv.Status == 1
+                         select nv;
             listNV = listNV.OrderBy(x => x.MaNV);
             if (!String.IsNullOrEmpty(search))
             {
@@ -236,8 +293,7 @@ namespace ShopGiay.Areas.Admin.Controllers
                     CMND = cmnd,
                     MatKhau = matKhau,
                 };
-                
-                
+
                 // thêm dữ liệu vào bảng nhân viên
                 db.NHANVIENs.Add(nv);
                 db.SaveChanges();
@@ -270,11 +326,14 @@ namespace ShopGiay.Areas.Admin.Controllers
         public ActionResult DeleteNVConfirm(int maNV)
         {
             NHANVIEN nv = db.NHANVIENs.Find(maNV);
-            db.NHANVIENs.Remove(nv);
+            nv.Status = -1;// Tài khoản bị khóa
+            db.Entry(nv).State = System.Data.Entity.EntityState.Modified;
             db.SaveChanges();
             return RedirectToAction("DanhSachNV");
         }
-       
+        #endregion
+
+        #region Quản lý khách hàng
         // Hiện thị danh sách khách hàng
         public ActionResult DanhSachKH(string search, int? page, int? size)
         {
@@ -346,48 +405,26 @@ namespace ShopGiay.Areas.Admin.Controllers
         public ActionResult DeleteKHConfirm(int maKH)
         {
             KHACHHANG kh = db.KHACHHANGs.Find(maKH);
-            db.KHACHHANGs.Remove(kh);
+            kh.Status = -1; // Tài khoản bị khóa
+            db.Entry(kh).State = System.Data.Entity.EntityState.Modified;
             db.SaveChanges();
             return RedirectToAction("DanhSachKH");
         }
 
-       
+        #endregion
+
         public ActionResult SoLuongNhanVien()
         {
             var slnv = db.NHANVIENs.OrderBy(m => m.MaNV).Count();
             ViewBag.SoLuongNV = slnv;
             return PartialView();
         }
-
         public ActionResult SoLuongKhachHang()
         {
-            var slkh = db.KHACHHANGs.OrderBy(m => m.MaKH).Count();
+            var slkh = db.KHACHHANGs.Where(m => m.Status == 1).OrderBy(m => m.MaKH).Count();
             ViewBag.SoLuongKH = slkh;
             return PartialView();
         }
       
-
-        public ActionResult InfoCaNhan(int? maNV)
-        {
-            maNV = int.Parse(Session["UserID"].ToString());
-
-            if (maNV == 0)
-            {
-                return RedirectToAction("Login");
-            }
-            else
-            {
-                NHANVIEN nv = db.NHANVIENs.SingleOrDefault(x => x.MaNV == maNV);
-                if (nv == null)
-                {
-                    Response.StatusCode = 404;
-                    return null;
-                }
-                ViewBag.TenKH = nv.TenNV;
-                return View(nv);
-            }
-        }
-
-
     }
 }

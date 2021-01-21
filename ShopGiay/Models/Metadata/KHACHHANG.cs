@@ -10,7 +10,7 @@ namespace ShopGiay.Models
     [MetadataType(typeof(KHACHHANGMetadata))]
     public partial class KHACHHANG
     {
-        
+
     }
     public class KHACHHANGMetadata
     {

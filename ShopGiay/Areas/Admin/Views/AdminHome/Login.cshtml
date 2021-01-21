@@ -46,7 +46,11 @@
                                         <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
                                     </div>
                                     <form class="user" action="/Admin/AdminHome/Login" method="post">
-                                        @Html.AntiForgeryToken();
+                                        @if (ViewBag.ThongBao != null)
+                                        {
+                                           <span class="badge badge-danger" style="font-size: 16px; margin-bottom: 4px">@ViewBag.ThongBao</span>
+                                        }
+                                        @Html.AntiForgeryToken()
                                         <div class="form-group">
                                             @Html.TextBoxFor(m => m.Email, new { @class = "form-control form-control-user", @placeholder = "Email address" })
                                             @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })

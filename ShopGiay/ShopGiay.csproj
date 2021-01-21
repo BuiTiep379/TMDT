@@ -174,7 +174,7 @@
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminHomeController.cs" />
     <Compile Include="Areas\Admin\Controllers\MyShopController.cs" />
-    <Compile Include="Controllers\DonHangController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ShipperController.cs" />
     <Compile Include="Controllers\GioHangController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\KhachHangController.cs" />
@@ -193,10 +193,16 @@
     <Compile Include="Models\CHITIETSP.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DIACHIKH.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\DONHANG.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\KHACHHANG.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\KHOHANG.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\LOAISP.cs">
@@ -205,6 +211,17 @@
     <Compile Include="Models\MAUSAC.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Metadata\CHITIETDONHANG.cs" />
+    <Compile Include="Models\Metadata\CHITIETSP.cs" />
+    <Compile Include="Models\Metadata\DIACHIKH.cs" />
+    <Compile Include="Models\Metadata\DONHANG.cs" />
+    <Compile Include="Models\Metadata\KHACHHANG.cs" />
+    <Compile Include="Models\Metadata\KHOHANG.cs" />
+    <Compile Include="Models\Metadata\LOAISP.cs" />
+    <Compile Include="Models\Metadata\MAUSAC.cs" />
+    <Compile Include="Models\Metadata\NHANHIEU.cs" />
+    <Compile Include="Models\Metadata\NHANVIEN.cs" />
+    <Compile Include="Models\Metadata\SANPHAM.cs" />
     <Compile Include="Models\Metadata\SIZE.cs" />
     <Compile Include="Models\Model.Context.cs">
       <AutoGen>True</AutoGen>
@@ -229,21 +246,7 @@
     </Compile>
     <Compile Include="Models\PaypalConfiguration.cs" />
     <Compile Include="Models\GIOHANG.cs" />
-    <Compile Include="Models\Metadata\CHITIETDONHANG.cs" />
-    <Compile Include="Models\Metadata\CHITIETSP.cs" />
-    <Compile Include="Models\Metadata\DONHANG.cs" />
-    <Compile Include="Models\Metadata\HINHANHSP.cs" />
-    <Compile Include="Models\Metadata\KHACHHANG.cs" />
-    <Compile Include="Models\Metadata\LOAISP.cs" />
-    <Compile Include="Models\Metadata\MAUSAC.cs" />
-    <Compile Include="Models\Metadata\NHANHIEU.cs" />
-    <Compile Include="Models\Metadata\NHANVIEN.cs" />
-    <Compile Include="Models\Metadata\PROMOCODE.cs" />
-    <Compile Include="Models\Metadata\SANPHAM.cs" />
     <Compile Include="Models\Logger.cs" />
-    <Compile Include="Models\PROMOCODE.cs">
-      <DependentUpon>Model.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\SANPHAM.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -2107,9 +2110,6 @@
     <Content Include="Content\Client\scss\_site-base.scss" />
     <Content Include="Content\Client\scss\_site-blocks.scss" />
     <Content Include="Content\Client\scss\_site-navbar.scss" />
-    <Content Include="Areas\Admin\Views\MyShop\DanhSachPromoCode.cshtml" />
-    <Content Include="Areas\Admin\Views\MyShop\EditPromoCode.cshtml" />
-    <Content Include="Areas\Admin\Views\MyShop\DeletePromoCode.cshtml" />
     <Content Include="Content\Client\fonts\fontawesome-webfont.eot" />
     <Content Include="Content\Client\fonts\fontawesome-webfont.ttf" />
     <Content Include="Content\Client\fonts\fontawesome-webfont.woff" />
@@ -2306,7 +2306,21 @@
     <Content Include="Areas\Admin\Views\MyShop\SidebarMenu.cshtml" />
     <Content Include="Areas\Admin\Views\MyShop\Footer.cshtml" />
     <Content Include="Areas\Admin\Views\MyShop\NavBar.cshtml" />
-    <Content Include="Areas\Admin\Views\MyShop\AddPromoCode.cshtml" />
+    <Content Include="Areas\Admin\Views\MyShop\TongDTDuKien.cshtml" />
+    <Content Include="Areas\Admin\Views\MyShop\SoLuongDHThanhCong.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminHome\InfoCaNhan.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminHome\UpdateInfoCaNhan.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminHome\ChangePassword.cshtml" />
+    <Content Include="Areas\Admin\Views\MyShop\DanhSachNhanHieu.cshtml" />
+    <Content Include="Areas\Admin\Views\MyShop\AddNhanHieu.cshtml" />
+    <Content Include="Areas\Admin\Views\MyShop\EditNH.cshtml" />
+    <Content Include="Areas\Admin\Views\MyShop\DeleteLoaiSP.cshtml" />
+    <Content Include="Areas\Admin\Views\MyShop\DeleteNH.cshtml" />
+    <Content Include="Areas\Admin\Views\MyShop\DanhSachSPTrongKho.cshtml" />
+    <Content Include="Areas\Admin\Views\MyShop\ThayDoiSoLuong.cshtml" />
+    <Content Include="Areas\Admin\Views\MyShop\DonHangChuaXN.cshtml" />
+    <Content Include="Areas\Admin\Views\MyShop\DHDangGiao.cshtml" />
+    <Content Include="Areas\Admin\Views\MyShop\DonHangThanhCong.cshtml" />
     <EntityDeploy Include="Models\Model.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>Model.Designer.cs</LastGenOutput>
@@ -2314,6 +2328,7 @@
     <Content Include="Models\Model.edmx.diagram">
       <DependentUpon>Model.edmx</DependentUpon>
     </Content>
+    <Content Include="Areas\Admin\Views\MyShop\Login.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -2375,8 +2390,8 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Data\" />
+    <Folder Include="Areas\Admin\Views\Shipper\" />
     <Folder Include="HinhAnh\HinhAnhSP\" />
-    <Folder Include="Views\DonHang\" />
     <Folder Include="Views\Home\" />
   </ItemGroup>
   <ItemGroup>

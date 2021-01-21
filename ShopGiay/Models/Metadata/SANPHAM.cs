@@ -20,7 +20,7 @@ namespace ShopGiay.Models
         [Required(ErrorMessage = "{0} không được để trống")]
         [Display(Name = "Tên sản phẩm")]
         public string TenSP { get; set; }
-        [Display(Name = "Loại sản phẩm")]
+        [Display(Name = "Loại")]
         [Required(ErrorMessage = "{0} không được để trống")]
         public Nullable<int> MaLoai { get; set; }
         [Display(Name = "Nhãn hiệu")]
@@ -29,7 +29,7 @@ namespace ShopGiay.Models
         [Display(Name = "Ảnh")]
         [Required(ErrorMessage = "{0} không được để trống")]
         public string Anh { get; set; }
-      
+
         [Required(ErrorMessage = "{0} không được để trống")]
         [Display(Name = "Giá bán")]
         public Nullable<decimal> DonGia { get; set; }
@@ -47,10 +47,8 @@ namespace ShopGiay.Models
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public System.DateTime NgayCapNhat { get; set; }
-        [Display(Name = "Mã khách hàng")]
-        public Nullable<int> UserID { get; set; }
         [Display(Name = "Trạng thái")]
-        public Nullable<bool> Status { get; set; }
+        public bool Status { get; set; }
     }
 
 }

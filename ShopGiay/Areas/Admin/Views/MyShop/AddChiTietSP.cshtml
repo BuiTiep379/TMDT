@@ -54,13 +54,6 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        @Html.LabelFor(model => model.SoLuong, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-5">
-                            @Html.TextBoxFor(model => model.SoLuong, new { @class = "form-control", @type = "number" })
-                            @Html.ValidationMessageFor(model => model.SoLuong, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-                    <div class="form-group">
                         <div class="col-md-offset-2 col-md-10">
                             <input type="submit" value="Create" class="btn btn-success" />
                             @Html.ActionLink("Trở về", "DanhSachChiTietSP", null, new { @class = "btn btn-danger" })

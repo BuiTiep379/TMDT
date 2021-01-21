@@ -19,7 +19,7 @@ namespace ShopGiay.Controllers
         [ChildActionOnly]
         public ActionResult DanhSachLoai()
         {
-            var loaiSP = db.LOAISPs.OrderBy(x => x.MaLoai);
+            var loaiSP = db.LOAISPs.Where(x => x.Status == true).OrderBy(x => x.MaLoai);
             return PartialView(loaiSP);
         }    
     }

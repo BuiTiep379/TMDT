@@ -7,14 +7,14 @@
 @section SiteNavBar {
     @{ Html.RenderAction("SiteNavBar", "Store");}
 }
-<div class="site-section">
+<div class="site-section" style=" background-color: azure; ">
     <div class="container">
         <div class="row mb-5">
             <div class="col-md-9 order-2">
                 <div class="col-md-12">
                     <div class="row mb-5">
                         <div class="col-md-12">
-                            <h2 class="h3 mb-3 text-black">Your Order</h2>
+                            <h2 class="h3 mb-3 text-black">Đơn hàng của tôi</h2>
                             <div class="p-3 p-lg-5 border">
                                 @foreach (var item in Model)
                                 {
@@ -38,7 +38,7 @@
                                                         @string.Format("{0:0,0}", @item.TongTien) VNĐ
                                                     </strong>
                                                 </td>
-                                                <td>@Html.ActionLink("Chi tiết", "DetailDonHang", new { @maDH = item.MaDH }, new { @style = "btn btn-primart"})</td>
+                                                <td>@Html.ActionLink("Chi tiết", "DetailDonHang", new { @maDH = item.MaDH }, new { @style = "btn btn-primart" })</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -52,10 +52,11 @@
             <div class="col-md-3 order-1 mb-5 mb-md-0">
                 <div class="p-4 rounded mb-4">
                     <h3 class="mb-3 h6 text-uppercase text-black d-block">@ViewBag.TenKH</h3>
-                    <ul class="list-unstyled mb-0">
-                        <li class="mb-1">@Html.ActionLink("Chỉnh sửa thông tin", "UpdateInfoCaNhan", new { @maKH = Session["UserID"] })</li>
-                        <li class="mb-1">@Html.ActionLink("Đổi mật khẩu", "ChangePassword")</li>
-                        <li class="mb-1">@Html.ActionLink("Đơn mua", "DonMua", new { @maKH = Session["UserID"] })</li>
+                    <ul class="list-group">
+                        <li class="list-group-item">@Html.ActionLink("Thông tin cá nhân", "InfoCaNhan", null, new { @style = "color: black" })</li>
+                        <li class="list-group-item">@Html.ActionLink("Chỉnh sửa thông tin", "UpdateInfoCaNhan", new { @maKH = Session["UserID"] }, new { @style = "color: black" })</li>
+                        <li class="list-group-item">@Html.ActionLink("Đổi mật khẩu", "ChangePassword", null, new { @style = "color: black" })</li>
+                        <li class="list-group-item">@Html.ActionLink("Đơn mua", "DonMua", new { @maKH = Session["UserID"] }, new { @style = "color: black" })</li>
                     </ul>
                 </div>
             </div>

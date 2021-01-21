@@ -15,15 +15,10 @@ namespace ShopGiay.Models
     public partial class CHITIETDONHANG
     {
         public int MaDH { get; set; }
-        public int MaSP { get; set; }
+        public int MaCTSP { get; set; }
         public int SoLuong { get; set; }
-        public decimal DonGia { get; set; }
-        public int MaSize { get; set; }
-        public int MaMau { get; set; }
     
+        public virtual CHITIETSP CHITIETSP { get; set; }
         public virtual DONHANG DONHANG { get; set; }
-        public virtual MAUSAC MAUSAC { get; set; }
-        public virtual SIZE SIZE { get; set; }
-        public virtual SANPHAM SANPHAM { get; set; }
     }
 }

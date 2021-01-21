@@ -8,7 +8,7 @@
 @section SiteNavBar {
     @{ Html.RenderAction("SiteNavBar", "Store");}
 }
-<div class="site-section" style="padding-top: 20px; padding-bottom: 30px">
+<div class="site-section" style="padding-top: 20px; padding-bottom: 30px; background-color: azure">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -41,14 +41,14 @@
                                     @foreach (var item in Model)
                                     {
                                         <tr>
-                                            <td>@item.SANPHAM.TenSP</td>
-                                            <td>@item.SIZE.Size</td>
+                                            <td>@item.CHITIETSP.SANPHAM.TenSP</td>
+                                            <td>@item.CHITIETSP.MAUSAC.MauSac</td>
                                             <td>
-                                                @item.MAUSAC.MauSac
+                                                @item.CHITIETSP.SIZE.Size
                                             </td>
 
                                             <td>@item.SoLuong</td>
-                                            <td>@string.Format("{0:0,0}", @item.DonGia) VNĐ</td>
+                                            <td>@string.Format("{0:0,0}", @item.CHITIETSP.SANPHAM.DonGia) VNĐ</td>
                                         </tr>
                                     }
                                     <tr>

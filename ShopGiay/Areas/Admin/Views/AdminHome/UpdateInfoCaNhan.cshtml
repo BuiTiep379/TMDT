@@ -1,0 +1,117 @@
+﻿@model ShopGiay.Models.NHANVIEN
+@{
+    ViewBag.Title = "UpdateInfoCaNhan";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayouts.cshtml";
+}
+@section SidebarMenu
+{
+    @Html.Action("SidebarMenu", "AdminHome")
+}
+@section NavBar{
+    @Html.Action("NavBar", "AdminHome")
+}
+@section Footer
+{
+    @Html.Action("Footer", "AdminHome")
+}
+
+<div class="site-section">
+    <div class="container"  style="margin-left:10px">
+        <div class="row mb-5">
+            <div class="col-md-9 order-2">
+                <h3 style="text-align: center">Thay đổi thông tin cá nhân</h3>
+                <div class="col-12 md-5">
+                    <div>
+                        <form action="/Admin/AdminHome/UpdateInfoCaNhan" method="post">
+                            @if (TempData["ThongBao"] != null)
+                            {
+                                <div class="alert alert-success alert-dismissible" role="alert">
+                                    <strong>@TempData["ThongBao"]</strong>
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            }
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.TenNV, htmlAttributes: new { @class = "control-label" })
+                                @Html.TextBoxFor(model => model.TenNV, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.TenNV, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.DiaChi, htmlAttributes: new { @class = "control-label" })
+                                @Html.TextBoxFor(model => model.DiaChi, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.DiaChi, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" })
+                                @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Sdt, htmlAttributes: new { @class = "control-label" })
+                                @Html.TextBoxFor(model => model.Sdt, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.Sdt, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.GioiTinh, htmlAttributes: new { @class = "control-label" })
+                                @{
+                                    if (ViewBag.GioiTinh == "Nam")
+                                    {
+                                        <div class="col-md-12">
+                                            @Html.Label("Nam")
+                                            @Html.RadioButton("GioiTinh", "Nam", true, null)
+                                            @Html.Label("Nữ")
+                                            @Html.RadioButton("GioiTinh", "Nữ", null)
+                                            @Html.ValidationMessageFor(model => model.GioiTinh, "", new { @class = "text-danger" })
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-md-12">
+                                            @Html.Label("Nam")
+                                            @Html.RadioButton("GioiTinh", "Nam", null)
+                                            @Html.Label("Nữ")
+                                            @Html.RadioButton("GioiTinh", "Nữ", true, null)
+                                            @Html.ValidationMessageFor(model => model.GioiTinh, "", new { @class = "text-danger" })
+                                        </div>
+                                    }
+                                }
+
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.CMND, htmlAttributes: new { @class = "control-label" })
+                                @Html.TextBoxFor(model => model.CMND, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.CMND, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-10">
+                                    <input type="submit" value="Lưu" class="btn btn-success" />
+                                    @Html.ActionLink("Trở về", "InfoCaNhan", null, new { @class = "btn btn-info" })
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-3 order-1 mb-5 mb-md-0">
+                <div class="p-4 rounded mb-4">
+                    <ul class="list-group">
+                        <li class="list-group-item">@Html.ActionLink("Thông tin cá nhân", "InfoCaNhan", null, new { @style = "color: black" })</li>
+                        <li class="list-group-item">@Html.ActionLink("Chỉnh sửa thông tin", "UpdateInfoCaNhan", new { @maNV = Session["Admin"] }, new { @style = "color: black" })</li>
+                        <li class="list-group-item">@Html.ActionLink("Đổi mật khẩu", "ChangePassword", null, new { @style = "color: black" })</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

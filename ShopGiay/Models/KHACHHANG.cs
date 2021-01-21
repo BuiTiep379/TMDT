@@ -17,12 +17,8 @@ namespace ShopGiay.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public KHACHHANG()
         {
+            this.DIACHIKHs = new HashSet<DIACHIKH>();
             this.DONHANGs = new HashSet<DONHANG>();
-            this.DONHANGs1 = new HashSet<DONHANG>();
-            this.LOAISPs = new HashSet<LOAISP>();
-            this.NHANHIEUx = new HashSet<NHANHIEU>();
-            this.PROMOCODEs = new HashSet<PROMOCODE>();
-            this.SANPHAMs = new HashSet<SANPHAM>();
         }
     
         public int MaKH { get; set; }
@@ -31,19 +27,11 @@ namespace ShopGiay.Models
         public string Email { get; set; }
         public string Sdt { get; set; }
         public string MatKhau { get; set; }
-        public Nullable<bool> Status { get; set; }
+        public int Status { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DIACHIKH> DIACHIKHs { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DONHANG> DONHANGs { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DONHANG> DONHANGs1 { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<LOAISP> LOAISPs { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<NHANHIEU> NHANHIEUx { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PROMOCODE> PROMOCODEs { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SANPHAM> SANPHAMs { get; set; }
     }
 }

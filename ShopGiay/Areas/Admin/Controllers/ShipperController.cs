@@ -3,22 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using ShopGiay.Models;
 
-namespace ShopGiay.Controllers
+namespace ShopGiay.Areas.Admin.Controllers
 {
-    public class DonHangController : Controller
+    public class ShipperController : Controller
     {
-        ShopGiayEntities db = new ShopGiayEntities();
-        // GET: DonHang
+        // GET: Admin/Shipper
         public ActionResult Index()
         {
             return View();
         }
-        
-
-        
-
-        
     }
 }
