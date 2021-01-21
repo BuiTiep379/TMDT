@@ -2329,6 +2329,13 @@
       <DependentUpon>Model.edmx</DependentUpon>
     </Content>
     <Content Include="Areas\Admin\Views\MyShop\Login.cshtml" />
+    <Content Include="Areas\Admin\Views\Shipper\DHDangGiao.cshtml" />
+    <Content Include="Areas\Admin\Views\Shipper\Login.cshtml" />
+    <Content Include="Areas\Admin\Views\Shipper\DetailDH.cshtml" />
+    <Content Include="Areas\Admin\Views\Shipper\SidebarMenu.cshtml" />
+    <Content Include="Areas\Admin\Views\Shipper\NavBar.cshtml" />
+    <Content Include="Areas\Admin\Views\Shipper\Footer.cshtml" />
+    <Content Include="Areas\Admin\Views\Shipper\DonHangThanhCong.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -2379,18 +2386,17 @@
     <Content Include="Views\GioHang\ThanksYou.cshtml" />
     <Content Include="Views\Store\ChangePassword.cshtml" />
     <Content Include="Views\Store\DonMua.cshtml" />
-    <Content Include="Views\Store\DetailDonHang.cshtml" />
     <Content Include="Views\GioHang\ThayDoiDiaChi.cshtml" />
     <Content Include="Views\GioHang\Success.cshtml" />
     <Content Include="Views\GioHang\Failure.cshtml" />
     <Content Include="Areas\Admin\Views\MyShop\DanhSachSanPham.cshtml" />
     <Content Include="Areas\Admin\Views\MyShop\AddSanPham.cshtml" />
     <Content Include="Areas\Admin\Views\MyShop\Index.cshtml" />
+    <Content Include="Views\Store\DetailDH.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Data\" />
-    <Folder Include="Areas\Admin\Views\Shipper\" />
     <Folder Include="HinhAnh\HinhAnhSP\" />
     <Folder Include="Views\Home\" />
   </ItemGroup>
