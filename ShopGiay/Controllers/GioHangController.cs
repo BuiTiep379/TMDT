@@ -210,36 +210,6 @@ namespace ShopGiay.Controllers
             return PartialView();
         }
 
-
-        //public List<DONHANG> TaoListDH(string diaChiGiao)
-        //{
-        //    int maKH = int.Parse(Session["UserID"].ToString());
-        //    List<GIOHANG> listGioHang = LayGioHang();
-        //    List<DONHANG> listDH = new List<DONHANG>();
-        //    List<int?> listSeller = new List<int?>();
-        //    DateTime myDateTime = DateTime.Now;
-        //    try
-        //    {
-        //        foreach (var item in listGioHang)
-        //        {
-        //            if (!listSeller.Contains(item.UserID))
-        //            {
-        //                listSeller.Add(item.UserID);
-        //                DONHANG dh = new DONHANG()
-        //                {
-        //                    MaKH = maKH,
-        //                    NgayDatHang = myDateTime,
-        //                    DiaChiGiao = diaChiGiao,
-        //                    TinhTrang = "Đang xử lý",
-        //                };
-        //                listDH.Add(dh);
-        //            }
-        //        }
-        //    }
-        //    catch
-        //    { }
-        //    return listDH;
-        //}    
         public ActionResult ThanhToan()
         {
             int maKH = int.Parse(Session["UserID"].ToString());
