@@ -76,8 +76,25 @@
                                             <td>@Html.DisplayFor(modelItems => item.Email)</td>
                                             <td>@Html.DisplayFor(modelItems => item.Sdt)</td>
                                             <td>
-                                                <button class="btn btn-info">@Html.ActionLink("Chi tiết", "DetailKhachHang", "AdminHome", new { @makh = item.MaKH }, new { @style = "color: white", })</button>
-                                                <button class="btn btn-danger"> @Html.ActionLink("Xóa", "DeleteKhachHang", "AdminHome", new { @makh = item.MaKH }, new { @style = "color: white", })</button>
+                                                @{
+                                                    if (item.Status == 1)
+                                                    {
+                                                        <button class="btn btn-info">@Html.ActionLink("Chi tiết", "DetailKhachHang", "AdminHome", new { @makh = item.MaKH }, new { @style = "color: white", })</button>
+                                                        <button class="btn btn-danger"> @Html.ActionLink("Xóa", "DeleteKhachHang", "AdminHome", new { @makh = item.MaKH }, new { @style = "color: white", })</button>
+                                                    }
+                                                    else if (item.Status == 0)
+                                                    {
+
+                                                        <button class="btn btn-info">@Html.ActionLink("Chi tiết", "DetailKhachHang", "AdminHome", new { @makh = item.MaKH }, new { @style = "color: white", })</button>
+                                                        <button class="btn btn-danger"> @Html.ActionLink("Kích hoạt", "KichHoatTK", "AdminHome", new { @makh = item.MaKH }, new { @style = "color: white", })</button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <label>Bị khóa</label>
+                                                        <button class="btn btn-info">@Html.ActionLink("Chi tiết", "DetailKhachHang", "AdminHome", new { @makh = item.MaKH }, new { @style = "color: white", })</button>
+                                                    }
+                                                }
+
                                             </td>
                                         </tr>
                                     }

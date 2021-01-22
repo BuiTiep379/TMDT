@@ -85,17 +85,29 @@ namespace ShopGiay.Controllers
             var kh = db.KHACHHANGs.SingleOrDefault(x => x.Email == sEmail && x.MatKhau == f_password);
             if (kh != null)
             {
-                ViewBag.ThongBao = "Đăng nhập thành công";
-                Session["UserID"] = kh.MaKH;
-                Session["Email"] = kh.Email;
-                Session["TenKH"] = kh.TenKH;
-                if (Session["GIOHANG"] != null)
+                if (kh.Status == -1)
                 {
-                    return RedirectToAction("GioHang", "GioHang");
+                    TempData["ThongBao"] = "Tài khoản của bạn đã bị khóa";
+                    return View();
                 }    
-                return RedirectToAction("Index");
+                else if (kh.Status == 0)
+                {
+                    TempData["ThongBao"] = "Tài khoản của bạn chưa được kích hoạt";
+                    return View();
+                }
+                else
+                {
+                    Session["UserID"] = kh.MaKH;
+                    Session["Email"] = kh.Email;
+                    Session["TenKH"] = kh.TenKH;
+                    if (Session["GIOHANG"] != null)
+                    {
+                        return RedirectToAction("GioHang", "GioHang");
+                    }
+                    return RedirectToAction("Index");
+                }
             }
-            ViewBag.ThongBao = "Tên tài khoản hoặc mật khẩu không đúng!!";
+            TempData["ThongBao"] = "Tên tài khoản hoặc mật khẩu không đúng!!";
             return View();
         }
 
@@ -106,9 +118,6 @@ namespace ShopGiay.Controllers
             Session.RemoveAll();
             return RedirectToAction("Login");
         }
-
-
-
         //create a string MD5
         public static string GetMD5(string text)
         {

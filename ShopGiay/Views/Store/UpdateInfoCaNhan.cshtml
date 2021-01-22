@@ -31,7 +31,7 @@
                             </div>
                             <div class="form-group col-xs-6">
                                 @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-5", @style = "font-weight: bold;" })
-                                @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+                                @Html.TextBoxFor(model => model.Email, new { @class = "form-control", @readonly = "readonly" })
                                 @Html.ValidationMessageFor(model => model.Email, "", new { @class = "badge badge-danger" })
                             </div>
                             <div class="form-group col-xs-6">

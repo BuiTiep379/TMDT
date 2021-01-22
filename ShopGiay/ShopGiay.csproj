@@ -2336,6 +2336,12 @@
     <Content Include="Areas\Admin\Views\Shipper\NavBar.cshtml" />
     <Content Include="Areas\Admin\Views\Shipper\Footer.cshtml" />
     <Content Include="Areas\Admin\Views\Shipper\DonHangThanhCong.cshtml" />
+    <Content Include="Areas\Admin\Views\Shipper\InfoCaNhan.cshtml" />
+    <Content Include="Areas\Admin\Views\Shipper\UpdateInfoCaNhan.cshtml" />
+    <Content Include="Areas\Admin\Views\Shipper\ChangePassword.cshtml" />
+    <Content Include="Areas\Admin\Views\MyShop\UpdateInfoCaNhan.cshtml" />
+    <Content Include="Areas\Admin\Views\MyShop\ChangePassword.cshtml" />
+    <Content Include="Areas\Admin\Views\MyShop\InfoCaNhan.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />

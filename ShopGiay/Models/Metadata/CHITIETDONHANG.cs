@@ -18,7 +18,7 @@ namespace ShopGiay.Models
         [Required(ErrorMessage = "{0} không được để trống")]
         public int MaCTSP { get; set; }
         [Display(Name = "Số lượng sản phẩm")]
-        [Range(1, maximum: 100, ErrorMessage = ("Số lượng tối thiểu là 1 tối đa 100 sản phẩm"))]
+        [Range(1, maximum: 200, ErrorMessage = ("Số lượng tối thiểu là 1 tối đa 100 sản phẩm"))]
         public int SoLuong { get; set; }
 
     }

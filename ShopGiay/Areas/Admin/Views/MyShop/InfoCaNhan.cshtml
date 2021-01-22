@@ -1,0 +1,59 @@
+﻿
+@{
+    ViewBag.Title = "Thông tin cá nhân";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayouts.cshtml";
+}
+
+
+@section SidebarMenu
+{
+    @Html.Action("SidebarMenu", "MyShop")
+}
+@section NavBar{
+    @Html.Action("NavBar", "MyShop")
+}
+@section Footer
+{
+    @Html.Action("Footer", "MyShop")
+}
+
+<div class="site-section">
+    <div class="container" style="margin-left:10px">
+        <div class="row mb-5">
+            <div class="col-md-9 order-2">
+                <h3 style="text-align: center">Thông tin cá nhân</h3>
+                <div class="col-12 md-5">
+                    <div>
+                        <div class="card-body media align-items-center">
+                            <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" class="d-block ui-w-80" style="width: 100px">
+                            <div class="form-group">
+                                <strong><label class="form-label" style="margin-left: 10px">@ViewBag.TenNV</label></strong><br />
+                                <strong><label class="form-label" style="margin-left: 10px">Shipper</label></strong>
+                            </div>
+                        </div>
+                        <hr class="border-light m-0">
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="text" class="form-control" name="Email" value=@ViewBag.Email readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 order-1 mb-5 mb-md-0">
+                <div class="p-4 rounded mb-4">
+                    <ul class="list-group">
+                        <li class="list-group-item">@Html.ActionLink("Thông tin cá nhân", "InfoCaNhan", null, new { @style = "color: black" })</li>
+                        <li class="list-group-item">@Html.ActionLink("Chỉnh sửa thông tin", "UpdateInfoCaNhan", new { @maNV = Session["MaNV"] }, new { @style = "color: black" })</li>
+                        <li class="list-group-item">@Html.ActionLink("Đổi mật khẩu", "ChangePassword", null, new { @style = "color: black" })</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+

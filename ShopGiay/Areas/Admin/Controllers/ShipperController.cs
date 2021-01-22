@@ -58,7 +58,7 @@ namespace ShopGiay.Areas.Admin.Controllers
                 }
                 else
                 {
-                    Session["MaNV"] = nv.MaNV;
+                    Session["Shipper"] = nv.MaNV;
                     Session["TenNV"] = nv.TenNV;
                     Session["Quyen"] = nv.QuyenNV;
                     return RedirectToAction("DHDangGiao");
@@ -197,6 +197,117 @@ namespace ShopGiay.Areas.Admin.Controllers
             }
             // nếu từ khóa null thì trả về list 
             return View(listDH.ToPagedList(pageNumber, pageSize));
+        }
+
+        public ActionResult InfoCaNhan()
+        {
+            int maNV = int.Parse(Session["Shipper"].ToString());
+
+            if (maNV == 0)
+            {
+                return RedirectToAction("Login");
+            }
+            else
+            {
+                NHANVIEN nv = db.NHANVIENs.SingleOrDefault(x => x.MaNV == maNV);
+                if (nv == null)
+                {
+                    Response.StatusCode = 404;
+                    return null;
+                }
+                ViewBag.TenNV = nv.TenNV;
+                ViewBag.Email = nv.Email;
+                return View();
+            }
+        }
+
+        [HttpGet]
+        public ActionResult UpdateInfoCaNhan(int? maNV)
+        {
+            maNV = int.Parse(Session["Shipper"].ToString());
+
+            if (maNV == null)
+            {
+                return RedirectToAction("Login");
+            }
+            else
+            {
+                NHANVIEN nv = db.NHANVIENs.SingleOrDefault(x => x.MaNV == maNV);
+                if (nv == null)
+                {
+                    Response.StatusCode = 404;
+                    return null;
+                }
+                ViewBag.GioiTinh = nv.GioiTinh;
+                return View(nv);
+            }
+        }
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult UpdateInfoCaNhan(NHANVIEN nv)
+        {
+            string tenNV = Request.Form["TenNV"].ToString();
+            string diaChi = Request.Form["DiaChi"].ToString();
+            string email = Request.Form["Email"].ToString();
+            string sdt = Request.Form["Sdt"].ToString();
+            string gioiTinh = Request.Form["GioiTinh"].ToString();
+            string cmnd = Request.Form["CMND"].ToString();
+            if (ModelState.Count == 7)
+            {
+                db.UpdateInfoCaNhan(tenNV, diaChi, email, sdt, gioiTinh, cmnd);
+                TempData["ThongBao"] = "Thay đổi thông tin thành công!";
+                return View(nv);
+            }
+            else
+            {
+                TempData["ThongBao"] = "Thay đổi thông tin không thành công!";
+            }
+            return View(nv);
+        }
+        [HttpGet]
+        public ActionResult ChangePassword()
+        {
+            int maNV = int.Parse(Session["Shipper"].ToString());
+            NHANVIEN nv = db.NHANVIENs.SingleOrDefault(x => x.MaNV == maNV);
+            if (nv == null)
+            {
+                Response.StatusCode = 404;
+                return null;
+            }
+            ViewBag.TenNV = nv.TenNV;
+            ViewBag.Email = nv.Email;
+            return View();
+        }
+        [HttpPost]
+        public ActionResult ChangePassword(FormCollection form)
+        {
+            string email = form["email"].ToString();
+            string matKhau = form["matKhau"].ToString();
+            string matKhauMoi = form["matKhauMoi"].ToString();
+            string xacNhanMatKhau = form["xacNhanMatKhau"].ToString();
+
+            NHANVIEN nv = db.NHANVIENs.SingleOrDefault(x => x.Email == email);
+            if (email == null || matKhau == null || matKhauMoi == null || xacNhanMatKhau == null)
+            {
+                ViewBag.Error = "Nhập đầy đủ thông tin";
+                return View();
+            }
+            if (matKhau == matKhauMoi)
+            {
+                ViewBag.Error = "Nhập mật khẩu khác";
+                return View();
+            }
+            if (matKhauMoi != xacNhanMatKhau)
+            {
+                ViewBag.Error = "Xác nhận mật khẩu không chính xác";
+                return View();
+            }
+            var f_matKhau = GetMD5(matKhauMoi);
+            nv.MatKhau = f_matKhau;
+            db.Entry(nv).State = EntityState.Modified;
+            TempData["ThongBao"] = "Đổi mật khẩu thành công!";
+            db.SaveChanges();
+            return View();
         }
     }
 }
