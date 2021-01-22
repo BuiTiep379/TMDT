@@ -276,36 +276,6 @@ namespace ShopGiay.Controllers
             ViewBag.TenKhachHang = kh.TenKH;
             return View();
         }
-        [HttpGet]
-        public ActionResult ThayDoiDiaChi(int maKH)
-        {
-            var kh = db.KHACHHANGs.Find(maKH);
-            if (kh == null)
-            {
-                Response.StatusCode = 404;
-                return null;
-            }
-            return View();  
-        }
-        [HttpPost]
-        public ActionResult ThayDoiDiaChi(KHACHHANG kh)
-        {
-            string diaChi = Request.Form["DiaChi"].ToString();
-            var maKH = int.Parse(Session["UserID"].ToString());
-            kh = db.KHACHHANGs.Find(maKH);
-            if (kh.DiaChi == diaChi)
-            {
-                return View();
-            }    
-            else
-            {
-                kh.DiaChi = diaChi;
-                db.Entry(kh).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("ThanhToan", new { maKH = maKH});
-            }    
-        }
-      
         public ActionResult HuyThanhToan(int maKH)
         {
             return RedirectToAction("GioHang");

@@ -733,8 +733,8 @@ namespace ShopGiay.Areas.Admin.Controllers
         public ActionResult DanhSachChiTietSP(string search, int? page, int? size)
         {
             List<SelectListItem> items = new List<SelectListItem>();
-            items.Add(new SelectListItem { Text = "10", Value = "10" });
-            items.Add(new SelectListItem { Text = "20", Value = "20" });
+            items.Add(new SelectListItem { Text = "25", Value = "25" });
+            items.Add(new SelectListItem { Text = "50", Value = "50" });
 
 
             foreach (var item in items)
@@ -748,7 +748,7 @@ namespace ShopGiay.Areas.Admin.Controllers
 
             page = (page ?? 1);
             int pageNumber = (page ?? 1);
-            int pageSize = (size ?? 10);
+            int pageSize = (size ?? 25);
             var listCT = from ct in db.CHITIETSPs 
                          where ct.SANPHAM.Status == true
                          where ct.Status == true
@@ -1125,8 +1125,8 @@ namespace ShopGiay.Areas.Admin.Controllers
         public ActionResult DanhSachSPTrongKho(string search, int? page, int? size)
         {
             List<SelectListItem> items = new List<SelectListItem>();
-            items.Add(new SelectListItem { Text = "20", Value = "20" });
-            items.Add(new SelectListItem { Text = "40", Value = "40" });
+            items.Add(new SelectListItem { Text = "25", Value = "25" });
+            items.Add(new SelectListItem { Text = "50", Value = "50" });
 
 
             foreach (var item in items)
@@ -1140,10 +1140,10 @@ namespace ShopGiay.Areas.Admin.Controllers
 
             page = (page ?? 1);
             int pageNumber = (page ?? 1);
-            int pageSize = (size ?? 20);
+            int pageSize = (size ?? 25);
             var khoHang = from kho in db.KHOHANGs
                          select kho;
-            khoHang = khoHang.OrderBy(x => x.Id);
+            khoHang = khoHang.OrderByDescending(x => x.Id);
             if (!String.IsNullOrEmpty(search))
             {
                 khoHang = khoHang.Where(x => x.CHITIETSP.SANPHAM.TenSP.Contains(search));
