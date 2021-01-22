@@ -5,24 +5,24 @@
 }
 @section SidebarMenu
 {
-    @Html.Action("SidebarMenu", "AdminHome")
+    @Html.Action("SidebarMenu", "Shipper")
 }
 @section NavBar{
-    @Html.Action("NavBar", "AdminHome")
+    @Html.Action("NavBar", "Shipper")
 }
 @section Footer
 {
-    @Html.Action("Footer", "AdminHome")
+    @Html.Action("Footer", "Shipper")
 }
 
 <div class="site-section">
-    <div class="container"  style="margin-left:10px">
+    <div class="container" style="margin-left:10px">
         <div class="row mb-5">
             <div class="col-md-9 order-2">
                 <h3 style="text-align: center">Thay đổi thông tin cá nhân</h3>
                 <div class="col-12 md-5">
                     <div>
-                        <form action="/Admin/AdminHome/UpdateInfoCaNhan" method="post">
+                        <form action="/Admin/Shipper/UpdateInfoCaNhan" method="post">
                             @if (TempData["ThongBao"] != null)
                             {
                                 <div class="alert alert-success alert-dismissible" role="alert">
@@ -67,7 +67,7 @@
                                         <div class="col-md-12">
                                             @Html.RadioButton("GioiTinh", "Nam", true, null)
                                             @Html.Label("Nam")
-                                            @Html.RadioButton("GioiTinh", "Nữ", null)
+                                             @Html.RadioButton("GioiTinh", "Nữ", null)
                                             @Html.Label("Nữ")
                                             @Html.ValidationMessageFor(model => model.GioiTinh, "", new { @class = "text-danger" })
                                         </div>
@@ -93,7 +93,7 @@
                             <div class="form-group">
                                 <div class="col-md-offset-2 col-md-10">
                                     <input type="submit" value="Lưu" class="btn btn-success" />
-                                    @Html.ActionLink("Trở về", "InfoCaNhan", null, new { @class = "btn btn-info" })
+                                    @Html.ActionLink("Trở về", "InfoCaNhan","Shipper", new { @class = "btn btn-info" })
                                 </div>
                             </div>
 
@@ -107,7 +107,7 @@
                 <div class="p-4 rounded mb-4">
                     <ul class="list-group">
                         <li class="list-group-item">@Html.ActionLink("Thông tin cá nhân", "InfoCaNhan", null, new { @style = "color: black" })</li>
-                        <li class="list-group-item">@Html.ActionLink("Chỉnh sửa thông tin", "UpdateInfoCaNhan", new { @maNV = Session["Admin"] }, new { @style = "color: black" })</li>
+                        <li class="list-group-item">@Html.ActionLink("Chỉnh sửa thông tin", "UpdateInfoCaNhan", new { @maNV = Session["Shipper"] }, new { @style = "color: black" })</li>
                         <li class="list-group-item">@Html.ActionLink("Đổi mật khẩu", "ChangePassword", null, new { @style = "color: black" })</li>
                     </ul>
                 </div>

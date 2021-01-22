@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Web;
 using System.Web.Mvc;
 using ShopGiay.Models;
 using PagedList;
 using System.Net;
 using System.Data.Entity;
-using System.IO;
 
 namespace ShopGiay.Areas.Admin.Controllers
 {
@@ -167,7 +165,7 @@ namespace ShopGiay.Areas.Admin.Controllers
             string cmnd = Request.Form["CMND"].ToString();
             if (ModelState.Count == 7)
             {
-               // db.UpdateInfoCaNhan(tenNV, diaChi, email, sdt, gioiTinh, cmnd);
+                db.UpdateInfoCaNhan(tenNV, diaChi, email, sdt, gioiTinh, cmnd);
                 TempData["ThongBao"] = "Thay đổi thông tin thành công!";
                 return View(nv);
             }
@@ -373,7 +371,23 @@ namespace ShopGiay.Areas.Admin.Controllers
             }
             return View(listKH.ToPagedList(pageNumber, pageSize));
         }
+        public ActionResult KichHoatTK(int makh)
+        {
+            var kh = db.KHACHHANGs.Find(makh);
+            if (kh == null)
+            {
+                Response.StatusCode = 404;
+                return null;
 
+            }
+            else
+            {
+                kh.Status = 1;
+                db.Entry(kh).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("DanhSachKH");
+            }
+        }
         // Chi tiết khách hàng
         public ActionResult DetailKhachHang(int maKH)
         {
@@ -421,7 +435,7 @@ namespace ShopGiay.Areas.Admin.Controllers
         }
         public ActionResult SoLuongKhachHang()
         {
-            var slkh = db.KHACHHANGs.Where(m => m.Status == 1).OrderBy(m => m.MaKH).Count();
+            var slkh = db.KHACHHANGs.OrderBy(m => m.MaKH).Count();
             ViewBag.SoLuongKH = slkh;
             return PartialView();
         }
